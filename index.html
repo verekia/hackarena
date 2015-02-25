@@ -4,38 +4,21 @@
         <meta charset="utf-8">
         <style>
             body {
-                color: #333;
-                font-family: Helvetica, Arial, sans-serif;
+                background: #311;
             }
 
-            .chat-content {
-                height: 400px;
-                overflow-y: scroll;
-            }
-            .chat-ui {
-
+            .canvas-container {
+                background: #ccc;
+                width: 990px;
+                height: 500px;
+                margin: 100px auto;
             }
 
         </style>
     </head>
     <body>
-        <div class="chat-content">
-            <h2 class="js-room-name"></h2>
-            <ul class="users js-users">
-            </ul>
-            <p class="js-loading">Connecting to <a href="#" class="js-loading-link"></a>...</p>
-        </div>
-        <div class="chat-ui">
-            <input class="js-input-name">
-            <a class="js-name" href="#">Set name</a>
-
-            <input class="js-input-message">
-            <a class="js-send" href="#">Send</a>
-
-            <!-- <a class="js-unsupported" href="#">Unsupported</a> -->
-            <br>
-            <input class="js-input-private">
-            <a href="#" class="js-private">Create private chatroom</a>
+        <div class="canvas-container">
+            <canvas></canvas>
         </div>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -43,12 +26,22 @@
         <script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
     <script>
 
-var Nanotopic = {};
+var Hackarena = {};
 
 (function() {
+    var websocketURL = 'http://' + window.location.host + '/websocket';
+    var sock = new SockJS(websocketURL);
+    console.log(websocketURL);
 
-    var sock = new SockJS('http://130.211.149.226/websocket');
-    var room = location.pathname.substring(1) || 'default';
+    // Game URL Example: /roomname/username/team/class 
+
+    var params = location.pathname.substring(1).split('/');
+    var room = params[0];
+    var username = params[1];
+    var team = params[2];
+    var characterClass = params[3];
+
+    $('.canvas-container').append('Room: ' + room + ', Username: ' + username + ', Team: ' + team + ', Class: ' + characterClass);
 
     sock.onopen = function() {
         var enterRoomMessage = JSON.stringify({
@@ -79,22 +72,18 @@ var Nanotopic = {};
 
         if (message.type === 'SIMPLE_MESSAGE') {
             $('.chat-content').append('<p>' + message.content + '.</p>');
-            scrollBottom();
         }
 
         if (message.type === 'USER_MESSAGE') {
             $('.chat-content').append('<p><strong>' + message.content.username + '</strong> says: ' + message.content.message + '</p>');
-            scrollBottom();
         }
 
         if (message.type === 'USER_RENAME') {
             $('.chat-content').append('<p><strong>' + message.content.previousName + '</strong> is now called <strong>' + message.content.newName + '</strong>.</p>');
-            scrollBottom();
         }
 
         if (message.type === 'OTHER_ENTERED_ROOM') {
             $('.chat-content').append('<p><strong>' + message.content + '</strong> entered the room.</p>');
-            scrollBottom();
         }
 
         if (message.type === 'USERS') {
@@ -125,9 +114,6 @@ var Nanotopic = {};
 
     };
 
-    var scrollBottom = function() {
-        $('.chat-content').scrollTop($('.chat-content')[0].scrollHeight);
-    };
 
     $('.js-send').click(function() {
         var message = JSON.stringify({
@@ -150,15 +136,8 @@ var Nanotopic = {};
         sock.send(unsupportedMessage2);
     });
 
-    $('.js-private').click(function() {
-        var privateName = $('.js-input-private').val();
-        window.location = privateName + '/private/' + Math.floor(Math.random() * 1000000);
-    });
 
-    $('.js-loading-link').html('#' + room);
-    $('.js-loading-link').attr('href', 'http://nanotopic.com/' + room);
-
-}(window, Nanotopic));
+}(window, Hackarena));
 
         </script>
     </body>
