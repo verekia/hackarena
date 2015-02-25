@@ -1,11 +1,11 @@
 var Hackarena = {};
 
 (function() {
-    // Instantiates the WebSocket connection
+    var gameParams = parseUrlParams();
 
+    // Instantiates the WebSocket connection
     var websocketURL = 'http://' + window.location.host + '/websocket';
     var sock = new SockJS(websocketURL);
-    var gameParams = parseUrlParams();
 
     function main() {
         $('.canvas-container').append(
@@ -19,6 +19,15 @@ var Hackarena = {};
     function parseUrlParams() {
         // Game URL Example: /roomname/username/team/class 
         var params = location.pathname.substring(1).split('/');
+
+        if (params.length !== 4) {
+            throw 'Not the right number of parameters';
+        }
+
+        if (params[2] !== 'red' && params[2] !== 'blue') {
+            throw "Team parameter must be 'red' or 'blue'";
+        }
+
         return {
             'room': params[0],
             'username': params[1],
