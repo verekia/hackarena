@@ -10,22 +10,33 @@ var Hackarena = {};
     function main() {
         $('.canvas-container').append(
             'Room: ' + gameParams.room +
-            ', Username: ' + gameParams.roomusername +
-            ', Team: ' + gameParams.roomteam +
+            ', Username: ' + gameParams.username +
+            ', Team: ' + gameParams.team +
             ', Class: ' + gameParams.characterClass
         );
     }
 
     function parseUrlParams() {
-        // Game URL Example: /roomname/username/team/class 
         var params = location.pathname.substring(1).split('/');
 
-        if (params.length !== 4) {
-            throw 'Not the right number of parameters';
+        var errorMessage = null;
+        var example = '\nExample: /darwinbattle/jon/blue/warrior';
+
+        if (!/^[a-zA-Z]+$/.test(params[0])) {
+            errorMessage = 'The room name must be letters only.';
+        } else if (!/^[a-zA-Z]+$/.test(params[1])) {
+            errorMessage = 'The username must be letters only.';
+        } else if (params.length !== 4) {
+            errorMessage = 'Not the right number of parameters.';
+        } else if (params[2] !== 'red' && params[2] !== 'blue') {
+            errorMessage = "Team parameter must be 'red' or 'blue'.";
+        } else if (params[3] !== 'warrior' && params[3] !== 'mage' && params[3] !== 'healer') {
+            errorMessage = "Class parameter must be 'warrior', 'mage', or 'healer'.";
         }
 
-        if (params[2] !== 'red' && params[2] !== 'blue') {
-            throw "Team parameter must be 'red' or 'blue'";
+        if (errorMessage) {
+            alert(errorMessage + example);
+            throw errorMessage + example;
         }
 
         return {
