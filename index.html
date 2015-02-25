@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            body {
+                color: #333;
+                font-family: Helvetica, Arial, sans-serif;
+            }
+
+            .chat-content {
+                height: 400px;
+                overflow-y: scroll;
+            }
+            .chat-ui {
+
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="chat-content">
+            <h2 class="js-room-name"></h2>
+            <ul class="users js-users">
+            </ul>
+            <p class="js-loading">Connecting to <a href="#" class="js-loading-link"></a>...</p>
+        </div>
+        <div class="chat-ui">
+            <input class="js-input-name">
+            <a class="js-name" href="#">Set name</a>
+
+            <input class="js-input-message">
+            <a class="js-send" href="#">Send</a>
+
+            <!-- <a class="js-unsupported" href="#">Unsupported</a> -->
+            <br>
+            <input class="js-input-private">
+            <a href="#" class="js-private">Create private chatroom</a>
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.1.min.js"><\/script>')</script>
+        <script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+    <script>
+
+var Nanotopic = {};
+
+(function() {
+
+    var sock = new SockJS('http://130.211.149.226/websocket');
+    var room = location.pathname.substring(1) || 'default';
+
+    sock.onopen = function() {
+        var enterRoomMessage = JSON.stringify({
+            type: 'ROOM',
+            content: room
+        });
+        sock.send(enterRoomMessage);
+    };
+
+    sock.onmessage = function (evt) {
+        dispatchMessage(evt.data);
+    };
+
+    sock.onclose = function() {
+        console.log('Connection closed.');
+    };
+
+    $('.js-name').click(function() {
+        var nameChangeMessage = JSON.stringify({
+            type: 'NAME',
+            content: $('.js-input-name').val()
+        });
+        sock.send(nameChangeMessage);
+    });
+
+    var dispatchMessage = function(message) {
+        var message = JSON.parse(message);
+
+        if (message.type === 'SIMPLE_MESSAGE') {
+            $('.chat-content').append('<p>' + message.content + '.</p>');
+            scrollBottom();
+        }
+
+        if (message.type === 'USER_MESSAGE') {
+            $('.chat-content').append('<p><strong>' + message.content.username + '</strong> says: ' + message.content.message + '</p>');
+            scrollBottom();
+        }
+
+        if (message.type === 'USER_RENAME') {
+            $('.chat-content').append('<p><strong>' + message.content.previousName + '</strong> is now called <strong>' + message.content.newName + '</strong>.</p>');
+            scrollBottom();
+        }
+
+        if (message.type === 'OTHER_ENTERED_ROOM') {
+            $('.chat-content').append('<p><strong>' + message.content + '</strong> entered the room.</p>');
+            scrollBottom();
+        }
+
+        if (message.type === 'USERS') {
+            $('.js-users').html('');
+            for (var i = 0, len = message.content.length; i < len; i++) {
+                $('.js-users').append('<li>' + message.content[i] + '</li>');
+            }
+        }
+
+        if (message.type === 'ENTERED_ROOM') {
+            $('.js-loading').remove();
+            var roomName = message.content.roomName;
+            if (message.content.roomName.indexOf('/private/') > 0) {
+                var n = message.content.roomName.indexOf('/private/');
+                var roomName = message.content.roomName.substring(0, n) + ' (private)';
+                $('body').append('Share it: <input class="js-copy-private" value="' + window.location.href + '">');
+                $('.js-copy-private').mouseup(function(e){
+                    e.preventDefault();
+                });
+                $('.js-copy-private').focus(function(){
+                    this.select();
+                });
+            }
+            $('.js-room-name').html(roomName);
+            $('.js-input-name').val(message.content.temporaryName);
+        }
+
+
+    };
+
+    var scrollBottom = function() {
+        $('.chat-content').scrollTop($('.chat-content')[0].scrollHeight);
+    };
+
+    $('.js-send').click(function() {
+        var message = JSON.stringify({
+            type: 'USER_MESSAGE',
+            content: $('.js-input-message').val()
+        });
+        sock.send(message);
+    });
+
+    $('.js-unsupported').click(function() {
+        var unsupportedMessage1 = JSON.stringify({
+            type: 'UNSUPPORTED',
+            content: ''
+        });
+        console.log('Sending: ' + unsupportedMessage1);
+        sock.send(unsupportedMessage1);
+
+        var unsupportedMessage2 = 'Unsupported';
+        console.log('Sending: ' + unsupportedMessage2);
+        sock.send(unsupportedMessage2);
+    });
+
+    $('.js-private').click(function() {
+        var privateName = $('.js-input-private').val();
+        window.location = privateName + '/private/' + Math.floor(Math.random() * 1000000);
+    });
+
+    $('.js-loading-link').html('#' + room);
+    $('.js-loading-link').attr('href', 'http://nanotopic.com/' + room);
+
+}(window, Nanotopic));
+
+        </script>
+    </body>
+</html>
