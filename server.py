@@ -113,7 +113,7 @@ def createMessage(messageType, messageContent):
 
 def main():
     app = make_app()
-    app.listen(options.port, options.address)
+    app.listen(options.port) #, options.address)
     IOLoop.current().start()
 
 if __name__ == '__main__':
