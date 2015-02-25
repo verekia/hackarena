@@ -1,1 +1,2 @@
 tornado==4.1
+sockjs-tornado==1.0.1
