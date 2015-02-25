@@ -1,5 +1,5 @@
 from tornado.ioloop import IOLoop
-from tornado.web import RequestHandler, Application, url
+from tornado.web import RequestHandler, Application, url, StaticFileHandler
 from tornado.options import define, options
 from sockjs.tornado import SockJSRouter, SockJSConnection
 import json
@@ -90,7 +90,10 @@ def make_app():
     sock_router = SockJSRouter(WebSocketHandler, '/websocket')
     return Application(
         sock_router.urls +
-        [url(r'/(.*)', IndexHandler), ]
+        [
+            (r'/static/(.*)', StaticFileHandler, {'path': 'static'}),
+            url(r'/(.*)', IndexHandler),
+        ]
     )
 
 def getSessionString(originalSessionString):

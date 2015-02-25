@@ -1,0 +1,10 @@
+body {
+    background: #311;
+}
+
+.canvas-container {
+    background: #ccc;
+    width: 990px;
+    height: 500px;
+    margin: 100px auto;
+}
