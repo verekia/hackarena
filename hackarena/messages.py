@@ -11,19 +11,23 @@ class FEMessages(Enum):
     pass
 
 
-class AllMainBroadCast(object):
+class Broadcast(object):
 
-    message_type = BEMessages.ALL_MAIN_BROADCAST
+    data = {}
 
-    def __init__(self):
-        pass
+    def __init__(self, *args, **kwargs):
+        self.data.update(kwargs)
 
-    def broadcast(self):
+    def broadcast(self, handler):
         data = {
             'type': self.message_type,
             'content': '',  # TODO: grab message data from class vars
         }
 
-        # TODO: actually broadcast message
         json_content = json.dumps(data, ensure_ascii=False)
-        print json_content
+        handler.send(json_content)
+
+
+class AllMainBroadcast(Broadcast):
+
+    message_type = BEMessages.ALL_MAIN_BROADCAST
