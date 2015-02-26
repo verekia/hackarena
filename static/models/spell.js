@@ -4,8 +4,7 @@ Spell = function(game, startPosition, endPosition, team) {
 
     this.game = game;
     this.game.add.existing(this);
-    
-    this.lineStyle(4, 0xFF0000, 1);
+    this.lineStyle(4, Math.floor(Math.random()*16777215), 1);
     this.moveTo(startPosition['x'], startPosition['y']);
     this.lineTo(endPosition['x'], endPosition['y']);
 

@@ -126,10 +126,12 @@ function updateTeam(team, teamData, teamName) {
 }
 
 function updateSpells() {
+    var spellsTmp = []
     for (var i = 0; i < spells.length; i++) {
         var spellData = spells[i];
-        var spell = new Spell(game, spellData['start_position'], spellData['end_position'], 'red');
+        spellsTmp.push(new Spell(game, spellData['start_position'], spellData['end_position'], 'red'));
     }
+    spellsTmp.length = 0;
 }
 
 function render() {
