@@ -1,5 +1,7 @@
 Hero = function(game, characterName, isLocal, messageCallback, initX, initY) {
 
+    debugger;
+
     this.game = game;
     this.characterName = name;
     this.isLocal = isLocal;
@@ -20,18 +22,19 @@ Hero = function(game, characterName, isLocal, messageCallback, initX, initY) {
     }
 
     this.health = this.maxHealth;
-    this.cooldown = 0;
+    this.actionCooldown = 0;
+    this.moveDelay = 0;
 
     // Create hero sprite
-    //this.sprite = game.add.sprite(x, y, 'HERO_' + this.characterClass);
-    //this.sprite.anchor.set(0.5, 0.5);
+    this.sprite = game.add.sprite(this.pos.x, this.pos.y, 'hero');
+    this.sprite.anchor.set(0, 0);
 
     // Init collision detection stuff
-    /*this.sprite.name = index.toString();
+    this.sprite.name = this.name;
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
     this.sprite.body.immovable = false;
     this.sprite.body.collideWorldBounds = true;
-    this.sprite.body.bounce.setTo(1, 1);*/
+    this.sprite.body.bounce.setTo(1, 1);
 
     // If local player, listen for keys.
     if (this.isLocal) {
@@ -46,34 +49,41 @@ Hero = function(game, characterName, isLocal, messageCallback, initX, initY) {
 Hero.prototype = Object.create(Phaser.Sprite.prototype);
 
 Hero.prototype.update = function() {
-    this.vel.x = 0;
-    this.vel.y = 0;
+    if (this.moveDelay === 0) {
+        this.vel.x = 0;
+        this.vel.y = 0;
 
-    if (this.cursorKeys.left.isDown) {
-        this.vel.x = -this.speed;
-    } else if (this.cursorKeys.right.isDown) {
-        this.vel.x = this.speed;
-    } else if (this.cursorKeys.up.isDown) {
-        this.vel.y = -this.speed;
-    } else if (this.cursorKeys.down.isDown) {
-        this.vel.y = this.speed;
-    }
+        if (this.cursorKeys.left.isDown) {
+            this.vel.x = -this.speed;
+        } else if (this.cursorKeys.right.isDown) {
+            this.vel.x = this.speed;
+        } else if (this.cursorKeys.up.isDown) {
+            this.vel.y = -this.speed;
+        } else if (this.cursorKeys.down.isDown) {
+            this.vel.y = this.speed;
+        }
 
-    this.pos.x += this.vel.x;
-    this.pos.y += this.vel.y;
+        this.pos.x += this.vel.x;
+        this.pos.y += this.vel.y;
 
-    //TODO update sprite
+        this.sprite.x = this.pos.x;
+        this.sprite.y = this.pos.y;
 
-    // Check if there's been a change
-    if (this.pos.x !== this.lastPos.x || this.pos.y !== this.lastPos.y) {
-        /*this.messageCallback({
-            type: 'FE_HERO_POSITION',
-            content: {
-                name: this.characterName,
-                x: this.pos.x,
-                y: this.pos.y
-            }
-        })*/
+        // Check if there's been a change
+        if (this.pos.x !== this.lastPos.x || this.pos.y !== this.lastPos.y) {
+            /*this.messageCallback({
+                type: 'FE_HERO_POSITION',
+                content: {
+                    name: this.characterName,
+                    x: this.pos.x,
+                    y: this.pos.y
+                }
+            })*/
+
+            this.moveDelay = this.maxMoveDelay;
+        }
+    } else {
+        this.moveDelay--;
     }
 }
 
