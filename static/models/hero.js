@@ -43,15 +43,17 @@ Hero = function(game, characterName, isLocal, messageCallback, initX, initY) {
         }
     }
 };
+Hero.prototype = Object.create(Phaser.Sprite.prototype);
 
 Hero.prototype.update = function() {
+    this.vel.x = 0;
+    this.vel.y = 0;
+
     if (this.cursorKeys.left.isDown) {
         this.vel.x = -this.speed;
     } else if (this.cursorKeys.right.isDown) {
         this.vel.x = this.speed;
-    }
-
-    if (this.cursorKeys.up.isDown) {
+    } else if (this.cursorKeys.up.isDown) {
         this.vel.y = -this.speed;
     } else if (this.cursorKeys.down.isDown) {
         this.vel.y = this.speed;
