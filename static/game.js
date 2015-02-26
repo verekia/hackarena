@@ -161,7 +161,7 @@ function setSocketListeners() {
     socket.onopen = function() {
         var enterRoomMessage = JSON.stringify({
             type: 'FE_JOIN_ROOM',
-            content: gameParams.room
+            content: gameParams
         });
         this.send(enterRoomMessage);
     };
@@ -182,7 +182,6 @@ function createHero() {
     var pom = null;
     switch (gameParams.characterClass) {
         case 'warrior':
-            debugger;
             pom = new Warrior(game, gameParams['username'], true, 0, 0);
             break;
         case 'healer':
