@@ -24,6 +24,8 @@ class Player(BaseGameObject):
         hp=MAX_HP,
         last_death=0,
     ):
+        self.MAX_HP = MAX_HP
+
         self.username = username
         self.character_class = character_class
         self.available_spells = AVAILABLE_SPELLS[character_class]
