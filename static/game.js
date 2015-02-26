@@ -1,9 +1,10 @@
 var land;
 var hero;
-var cursors;
 var socket;
-var blue_team;
-var red_team;
+var blueTeam = [];
+var redTeam = [];
+var blueTeamData = [];
+var redTeamData = [];
 var gameParams = parseUrlParams();
 
 
@@ -60,95 +61,36 @@ function create() {
 
     //  The base of our hero
     //hero = game.add.sprite(0, 0, 'hero', 'hero');
-    hero = createHero();
+    hero = createHero(gameParams['characterClass'], gameParams['username']);
     //hero.animations.add('move', ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6'], 20, true);
 
     game.camera.follow(hero);
     game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
     game.camera.focusOnXY(0, 0);
 
-    cursors = game.input.keyboard.createCursorKeys();
-
-    var ranger = game.add.sprite(0, 0, 'ranger');
-    ranger.animations.add('d', [0, 1, 2]);
-    ranger.animations.play('d', 5, true);
-
-    var ranger = game.add.sprite(20, 0, 'ranger');
-    ranger.animations.add('l', [3, 4, 5]);
-    ranger.animations.play('l', 5, true);
-
-    var ranger = game.add.sprite(40, 0, 'ranger');
-    ranger.animations.add('r', [6, 7, 8]);
-    ranger.animations.play('r', 5, true);
-
-    var ranger = game.add.sprite(60, 0, 'ranger');
-    ranger.animations.add('u', [9, 10, 11]);
-    ranger.animations.play('u', 5, true);
-
-
-    // healer
-    var healer = game.add.sprite(0, 20, 'healer');
-    healer.animations.add('d', [0, 1, 2]);
-    healer.animations.play('d', 5, true);
-
-    var healer = game.add.sprite(20, 20, 'healer');
-    healer.animations.add('l', [3, 4, 5]);
-    healer.animations.play('l', 5, true);
-
-    var healer = game.add.sprite(40, 20, 'healer');
-    healer.animations.add('r', [6, 7, 8]);
-    healer.animations.play('r', 5, true);
-
-    var healer = game.add.sprite(60, 20, 'healer');
-    healer.animations.add('u', [9, 10, 11]);
-    healer.animations.play('u', 5, true);
-
-
-    // ninja
-
-    var ninja = game.add.sprite(0, 40, 'ninja');
-    ninja.animations.add('d', [0, 1, 2]);
-    ninja.animations.play('d', 5, true);
-
-    var ninja = game.add.sprite(20, 40, 'ninja');
-    ninja.animations.add('l', [3, 4, 5]);
-    ninja.animations.play('l', 5, true);
-
-    var ninja = game.add.sprite(40, 40, 'ninja');
-    ninja.animations.add('r', [6, 7, 8]);
-    ninja.animations.play('r', 5, true);
-
-    var ninja = game.add.sprite(60, 40, 'ninja');
-    ninja.animations.add('u', [9, 10, 11]);
-    ninja.animations.play('u', 5, true);
-
     setSocketListeners();
 }
 
 function update() {
-    hero.update(cursors);
-    hero.body.velocity.x = 0;
-    hero.body.velocity.y = 0;
-
-    if (cursors.left.isDown) {
-        hero.body.velocity.x = -200;
-    }
-    else if (cursors.right.isDown) {
-        hero.body.velocity.x = 200;
-    }
-
-    if (cursors.up.isDown) {
-        hero.body.velocity.y = -200;
-    }
-    else if (cursors.down.isDown) {
-        hero.body.velocity.y = 200;
-    }
+    hero.update();
 
     land.tilePosition.x = -game.camera.x;
     land.tilePosition.y = -game.camera.y;
 
     if (game.input.activePointer.isDown) {
         console.log("FIRE");
+    }
+    updateTeam(blueTeam, blueTeamData);
+    updateTeam(redTeam, redTeamData);
+}
+
+function updateTeam(team, teamData){
+    for(var i=0;i<teamData.length;i++){
+        var player = teamData[i];
+        if(!team[player['username']]){
+            team[player['username']] = createHero(player['character_class'], player['username'])
+        }
+        team[player['username']].receiveMessage(player['position']);
     }
 }
 
@@ -168,8 +110,12 @@ function setSocketListeners() {
 
     socket.onmessage = function(evt) {
         console.log("WORLD UPDATE: ", evt.data);
-        //blue_team = evt.data['teams'][0]
-        //red_team = evt.data['teams'][0]
+        //{"content": {"spells": [], "teams": {"blue": {"players": [{"username": "bbb", "room": "darwinbattle", "character_class": "warrior", "hp": 130, "team": "blue", "position": {"y": 0, "x": 0}, "last_death": 0}], "building_hp": 600, "kills": 0}, "red": {"players": [], "building_hp": 600, "kills": 0}}}, "type": "BE_ALL_MAIN_BROADCAST"}
+        var data = JSON.parse(evt.data);
+        if (data['type'] == 'BE_ALL_MAIN_BROADCAST'){
+            blueTeamData = data['content']['teams']['blue']['players'];
+            redTeamData = data['content']['teams']['red']['players'];
+        }
     };
 
     socket.onclose = function() {
@@ -178,17 +124,17 @@ function setSocketListeners() {
 
 }
 
-function createHero() {
+function createHero(characterClass, username) {
     var pom = null;
     switch (gameParams.characterClass) {
         case 'warrior':
             pom = new Warrior(game, gameParams['username'], true, 0, 0);
             break;
         case 'healer':
-            pom = new Healer(game, gameParams['username'], true, 0, 0);
+            pom = new Healer(game, gameParams['username'], true, 10, 10);
             break;
         case 'mage':
-            pom = new Mage(game, gameParams['username'], true, 0, 0);
+            pom = new Mage(game, gameParams['username'], true, 20, 20);
             break;
     }
     return pom;

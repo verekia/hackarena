@@ -119,8 +119,8 @@ Hero.prototype.update = function() {
 }
 
 Hero.prototype.receiveMessage = function(message) {
-    this.x = message.positionY;
-    this.y = message.positionX;
+    this.x = message['x'];
+    this.y = message['y'];
 
     this.lastPos.x = this.x;
     this.lastPos.y = this.y;
