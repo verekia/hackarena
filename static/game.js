@@ -1,5 +1,7 @@
 var land;
 var hero;
+var map;
+var layer;
 var socket;
 var blueTeam = [];
 var redTeam = [];
@@ -40,8 +42,9 @@ function parseUrlParams() {
 }
 
 function preload() {
-    game.load.image('hero', '/static/sprites/hero.png');
-    game.load.spritesheet('earth', '/static/sprites/map.png', 10, 10, 10);
+    // Sets up map stuff
+    game.load.tilemap('desertMap', '/static/desert.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('tiles', '/static/desert.png');
 
     game.load.atlasJSONHash('ranger', '/static/sprites/ranger/ranger.png', '/static/sprites/ranger/ranger.json');
     game.load.atlasJSONHash('healer', '/static/sprites/healer/healer.png', '/static/sprites/healer/healer.json');
@@ -53,16 +56,18 @@ function create() {
     socket = new SockJS(websocketURL);
 
     //  Resize our game world to be a 2000 x 2000 square
-    game.world.setBounds(-1000, -1000, 2000, 2000);
+    game.world.setBounds(0, 0, 2400, 1200);
 
-    //  Our tiled scrolling background
-    land = game.add.tileSprite(0, 0, 800, 600, 'earth');
-    land.fixedToCamera = true;
+    map = game.add.tilemap('desertMap');
+
+    map.addTilesetImage('desertTiles', 'tiles');
+    map.fixedToCamera = true;
+
+    layer = map.createLayer('Base');
+    layer.resizeWorld();
 
     //  The base of our hero
-    //hero = game.add.sprite(0, 0, 'hero', 'hero');
     hero = createHero(gameParams['characterClass'], gameParams['username']);
-    //hero.animations.add('move', ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6'], 20, true);
 
     game.camera.follow(hero);
     game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
@@ -74,8 +79,8 @@ function create() {
 function update() {
     hero.update();
 
-    land.tilePosition.x = -game.camera.x;
-    land.tilePosition.y = -game.camera.y;
+    // map.tilePosition.x = -game.camera.x;
+    // map.tilePosition.y = -game.camera.y;
 
     if (game.input.activePointer.isDown) {
         console.log("FIRE");
@@ -95,7 +100,6 @@ function updateTeam(team, teamData){
 }
 
 function render() {
-    // game.debug.text('Active Bullets: ' + bullets.countLiving() + ' / ' + bullets.length, 32, 32);
     game.debug.text('woot', 32, 32);
 }
 

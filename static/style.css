@@ -4,9 +4,8 @@ body {
 
 .canvas-container {
     background: #ccc;
-    width: 800px;
-    height: 600px;
-    margin: 30px auto 0;
+    width: 2400px;
+    height: 1200px;
 }
 
 .kills {
