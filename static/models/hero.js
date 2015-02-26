@@ -114,6 +114,7 @@ Hero.prototype.update = function() {
 
         if (actionMessage.content.direction !== '') {
             //TODO this.messageCallback(moveMessage);
+            socket.send(JSON.stringify(actionMessage));
         }
     }
 }

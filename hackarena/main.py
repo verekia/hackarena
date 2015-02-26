@@ -83,11 +83,11 @@ class WebSocketHandler(SockJSConnection):
             self.broadcast_game_state()
 
         if data['type'] == FEMessages.FE_HERO_MOVE:
-            char_pos_x = self.player['position']['x']
-            char_pos_y = self.player['position']['y']
-            move_allowed, new_pos_x, new_pos_y = self.move_request(char_pos_x, char_pos_y, data['content'].direction)
-            self.player['position']['x'] = new_pos_x
-            char_pos_y = self.player['position']['y'] = new_pos_y
+            char_pos_x = self.player.position['x']
+            char_pos_y = self.player.position['y']
+            move_allowed, new_pos_x, new_pos_y = self.move_request(char_pos_x, char_pos_y, data['content']['direction'])
+            self.player.position['x'] = new_pos_x
+            char_pos_y = self.player.position['y'] = new_pos_y
             self.broadcast_game_state()
 
         if data['type'] == FEMessages.FE_HERO_SPELL:
@@ -132,8 +132,8 @@ class WebSocketHandler(SockJSConnection):
         elif (direction == 'RIGHT'):
             new_position_x = new_position_x + 1
         elif (direction == 'UP'):
-            new_position_x = new_position_y - 1
+            new_position_y = new_position_y - 1
         elif (direction == 'DOWN'):
-            new_position_x = new_position_y + 1
+            new_position_y = new_position_y + 1
 
         return True, new_position_x, new_position_y

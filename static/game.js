@@ -115,6 +115,7 @@ function setSocketListeners() {
         if (data['type'] == 'BE_ALL_MAIN_BROADCAST'){
             blueTeamData = data['content']['teams']['blue']['players'];
             redTeamData = data['content']['teams']['red']['players'];
+            update();
         }
     };
 
