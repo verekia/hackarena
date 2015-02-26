@@ -1,7 +1,60 @@
-Hero = function(game, characterName, isLocal, messageCallback, initX, initY) {
+Hero = function(game, initX, initY) {
+    Phaser.Sprite.call(this, game, initX, initY, 'hero');
+    game.add.existing(this);
+    game.physics.enable(this, Phaser.Physics.ARCADE);
+    this.body.drag.set(0.0);
+    this.body.maxVelocity.setTo(40, 40);
+    this.body.collideWorldBounds = true;
 
-    debugger;
+    this.bringToTop();
+};
 
+Hero.prototype = Object.create(Phaser.Sprite.prototype);
+Hero.prototype.constructor = Hero;
+
+Hero.prototype.update = function() {
+}
+
+Hero.prototype.oldUpdate = function() {
+    if (this.moveDelay === 0) {
+        this.vel.x = 0;
+        this.vel.y = 0;
+
+        if (this.cursorKeys.left.isDown) {
+            this.vel.x = -this.speed;
+        } else if (this.cursorKeys.right.isDown) {
+            this.vel.x = this.speed;
+        } else if (this.cursorKeys.up.isDown) {
+            this.vel.y = -this.speed;
+        } else if (this.cursorKeys.down.isDown) {
+            this.vel.y = this.speed;
+        }
+
+        this.pos.x += this.vel.x;
+        this.pos.y += this.vel.y;
+
+        this.sprite.x = this.pos.x;
+        this.sprite.y = this.pos.y;
+
+        // Check if there's been a change
+        if (this.pos.x !== this.lastPos.x || this.pos.y !== this.lastPos.y) {
+            /*this.messageCallback({
+                type: 'FE_HERO_POSITION',
+                content: {
+                    name: this.characterName,
+                    x: this.pos.x,
+                    y: this.pos.y
+                }
+            })*/
+
+            this.moveDelay = this.maxMoveDelay;
+        }
+    } else {
+        this.moveDelay--;
+    }
+}
+
+Hero.prototype.oldConstructor = function(){
     this.game = game;
     this.characterName = name;
     this.isLocal = isLocal;
@@ -45,48 +98,7 @@ Hero = function(game, characterName, isLocal, messageCallback, initX, initY) {
             2: this.game.input.keyboard.addKey(Phaser.Keyboard.X)
         }
     }
-};
-Hero.prototype = Object.create(Phaser.Sprite.prototype);
-
-Hero.prototype.update = function() {
-    if (this.moveDelay === 0) {
-        this.vel.x = 0;
-        this.vel.y = 0;
-
-        if (this.cursorKeys.left.isDown) {
-            this.vel.x = -this.speed;
-        } else if (this.cursorKeys.right.isDown) {
-            this.vel.x = this.speed;
-        } else if (this.cursorKeys.up.isDown) {
-            this.vel.y = -this.speed;
-        } else if (this.cursorKeys.down.isDown) {
-            this.vel.y = this.speed;
-        }
-
-        this.pos.x += this.vel.x;
-        this.pos.y += this.vel.y;
-
-        this.sprite.x = this.pos.x;
-        this.sprite.y = this.pos.y;
-
-        // Check if there's been a change
-        if (this.pos.x !== this.lastPos.x || this.pos.y !== this.lastPos.y) {
-            /*this.messageCallback({
-                type: 'FE_HERO_POSITION',
-                content: {
-                    name: this.characterName,
-                    x: this.pos.x,
-                    y: this.pos.y
-                }
-            })*/
-
-            this.moveDelay = this.maxMoveDelay;
-        }
-    } else {
-        this.moveDelay--;
-    }
 }
-
 Hero.prototype.handleKeyDown = function(event) {
     var moveMessage = {
         type: 'FE_HERO_MOVE',

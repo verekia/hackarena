@@ -1,5 +1,4 @@
 var land;
-var shadow;
 var hero;
 var cursors;
 
@@ -10,7 +9,6 @@ function preload() {
     game.load.atlasJSONHash('ranger', 'static/sprites/ranger/ranger.png', 'static/sprites/ranger/ranger.json');
 }
 
-
 function create() {
     //  Resize our game world to be a 2000 x 2000 square
     game.world.setBounds(-1000, -1000, 2000, 2000);
@@ -20,23 +18,11 @@ function create() {
     land.fixedToCamera = true;
 
     //  The base of our hero
-    hero = game.add.sprite(0, 0, 'hero', 'hero');
-    game.physics.enable(hero, Phaser.Physics.ARCADE);
-    hero.anchor.setTo(0.5, 0.5);
+    //hero = game.add.sprite(0, 0, 'hero', 'hero');
+    hero = new Hero(game, 0,0);
     //hero.animations.add('move', ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6'], 20, true);
 
     //  This will force it to decelerate and limit its speed
-    game.physics.enable(hero, Phaser.Physics.ARCADE);
-    hero.body.drag.set(0.0);
-    hero.body.maxVelocity.setTo(40, 40);
-    hero.body.collideWorldBounds = true;
-
-
-    //  A shadow below our hero
-    shadow = game.add.sprite(0, 0, 'hero', 'shadow');
-    shadow.anchor.setTo(0.5, 0.5);
-
-    hero.bringToTop();
 
     game.camera.follow(hero);
     game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
@@ -44,16 +30,13 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
 
-
-
-
-    var ranger = game.add.sprite(16, 18, 'ranger');
-    ranger.animations.add('r');
-    ranger.animations.play('r', 5, true);
+    //var ranger = game.add.sprite(16, 18, 'ranger');
+    //ranger.animations.add('r');
+    //ranger.animations.play('r', 5, true);
 }
 
 function update() {
-
+    hero.update(cursors);
     hero.body.velocity.x = 0;
     hero.body.velocity.y = 0;
 
