@@ -10,24 +10,44 @@ from sockjs.tornado import SockJSConnection
 import json
 
 
+DEFAULT_ROOM = 'lobby'
+
+
 class WebSocketHandler(SockJSConnection):
 
     clients = defaultdict(dict)
     teams = {}
     players = {}
 
+    @property
+    def player(self):
+        return self.players[self.session_string]
+
+    @player.setter
+    def player(self, player):
+        self.players[self.session_string] = player
+
+    @property
+    def room(self):
+        try:
+            return self.player.room
+        except:
+            return DEFAULT_ROOM
+
+    @room.setter
+    def room(self, room):
+        self.player.room = room
+
     def on_open(self, info):
         self.session_string = Utilities.get_session_string(str(self.session))
 
-        self.room = 'lobby'
         self.clients[self.room][self.session_string] = self
         WelcomeBroadcast(message='Welcome to HackArena!').send(self)
         WelcomeBroadcast(message='Welcome to HackArena! (to all)').broadcast_to_all(self)
 
     def on_close(self):
-        player = self.players[self.session_string]
         del self.clients[self.room][self.session_string]
-        self.teams[self.room][player.team].remove_player(player)
+        self.teams[self.room][self.player.team].remove_player(self.player)
         del self.players[self.session_string]
 
         self.broadcast_game_state()
@@ -41,6 +61,12 @@ class WebSocketHandler(SockJSConnection):
 
         if data['type'] == FEMessages.FE_JOIN_ROOM:
             new_room = data['content']['room']
+            self.player = Player(
+                username=data['content']['username'],
+                character_class=data['content']['characterClass'],
+                team=data['content']['team'],
+            )
+
             self.change_room(new_room)
 
             if new_room not in self.teams:
@@ -49,13 +75,7 @@ class WebSocketHandler(SockJSConnection):
                     'blue': Team(),
                 }
 
-            player = Player(
-                username=data['content']['username'],
-                character_class=data['content']['characterClass'],
-                team=data['content']['team'],
-            )
-            self.teams[new_room][player.team].add_player(player)
-            self.players[self.session_string] = player
+            self.teams[new_room][self.player.team].add_player(self.player)
 
             self.broadcast_game_state()
 
