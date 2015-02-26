@@ -8,7 +8,8 @@ class BEMessages(Enum):
 
 
 class FEMessages(Enum):
-    pass
+    FE_PING = 'FE_PING'
+    FE_JOIN_ROOM = 'FE_JOIN_ROOM'
 
 
 class Broadcast(object):
