@@ -9,6 +9,7 @@ from hackarena.messages import WelcomeBroadcast
 from hackarena.utilities import Utilities
 from hackarena.constants import MAP_TILES_WIDTH
 from hackarena.constants import MAP_TILES_HEIGHT
+from hackarena.constants import MAP_OBSTACLES
 from sockjs.tornado import SockJSConnection
 import json
 
@@ -122,7 +123,8 @@ class WebSocketHandler(SockJSConnection):
             char_pos_x <= 0 and direction == 'LEFT' or
             char_pos_x >= MAP_TILES_WIDTH - 1 and direction == 'RIGHT' or
             char_pos_y <= 0 and direction == 'UP' or
-            char_pos_y >= MAP_TILES_HEIGHT - 1 and direction == 'DOWN'
+            char_pos_y >= MAP_TILES_HEIGHT - 1 and direction == 'DOWN' or
+            self.has_obstacle_there(char_pos_x, char_pos_y, direction)
         ):
             return False, char_pos_x, char_pos_y
 
@@ -139,3 +141,14 @@ class WebSocketHandler(SockJSConnection):
             new_position_y = new_position_y + 1
 
         return True, new_position_x, new_position_y
+
+    def has_obstacle_there(self, char_pos_x, char_pos_y, direction):
+        print 63 * char_pos_y + char_pos_x
+        if (
+            direction == 'LEFT' and MAP_OBSTACLES[63 * char_pos_y + char_pos_x - 1] != 0 or
+            direction == 'RIGHT' and MAP_OBSTACLES[63 * char_pos_y + char_pos_x + 1] != 0 or
+            direction == 'DOWN' and MAP_OBSTACLES[63 * char_pos_y + char_pos_x + 63] != 0 or
+            direction == 'UP' and MAP_OBSTACLES[63 * char_pos_y + char_pos_x - 63] != 0
+        ):
+            return True
+        return False
