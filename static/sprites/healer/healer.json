@@ -111,10 +111,10 @@
 "meta": {
 	"app": "http://www.codeandweb.com/texturepacker",
 	"version": "1.0",
-	"image": "ranger.png",
+	"image": "healer.png",
 	"format": "RGBA8888",
 	"size": {"w":218,"h":22},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:b3ed0d996b36fd39c0a0cbc81ed0c1ac:8e0ae779f71ce18f309b291e9f8f4940:0382d817b29eaecccdc7ec7490ddbb9f$"
+	"smartupdate": "$TexturePacker:SmartUpdate:0addfe656b233495f5aee62272129b88:dd2705d7ef134ce7d762a29177bdd4bd:e0cdd68b20ff11700d97eacbe50af554$"
 }
 }
