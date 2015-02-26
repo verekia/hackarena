@@ -99,7 +99,7 @@ Hero.prototype.updateTo = function() {
         this.moveDelay--;
     }
 
-    if (this.actionSwitchKey.isDown) {
+    if (this.actionSwitchKey.isDown && this.actionSwitchKey.duration < 1000/60) {
         if (this.currentAction === 1) {
             this.currentAction = 2;
         } else {
