@@ -44,6 +44,8 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
 
     // Init collision detection stuff
     game.add.existing(this);
+
+    // Name text
     var style = {
         font: "12px Arial",
         align: "center"
@@ -55,6 +57,10 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     }
     this.nameText = game.add.text(this.x - 8, this.y + 8, this.characterName, style);
     this.nameText.x = this.x - this.nameText.width/2;
+
+    // Health bar
+    this.healthBar = new HealthBar(game, this.x - 12, this.y - 12);
+
     game.physics.enable(this, Phaser.Physics.ARCADE);
 
     this.body.collideWorldBounds = true;
@@ -88,6 +94,8 @@ Hero.prototype.updateTo = function() {
         } else if (this.moveDirectionKeys.down.isDown) {
             moveMessage.content.direction = 'DOWN'
             this.animations.play('DOWN', 5, true);
+        } else {
+            this.animations.stop();
         }
 
         if (moveMessage.content.direction !== '') {
@@ -137,18 +145,23 @@ Hero.prototype.updateTo = function() {
 
 Hero.prototype.destroy = function() {
     this.nameText.destroy();
+    this.healthBar.destroy();
     this.kill();
 }
 
 Hero.prototype.receiveMessage = function(message) {
-    this.x = message['x'] * 16;
-    this.y = message['y'] * 16;
+    this.x = message['position']['x'] * 16;
+    this.y = message['position']['y'] * 16;
 
     this.nameText.x = this.x - this.nameText.width/2;
     this.nameText.y = this.y + 8;
 
     this.lastPos.x = this.x;
     this.lastPos.y = this.y;
+
+    this.health = message['hp'];
+    this.maxHealth = message['MAX_HP'];
+    this.healthBar.updateHealthBar(this.x - 12, this.y - 12, this.health, this.maxHealth);
 }
 
 Hero.prototype.update_smooth = function() {

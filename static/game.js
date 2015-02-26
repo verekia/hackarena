@@ -9,6 +9,7 @@ var redTeam = {};
 var blueTeamData = [];
 var redTeamData = [];
 var spells = [];
+var spellsData = [];
 var gameParams = parseUrlParams();
 
 
@@ -93,6 +94,15 @@ function update() {
     // map.tilePosition.x = -game.camera.x;
     // map.tilePosition.y = -game.camera.y;
 
+    for(var i = 0; i < spells.length; i++) {
+        spells[i].update();
+        if(spells[i].frame === 0) {
+            spells[i].destroy();
+            spells.splice(i,1);
+            i--;
+        }
+    }
+
     if(blueTeamData.length > 0){
         blueTeam = updateTeam(blueTeam, blueTeamData, 'blue');
     }
@@ -102,7 +112,6 @@ function update() {
     updateSpells();
     blueTeamData = [];
     redTeamData = [];
-    spells = [];
 }
 
 function updateTeam(team, teamData, teamName) {
@@ -113,7 +122,7 @@ function updateTeam(team, teamData, teamName) {
         if (!team[player['username']]) {
             team[player['username']] = createHero(player['character_class'], player['username'], teamName, false)
         }
-        team[player['username']].receiveMessage(player['position']);
+        team[player['username']].receiveMessage(player);
         processedUsers[player['username']] = true;
     }
     for (var i = 0; i < activeUsers.length; i++) {
@@ -125,13 +134,17 @@ function updateTeam(team, teamData, teamName) {
     return team;
 }
 
+function updateKills(blueKills, redKills) {
+    $('.js-kills-blue').html(blueKills);
+    $('.js-kills-red').html(redKills);
+}
+
 function updateSpells() {
-    var spellsTmp = []
-    for (var i = 0; i < spells.length; i++) {
-        var spellData = spells[i];
-        spellsTmp.push(new Spell(game, spellData['start_position'], spellData['end_position'], 'red'));
+    for (var i = 0; i < spellsData.length; i++) {
+        var spellData = spellsData[i];
+        spells.push(new Spell(game, spellData['start_position'], spellData['end_position'], 'red'));
     }
-    spellsTmp.length = 0;
+    spellsData.length = 0;
 }
 
 function render() {
@@ -152,8 +165,11 @@ function setSocketListeners() {
         if (data['type'] == 'BE_ALL_MAIN_BROADCAST') {
             blueTeamData = data['content']['teams']['blue']['players'];
             redTeamData = data['content']['teams']['red']['players'];
-
-            spells = data['content']['spells'];
+            updateKills(
+                data['content']['teams']['blue']['kills'],
+                data['content']['teams']['red']['kills']
+            )
+            spellsData = data['content']['spells'];
         }
     };
 

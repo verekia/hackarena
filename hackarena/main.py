@@ -79,8 +79,8 @@ class WebSocketHandler(SockJSConnection):
 
             if new_room not in self.teams:
                 self.teams[new_room] = {
-                    'red': Team(),
-                    'blue': Team(),
+                    'red': Team('red'),
+                    'blue': Team('blue'),
                 }
 
             self.teams[new_room][self.player.team].add_player(self.player)
@@ -118,6 +118,10 @@ class WebSocketHandler(SockJSConnection):
                     player.hp -= damage
                     if player.hp <= 0:
                         player.reset()
+                        if player.team == 'red':
+                            self.teams[self.room]['blue'].kills += 1
+                        if player.team == 'blue':
+                            self.teams[self.room]['red'].kills += 1
                         player.last_death = time.time()
 
     def calculate_intersection(self, player, spell):
