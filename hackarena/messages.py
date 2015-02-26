@@ -11,6 +11,7 @@ class BEMessages(object):
 class FEMessages(object):
     FE_PING = 'FE_PING'
     FE_JOIN_ROOM = 'FE_JOIN_ROOM'
+    FE_HERO_MOVE = 'FE_HERO_MOVE'
 
 
 class Broadcast(object):

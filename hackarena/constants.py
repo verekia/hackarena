@@ -16,3 +16,6 @@ class Spell(object):
 
     HEALER_HEAL = 'HEALER_HEAL'
     HEALER_DIRECT_DAMAGE = 'HEALER_DIRECT_DAMAGE'
+
+map_width = 300
+map_height = 150
