@@ -3,8 +3,8 @@ var hero;
 var map;
 var layer;
 var socket;
-var blueTeam = [];
-var redTeam = [];
+var blueTeam = {};
+var redTeam = {};
 var blueTeamData = [];
 var redTeamData = [];
 var gameParams = parseUrlParams();
@@ -67,7 +67,12 @@ function create() {
     layer.resizeWorld();
 
     //  The base of our hero
-    hero = createHero(gameParams['characterClass'], gameParams['username']);
+    hero = createHero(gameParams['characterClass'], gameParams['username'], gameParams['team'], true);
+    if (hero.team === 'blue') {
+        blueTeam[hero.characterName] = hero;
+    } else {
+        redTeam[hero.characterName] = hero;
+    }
 
     game.camera.follow(hero);
     game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
@@ -77,7 +82,7 @@ function create() {
 }
 
 function update() {
-    hero.update();
+    hero.updateTo();
 
     // map.tilePosition.x = -game.camera.x;
     // map.tilePosition.y = -game.camera.y;
@@ -85,22 +90,26 @@ function update() {
     if (game.input.activePointer.isDown) {
         console.log("FIRE");
     }
-    updateTeam(blueTeam, blueTeamData);
-    updateTeam(redTeam, redTeamData);
+    blueTeam = updateTeam(blueTeam, blueTeamData, 'blue');
+    redTeam = updateTeam(redTeam, redTeamData, 'red');
+    blueTeamData = [];
+    redTeamData = [];
 }
 
-function updateTeam(team, teamData){
-    for(var i=0;i<teamData.length;i++){
+function updateTeam(team, teamData, teamName) {
+    for (var i = 0; i < teamData.length; i++) {
         var player = teamData[i];
-        if(!team[player['username']]){
-            team[player['username']] = createHero(player['character_class'], player['username'])
+        if (!team[player['username']]) {
+            team[player['username']] = createHero(player['character_class'], player['username'], teamName, false)
         }
         team[player['username']].receiveMessage(player['position']);
     }
+    return team;
 }
 
 function render() {
-    game.debug.text('woot', 32, 32);
+
+    game.debug.text('', 32, 32);
 }
 
 function setSocketListeners() {
@@ -114,12 +123,10 @@ function setSocketListeners() {
 
     socket.onmessage = function(evt) {
         console.log("WORLD UPDATE: ", evt.data);
-        //{"content": {"spells": [], "teams": {"blue": {"players": [{"username": "bbb", "room": "darwinbattle", "character_class": "warrior", "hp": 130, "team": "blue", "position": {"y": 0, "x": 0}, "last_death": 0}], "building_hp": 600, "kills": 0}, "red": {"players": [], "building_hp": 600, "kills": 0}}}, "type": "BE_ALL_MAIN_BROADCAST"}
         var data = JSON.parse(evt.data);
-        if (data['type'] == 'BE_ALL_MAIN_BROADCAST'){
+        if (data['type'] == 'BE_ALL_MAIN_BROADCAST') {
             blueTeamData = data['content']['teams']['blue']['players'];
             redTeamData = data['content']['teams']['red']['players'];
-            update();
         }
     };
 
@@ -129,17 +136,17 @@ function setSocketListeners() {
 
 }
 
-function createHero(characterClass, username) {
+function createHero(characterClass, username, team, isLocalPlayer) {
     var pom = null;
-    switch (gameParams.characterClass) {
+    switch (characterClass) {
         case 'warrior':
-            pom = new Warrior(game, gameParams['username'], true, 0, 0);
+            pom = new Warrior(game, username, team, isLocalPlayer, 0, 0);
             break;
         case 'healer':
-            pom = new Healer(game, gameParams['username'], true, 10, 10);
+            pom = new Healer(game, username, team, isLocalPlayer, 10, 10);
             break;
         case 'mage':
-            pom = new Mage(game, gameParams['username'], true, 20, 20);
+            pom = new Mage(game, username, team, isLocalPlayer, 20, 20);
             break;
     }
     return pom;
