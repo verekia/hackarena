@@ -90,31 +90,6 @@ class WebSocketHandler(SockJSConnection):
 
 ##############################################
 #                                            #
-#                 Utilities                  #
-#                                            #
-##############################################
-
-def getSessionString(originalSessionString):
-    session_attributes = originalSessionString.split(' ')
-    return session_attributes[0] + ' ' + session_attributes[1]
-
-def getSessionMiddlePart(originalSessionString):
-    return originalSessionString.split(' ')[1]
-
-def generateRandomName(originalSessionString):
-    # Should get improved
-    return getSessionMiddlePart(originalSessionString)
-
-def createMessage(messageType, messageContent):
-    data = {
-        'type': messageType,
-        'content': messageContent,
-    }
-    return json.dumps(data, ensure_ascii=False)
-
-
-##############################################
-#                                            #
 #                 App Setup                  #
 #                                            #
 ##############################################
