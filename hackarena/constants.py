@@ -8,6 +8,7 @@ class Classes(object):
     MAGE = 'mage'
     TANK = 'warrior'
     HEALER = 'healer'
+    HQ = 'hq'
 
 
 class Spell(object):
