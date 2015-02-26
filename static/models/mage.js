@@ -3,6 +3,11 @@ Mage = function(game, characterName, team, isLocalPlayer, initX, initY) {
     this.maxHealth = 75;
     this.maxMoveDelay = 8;
 
+    this.actions = {
+        1: 'MAGE_DIRECT_DAMAGE',
+        2: 'MAGE_AOE'
+    }
+
     Hero.call(this, game, characterName, team, isLocalPlayer, initX, initY, 'ranger');
 };
 

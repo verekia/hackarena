@@ -8,6 +8,7 @@ var blueTeam = {};
 var redTeam = {};
 var blueTeamData = [];
 var redTeamData = [];
+var spells = [];
 var gameParams = parseUrlParams();
 
 
@@ -61,7 +62,7 @@ function create() {
 
     map = game.add.tilemap('desertMap');
 
-    map.addTilesetImage('desertTiles', 'tiles');
+    map.addTilesetImage('map', 'tiles');
     map.fixedToCamera = true;
 
     layer = map.createLayer('Base');
@@ -92,24 +93,43 @@ function update() {
     // map.tilePosition.x = -game.camera.x;
     // map.tilePosition.y = -game.camera.y;
 
-    if (game.input.activePointer.isDown) {
-        console.log("FIRE");
+    if(blueTeamData.length > 0){
+        blueTeam = updateTeam(blueTeam, blueTeamData, 'blue');
     }
-    blueTeam = updateTeam(blueTeam, blueTeamData, 'blue');
-    redTeam = updateTeam(redTeam, redTeamData, 'red');
+    if(redTeamData.length > 0){
+        redTeam = updateTeam(redTeam, redTeamData, 'red');
+    }
+    updateSpells();
     blueTeamData = [];
     redTeamData = [];
+    spells = [];
 }
 
 function updateTeam(team, teamData, teamName) {
+    var activeUsers = Object.keys(team);
+    var processedUsers = {};
     for (var i = 0; i < teamData.length; i++) {
         var player = teamData[i];
         if (!team[player['username']]) {
             team[player['username']] = createHero(player['character_class'], player['username'], teamName, false)
         }
         team[player['username']].receiveMessage(player['position']);
+        processedUsers[player['username']] = true;
+    }
+    for (var i = 0; i < activeUsers.length; i++) {
+        if(!processedUsers[activeUsers[i]]){
+            team[activeUsers[i]].kill();
+            delete team[activeUsers[i]];
+        }
     }
     return team;
+}
+
+function updateSpells() {
+    for (var i = 0; i < spells.length; i++) {
+        var spellData = spells[i];
+        var spell = new Spell(game, spellData['start_position'], spellData['end_position'], 'red');
+    }
 }
 
 function render() {
@@ -126,11 +146,12 @@ function setSocketListeners() {
     };
 
     socket.onmessage = function(evt) {
-        console.log("WORLD UPDATE: ", evt.data);
         var data = JSON.parse(evt.data);
         if (data['type'] == 'BE_ALL_MAIN_BROADCAST') {
             blueTeamData = data['content']['teams']['blue']['players'];
             redTeamData = data['content']['teams']['red']['players'];
+
+            spells = data['content']['spells'];
         }
     };
 

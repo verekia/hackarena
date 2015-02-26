@@ -51,11 +51,12 @@ class WebSocketHandler(SockJSConnection):
         WelcomeBroadcast(message='Welcome to HackArena! (to all)').broadcast_to_all(self)
 
     def on_close(self):
-        del self.clients[self.room][self.session_string]
         self.teams[self.room][self.player.team].remove_player(self.player)
-        del self.players[self.session_string]
 
         self.broadcast_game_state()
+
+        del self.players[self.session_string]
+        del self.clients[self.room][self.session_string]
 
     def on_message(self, message):
         try:
