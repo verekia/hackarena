@@ -1,19 +1,13 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'canvas', {
-    preload: preload,
-    create: create,
-    update: update,
-    render: render
-});
-
 var land;
 var shadow;
 var hero;
 var cursors;
-var currentSpeed;
 
 function preload() {
     game.load.image('hero', 'static/sprites/hero.png');
     game.load.spritesheet('earth', 'static/sprites/map.png', 10, 10, 10);
+
+    game.load.atlasJSONHash('ranger', 'static/sprites/ranger/ranger.png', 'static/sprites/ranger/ranger.json');
 }
 
 
@@ -27,13 +21,14 @@ function create() {
 
     //  The base of our hero
     hero = game.add.sprite(0, 0, 'hero', 'hero');
+    game.physics.enable(hero, Phaser.Physics.ARCADE);
     hero.anchor.setTo(0.5, 0.5);
-    hero.animations.add('move', ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6'], 20, true);
+    //hero.animations.add('move', ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6'], 20, true);
 
     //  This will force it to decelerate and limit its speed
     game.physics.enable(hero, Phaser.Physics.ARCADE);
-    hero.body.drag.set(0.2);
-    hero.body.maxVelocity.setTo(200, 200);
+    hero.body.drag.set(0.0);
+    hero.body.maxVelocity.setTo(40, 40);
     hero.body.collideWorldBounds = true;
 
 
@@ -48,44 +43,51 @@ function create() {
     game.camera.focusOnXY(0, 0);
 
     cursors = game.input.keyboard.createCursorKeys();
+
+
+
+
+    var ranger = game.add.sprite(16, 18, 'ranger');
+    ranger.animations.add('r');
+    ranger.animations.play('r', 5, true);
 }
 
 function update() {
 
+    hero.body.velocity.x = 0;
+    hero.body.velocity.y = 0;
+
     if (cursors.left.isDown) {
-        hero.angle -= 4;
+        hero.body.velocity.x = -200;
     }
     else if (cursors.right.isDown) {
-        hero.angle += 4;
+        hero.body.velocity.x = 200;
     }
 
     if (cursors.up.isDown) {
-        //  The speed we'll travel at
-        currentSpeed = 300;
+        hero.body.velocity.y = -200;
     }
-    else {
-        if (currentSpeed > 0) {
-            currentSpeed -= 4;
-        }
-    }
-
-    if (currentSpeed > 0) {
-        game.physics.arcade.velocityFromRotation(hero.rotation, currentSpeed, hero.body.velocity);
+    else if (cursors.down.isDown) {
+        hero.body.velocity.y = 200;
     }
 
     land.tilePosition.x = -game.camera.x;
     land.tilePosition.y = -game.camera.y;
 
-
     if (game.input.activePointer.isDown) {
-
+        console.log("FIRE");
     }
-
-
 }
 
-function render () {
+function render() {
     // game.debug.text('Active Bullets: ' + bullets.countLiving() + ' / ' + bullets.length, 32, 32);
     game.debug.text('woot', 32, 32);
 }
+
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'canvas', {
+    preload: preload,
+    create: create,
+    update: update,
+    render: render
+});
 
