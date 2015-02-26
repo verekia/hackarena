@@ -83,7 +83,7 @@ Hero.prototype.update = function() {
         }
 
         if (moveMessage.content.direction !== '') {
-            //TODO this.messageCallback(moveMessage);
+            socket.send(JSON.stringify(moveMessage));
         }
     } else {
         this.moveDelay--;
