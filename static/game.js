@@ -95,19 +95,33 @@ function update() {
     if (game.input.activePointer.isDown) {
         console.log("FIRE");
     }
-    blueTeam = updateTeam(blueTeam, blueTeamData, 'blue');
-    redTeam = updateTeam(redTeam, redTeamData, 'red');
+
+    if(blueTeamData.length > 0){
+        blueTeam = updateTeam(blueTeam, blueTeamData, 'blue');
+    }
+    if(redTeamData.length > 0){
+        redTeam = updateTeam(redTeam, redTeamData, 'red');
+    }
     blueTeamData = [];
     redTeamData = [];
 }
 
 function updateTeam(team, teamData, teamName) {
+    var activeUsers = Object.keys(team);
+    var processedUsers = {};
     for (var i = 0; i < teamData.length; i++) {
         var player = teamData[i];
         if (!team[player['username']]) {
             team[player['username']] = createHero(player['character_class'], player['username'], teamName, false)
         }
         team[player['username']].receiveMessage(player['position']);
+        processedUsers[player['username']] = true;
+    }
+    for (var i = 0; i < activeUsers.length; i++) {
+        if(!processedUsers[activeUsers[i]]){
+            team[activeUsers[i]].kill();
+            delete team[activeUsers[i]];
+        }
     }
     return team;
 }
