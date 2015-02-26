@@ -100,17 +100,12 @@ function update() {
     if (redTeamData.length > 0) {
         redTeam = updateTeam(redTeam, redTeamData, 'red');
     }
-    for (var i = 0; i < spells.length; i++) {
-        spells[i].update();
-        if (spells[i].frame <= 0) {
-            spells[i].destroy();
-            spells.splice(i, 1);
-            i--;
-        }
+    if (spellsData.length > 0) {
+        updateSpells();
     }
-    updateSpells();
     blueTeamData = [];
     redTeamData = [];
+    spellsData = [];
 }
 
 function updateTeam(team, teamData, teamName) {
@@ -139,12 +134,13 @@ function updateKills(blueKills, redKills) {
 }
 
 function updateSpells() {
+    var tmpSpells = [];
     for (var i = 0; i < spellsData.length; i++) {
         var spellData = spellsData[i];
-        spells.push(new Spell(game, spellData['start_position'], spellData['end_position'], spellData['spell_type']));
+        tmpSpells.push(new Spell(game, spellData['start_position'], spellData['end_position'], spellData['spell_type']));
         hero.bringToTop();
     }
-    spellsData.length = 0;
+    tmpSpells = null;
 }
 
 function render() {
