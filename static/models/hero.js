@@ -1,22 +1,22 @@
-Hero = function(game, characterName, characterClass, isLocalPlayer, messageCallback, initX, initY) {
+Hero = function(game, characterName, isLocal, messageCallback, initX, initY) {
 
     this.game = game;
     this.characterName = name;
-    this.characterClass = characterClass;
-    this.isLocalPlayer = isLocalPlayer;
+    this.isLocal = isLocal;
 
-    this.x = initX;
-    this.y = initY;
+    this.lastPos = {
+        x: -1,
+        y: -1
+    }
 
-    if (this.characterClass === "WARRIOR") {
-        this.maxHealth = 100;
-        this.speed = 4;
-    } else if (this.characterClass === "MAGE") {
-        this.maxHealth = 75;
-        this.speed = 6;
-    } else if (this.characterClass === "HEALER") {
-        this.maxHealth = 50;
-        this.speed = 8;
+    this.pos = {
+        x: initX,
+        y: initY
+    }
+
+    this.vel = {
+        x: 0,
+        y: 0
     }
 
     this.health = this.maxHealth;
@@ -27,17 +27,53 @@ Hero = function(game, characterName, characterClass, isLocalPlayer, messageCallb
     //this.sprite.anchor.set(0.5, 0.5);
 
     // Init collision detection stuff
-    this.sprite.name = index.toString();
+    /*this.sprite.name = index.toString();
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
     this.sprite.body.immovable = false;
     this.sprite.body.collideWorldBounds = true;
-    this.sprite.body.bounce.setTo(1, 1);
+    this.sprite.body.bounce.setTo(1, 1);*/
 
     // If local player, listen for keys.
-    if (this.isLocalPlayer) {
-        game.input.keyboard.onDownCallback(this.handleKeyDown.bind(this));
+    if (this.isLocal) {
+        //game.input.keyboard.onDownCallback(this.handleKeyDown.bind(this));
+        this.cursorKeys = this.game.input.keyboard.createCursorKeys();
+        this.actionKeys = {
+            1: this.game.input.keyboard.addKey(Phaser.Keyboard.Z),
+            2: this.game.input.keyboard.addKey(Phaser.Keyboard.X)
+        }
     }
 };
+
+Hero.prototype.update = function() {
+    if (this.cursorKeys.left.isDown) {
+        this.vel.x = -this.speed;
+    } else if (this.cursorKeys.right.isDown) {
+        this.vel.x = this.speed;
+    }
+
+    if (this.cursorKeys.up.isDown) {
+        this.vel.y = -this.speed;
+    } else if (this.cursorKeys.down.isDown) {
+        this.vel.y = this.speed;
+    }
+
+    this.pos.x += this.vel.x;
+    this.pos.y += this.vel.y;
+
+    //TODO update sprite
+
+    // Check if there's been a change
+    if (this.pos.x !== this.lastPos.x || this.pos.y !== this.lastPos.y) {
+        /*this.messageCallback({
+            type: 'FE_HERO_POSITION',
+            content: {
+                name: this.characterName,
+                x: this.pos.x,
+                y: this.pos.y
+            }
+        })*/
+    }
+}
 
 Hero.prototype.handleKeyDown = function(event) {
     var moveMessage = {
