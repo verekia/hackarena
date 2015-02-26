@@ -134,6 +134,11 @@ Hero.prototype.updateTo = function() {
     }
 }
 
+Hero.prototype.destroy = function() {
+    this.nameText.destroy();
+    this.kill();
+}
+
 Hero.prototype.receiveMessage = function(message) {
     this.x = message['x'] * 16;
     this.y = message['y'] * 16;
