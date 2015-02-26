@@ -12,6 +12,7 @@ from hackarena.constants import MAP_TILES_HEIGHT
 from hackarena.constants import MAP_OBSTACLES
 from sockjs.tornado import SockJSConnection
 import json
+import time
 
 
 DEFAULT_ROOM = 'lobby'
@@ -111,6 +112,9 @@ class WebSocketHandler(SockJSConnection):
                 if self.calculate_intersection(player, spell):
                     # TODO: different spell damages
                     player.hp -= 5
+                    if player.hp <= 0:
+                        player.reset()
+                        player.last_death = time.time()
 
     def calculate_intersection(self, player, spell):
         player_x = player.position['x']

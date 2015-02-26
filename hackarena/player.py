@@ -11,6 +11,8 @@ AVAILABLE_SPELLS = {
     Classes.HEALER: [Spell.HEALER_DIRECT_DAMAGE, Spell.HEALER_HEAL]
 }
 
+MAX_HP = 130
+
 
 class Player(BaseGameObject):
 
@@ -19,16 +21,19 @@ class Player(BaseGameObject):
         username,
         character_class,
         team,
-        hp=130,
+        hp=MAX_HP,
         last_death=0,
     ):
         self.username = username
         self.character_class = character_class
         self.available_spells = AVAILABLE_SPELLS[character_class]
         self.team = team
-        self.position = {
-            'x': 2 if team == 'blue' else hackarena.constants.MAP_TILES_WIDTH - 2,
-            'y': 2 if team == 'blue' else hackarena.constants.MAP_TILES_HEIGHT - 2,
-        }
-        self.hp = hp
+        self.reset()
         self.last_death = last_death
+
+    def reset(self):
+        self.hp = MAX_HP
+        self.position = {
+            'x': 2 if self.team == 'blue' else hackarena.constants.MAP_TILES_WIDTH - 2,
+            'y': 2 if self.team == 'blue' else hackarena.constants.MAP_TILES_HEIGHT - 2,
+        }
