@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from collections import defaultdict
 from hackarena.player import Player
+from hackarena.spell import Spell
 from hackarena.team import Team
 from hackarena.messages import AllMainBroadcast
 from hackarena.messages import FEMessages
@@ -20,6 +21,7 @@ class WebSocketHandler(SockJSConnection):
     clients = defaultdict(dict)
     teams = {}
     players = {}
+    spells = []
 
     @property
     def player(self):
@@ -78,18 +80,27 @@ class WebSocketHandler(SockJSConnection):
                 }
 
             self.teams[new_room][self.player.team].add_player(self.player)
-
             self.broadcast_game_state()
 
         if data['type'] == FEMessages.FE_HERO_MOVE:
-            char_pos_x = self.players[self.session_string]['position']['x']
-            char_pos_y = self.players[self.session_string]['position']['y']
+            char_pos_x = self.player['position']['x']
+            char_pos_y = self.player['position']['y']
             move_allowed, new_pos_x, new_pos_y = self.move_request(char_pos_x, char_pos_y, data['content'].direction)
-            self.players[self.session_string]['position']['x'] = new_pos_x
-            char_pos_y = self.players[self.session_string]['position']['y'] = new_pos_y
+            self.player['position']['x'] = new_pos_x
+            char_pos_y = self.player['position']['y'] = new_pos_y
             self.broadcast_game_state()
 
+        if data['type'] == FEMessages.FE_HERO_SPELL:
+            content = data['content']
+            self.spell_request(content['spell_type'], content['position_x'], content['position_y'], content['direction'])
+            self.broadcast_game_state()
+            del self.spells[:]
+
         print 'Rooms: ' + str(self.clients)
+
+    def spell_request(self, spell_type, position_x, position_y, direction):
+        # TODO: add check for cooldowns etc.
+        self.spells.append(Spell.create_spell(spell_type, position_x, position_y, direction))
 
     def change_room(self, room):
         old_room = self.room
@@ -101,7 +112,7 @@ class WebSocketHandler(SockJSConnection):
     def broadcast_game_state(self):
         AllMainBroadcast(
             teams=self.teams[self.room],
-            spells=[],
+            spells=self.spells,
         ).broadcast_to_all(self)
 
     def move_request(self, char_pos_x, char_pos_y, direction):
