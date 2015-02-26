@@ -56,7 +56,7 @@ function create() {
     socket = new SockJS(websocketURL);
 
     //  Resize our game world to be a 2000 x 2000 square
-    game.world.setBounds(0, 0, 2400, 1200);
+    game.world.setBounds(0, 0, 1008, 608);
 
     map = game.add.tilemap('desertMap');
 
@@ -100,7 +100,7 @@ function updateTeam(team, teamData){
 }
 
 function render() {
-    game.debug.text('woot', 32, 32);
+    //game.debug.text('woot', 32, 32);
 }
 
 function setSocketListeners() {
