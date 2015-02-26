@@ -17,8 +17,8 @@ class Player(BaseGameObject):
         self.character_class = character_class
         self.team = team
         self.position = {
-            'x': 20 if team == 'blue' else hackarena.constants.map_width - 20,
-            'y': 20 if team == 'blue' else hackarena.constants.map_height - 20,
+            'x': 2 if team == 'blue' else hackarena.constants.MAP_TILES_WIDTH - 2,
+            'y': 2 if team == 'blue' else hackarena.constants.MAP_TILES_HEIGHT - 2,
         }
         self.hp = hp
         self.last_death = last_death
