@@ -1,10 +1,27 @@
 body {
-    background: #311;
+    background: #3A1400;
 }
 
 .canvas-container {
     background: #ccc;
-    width: 990px;
-    height: 500px;
-    margin: 100px auto;
+    width: 800px;
+    height: 600px;
+    margin: 30px auto 0;
+}
+
+.kills {
+	text-align: center;
+	color: white;
+	font-family: sans-serif;
+	font-size: 40px;
+	margin-top: 30px;
+	text-shadow: 1px 1px black;
+}
+
+.kills-blue {
+	color: #4B4BFF;
+}
+
+.kills-red {
+	color: #FF3737;
 }

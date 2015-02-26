@@ -14,6 +14,8 @@ var Hackarena = {};
             ', Team: ' + gameParams.team +
             ', Class: ' + gameParams.characterClass
         );
+
+        var hero = new Hero('Ruairi', 'WARRIOR', true, sendMessage, 64, 64);
     }
 
     function parseUrlParams() {
@@ -85,6 +87,12 @@ var Hackarena = {};
             console.log(message.content.message);
         }
     };
+
+    function sendMessage(messageObject) {
+        var message = JSON.stringify(messageObject);
+
+        sock.send(message);
+    }
 
 
     /**
