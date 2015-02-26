@@ -25,6 +25,7 @@ Spell = function(game, startPosition, endPosition, type) {
 
     this.maxWidth = this.width;
     this.maxHeight = this.height;
+    setTimeout(this.destroy.bind(this), 100);
 };
 
 Spell.prototype = Object.create(Phaser.Graphics.prototype);
@@ -57,6 +58,6 @@ Spell.prototype.update = function() {
     this.frame--;
 };
 
-Spell.prototype.destroy = function() {
-    this.clear();
-};
+//Spell.prototype.destroy = function() {
+//    this.clear();
+//};
