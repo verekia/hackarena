@@ -54,6 +54,7 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
         style.fill = '#0000FF';
     }
     this.nameText = game.add.text(this.x - 8, this.y + 8, this.characterName, style);
+    this.nameText.x = this.x - this.nameText.width/2;
     game.physics.enable(this, Phaser.Physics.ARCADE);
 
     this.body.collideWorldBounds = true;
@@ -143,7 +144,7 @@ Hero.prototype.receiveMessage = function(message) {
     this.x = message['x'] * 16;
     this.y = message['y'] * 16;
 
-    this.nameText.x = this.x - 8;
+    this.nameText.x = this.x - this.nameText.width/2;
     this.nameText.y = this.y + 8;
 
     this.lastPos.x = this.x;
