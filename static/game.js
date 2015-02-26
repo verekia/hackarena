@@ -2,6 +2,7 @@ var land;
 var hero;
 var map;
 var layer;
+var layerObstacles;
 var socket;
 var blueTeam = [];
 var redTeam = [];
@@ -44,7 +45,7 @@ function parseUrlParams() {
 function preload() {
     // Sets up map stuff
     game.load.tilemap('desertMap', '/static/desert.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.image('tiles', '/static/desert.png');
+    game.load.image('tiles', '/static/map.png');
 
     game.load.atlasJSONHash('ranger', '/static/sprites/ranger/ranger.png', '/static/sprites/ranger/ranger.json');
     game.load.atlasJSONHash('healer', '/static/sprites/healer/healer.png', '/static/sprites/healer/healer.json');
@@ -56,7 +57,7 @@ function create() {
     socket = new SockJS(websocketURL);
 
     //  Resize our game world to be a 2000 x 2000 square
-    game.world.setBounds(0, 0, 2400, 1200);
+    game.world.setBounds(0, 0, 1008, 608);
 
     map = game.add.tilemap('desertMap');
 
@@ -65,6 +66,10 @@ function create() {
 
     layer = map.createLayer('Base');
     layer.resizeWorld();
+
+    layerObstacles = map.createLayer('obstacles');
+    layerObstacles.resizeWorld();
+
 
     //  The base of our hero
     hero = createHero(gameParams['characterClass'], gameParams['username']);
