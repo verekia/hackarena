@@ -3,6 +3,11 @@ Warrior = function(game, characterName, team, isLocalPlayer, initX, initY) {
     this.maxHealth = 100;
     this.maxMoveDelay = 8;
 
+    this.actions = {
+        1: 'TANK_ATTACK',
+        2: 'TANK_AOE'
+    }
+
     Hero.call(this, game, characterName, team, isLocalPlayer, initX, initY, 'ninja');
 };
 

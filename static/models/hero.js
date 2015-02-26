@@ -40,6 +40,7 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     this.animations.add('LEFT', [3,4,5]);
     this.animations.add('RIGHT', [6, 7, 8]);
     this.animations.play('DOWN', 5, true);
+    this.anchor.set(0.5, 0.5);
 
     // Init collision detection stuff
     game.add.existing(this);
@@ -97,10 +98,11 @@ Hero.prototype.updateTo = function() {
 
     if (this.actionCooldown === 0) {
         var actionMessage = {
-            type: 'FE_HERO_ACTION',
+            type: 'FE_HERO_SPELL',
             content: {
-                name: this.characterName,
-                action: this.currentAction,
+                position_x: this.x,
+                position_y: this.y,
+                spell_type: this.actions[this.currentAction],
                 direction: ''
             }
         }
