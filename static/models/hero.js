@@ -24,11 +24,6 @@ Hero = function(game, characterName, isLocal, initX, initY, textureName) {
         y: -1
     }
 
-    this.pos = {
-        x: initX,
-        y: initY
-    }
-
     this.vel = {
         x: 0,
         y: 0
@@ -123,6 +118,14 @@ Hero.prototype.update = function() {
     }
 }
 
+Hero.prototype.receiveMessage = function(message) {
+    this.x = message.positionY;
+    this.y = message.positionX;
+
+    this.lastPos.x = this.x;
+    this.lastPos.y = this.y;
+}
+
 Hero.prototype.update_smooth = function() {
     if (this.moveDelay === 0) {
         this.vel.x = 0;
@@ -138,14 +141,11 @@ Hero.prototype.update_smooth = function() {
             this.vel.y = 8;
         }
 
-        this.pos.x += this.vel.x;
-        this.pos.y += this.vel.y;
-
-        this.x = this.pos.x;
-        this.y = this.pos.y;
+        this.x += this.vel.x;
+        this.y += this.vel.y;
 
         // Check if there's been a change
-        if (this.pos.x !== this.lastPos.x || this.pos.y !== this.lastPos.y) {
+        if (this.x !== this.lastPos.x || this.y !== this.lastPos.y) {
             /*this.messageCallback({
                 type: 'FE_HERO_POSITION',
                 content: {
@@ -157,8 +157,8 @@ Hero.prototype.update_smooth = function() {
 
             this.moveDelay = this.maxMoveDelay;
 
-            this.lastPos.x = this.pos.x;
-            this.lastPos.y = this.pos.y;
+            this.lastPos.x = this.x;
+            this.lastPos.y = this.y;
         }
     } else {
         this.moveDelay--;
