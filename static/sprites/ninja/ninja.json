@@ -111,10 +111,10 @@
 "meta": {
 	"app": "http://www.codeandweb.com/texturepacker",
 	"version": "1.0",
-	"image": "ranger.png",
+	"image": "ninja.png",
 	"format": "RGBA8888",
 	"size": {"w":218,"h":22},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:b3ed0d996b36fd39c0a0cbc81ed0c1ac:8e0ae779f71ce18f309b291e9f8f4940:0382d817b29eaecccdc7ec7490ddbb9f$"
+	"smartupdate": "$TexturePacker:SmartUpdate:db85cbb4e5dcddc99f80ba7ba238e2fe:3a6b1e88e9c3694f52c8ed4e505a7495:1489d2aafae73d0b92d12aa6b7f0cec0$"
 }
 }
