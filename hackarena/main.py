@@ -118,11 +118,11 @@ class WebSocketHandler(SockJSConnection):
     def move_request(self, char_pos_x, char_pos_y, direction):
         if (
             char_pos_x <= 0 and direction == 'LEFT' or
-            char_pos_x >= map_width - 1 and direction == 'RIGHT' or
+            char_pos_x >= map_width - 1 - 16 and direction == 'RIGHT' or
             char_pos_y <= 0 and direction == 'UP' or
-            char_pos_y >= map_height - 1 == 'DOWN'
+            char_pos_y >= map_height - 1 - 18 and direction == 'DOWN'
         ):
-            return False, -1, -1
+            return False, char_pos_x, char_pos_y
 
         new_position_x = char_pos_x
         new_position_y = char_pos_y
