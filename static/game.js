@@ -9,6 +9,7 @@ var redTeam = {};
 var blueTeamData = [];
 var redTeamData = [];
 var spells = [];
+var spellsData = [];
 var gameParams = parseUrlParams();
 
 
@@ -93,6 +94,15 @@ function update() {
     // map.tilePosition.x = -game.camera.x;
     // map.tilePosition.y = -game.camera.y;
 
+    for(var i = 0; i < spells.length; i++) {
+        spells[i].update();
+        if(spells[i].frame === 0) {
+            spells[i].destroy();
+            spells.splice(i,1);
+            i--;
+        }
+    }
+
     if(blueTeamData.length > 0){
         blueTeam = updateTeam(blueTeam, blueTeamData, 'blue');
     }
@@ -102,7 +112,6 @@ function update() {
     updateSpells();
     blueTeamData = [];
     redTeamData = [];
-    spells = [];
 }
 
 function updateTeam(team, teamData, teamName) {
@@ -131,12 +140,11 @@ function updateKills(blueKills, redKills) {
 }
 
 function updateSpells() {
-    var spellsTmp = []
-    for (var i = 0; i < spells.length; i++) {
-        var spellData = spells[i];
-        spellsTmp.push(new Spell(game, spellData['start_position'], spellData['end_position'], 'red'));
+    for (var i = 0; i < spellsData.length; i++) {
+        var spellData = spellsData[i];
+        spells.push(new Spell(game, spellData['start_position'], spellData['end_position'], 'red'));
     }
-    spellsTmp.length = 0;
+    spellsData.length = 0;
 }
 
 function render() {
@@ -161,7 +169,7 @@ function setSocketListeners() {
                 data['content']['teams']['blue']['kills'],
                 data['content']['teams']['red']['kills']
             )
-            spells = data['content']['spells'];
+            spellsData = data['content']['spells'];
         }
     };
 
