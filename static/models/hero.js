@@ -1,9 +1,10 @@
-Hero = function(game, characterName, isLocal, initX, initY, textureName) {
+Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     //Phaser.Sprite.call(this, game, initX, initY, 'hero');
     Phaser.Sprite.call(this, game, initX, initY, textureName);
 
     this.game = game;
     this.characterName = characterName;
+    this.team = team;
     this.isLocal = isLocal;
 
     // If local player, listen for keys.
@@ -52,7 +53,7 @@ Hero = function(game, characterName, isLocal, initX, initY, textureName) {
 Hero.prototype = Object.create(Phaser.Sprite.prototype);
 Hero.prototype.constructor = Hero;
 
-Hero.prototype.update = function() {
+Hero.prototype.updateTo = function() {
     if (this.moveDelay === 0) {
         var moveMessage = {
             type: 'FE_HERO_MOVE',

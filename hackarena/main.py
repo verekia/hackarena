@@ -100,7 +100,8 @@ class WebSocketHandler(SockJSConnection):
 
     def spell_request(self, spell_type, position_x, position_y, direction):
         # TODO: add check for cooldowns etc.
-        self.spells.append(Spell.create_spell(spell_type, position_x, position_y, direction))
+        if spell_type in self.player.available_spells:
+            self.spells.append(Spell.create_spell(spell_type, position_x, position_y, direction))
 
     def change_room(self, room):
         old_room = self.room
