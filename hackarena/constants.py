@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from enum import Enum
 
 
-class Spell(Enum):
+class Spell(object):
     MAGE_DIRECT_DAMAGE = 'MAGE_DIRECT_DAMAGE'
     MAGE_AOE = 'MAGE_AOE'
 

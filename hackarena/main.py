@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from hackarena.messages import PingBroadcast
 from sockjs.tornado import SockJSConnection
 
 
@@ -8,7 +9,7 @@ class WebSocketHandler(SockJSConnection):
     }
 
     def on_open(self, info):
-        pass
+        PingBroadcast(foo='bar').broadcast_to_all(self)
 
     def on_close(self):
         pass

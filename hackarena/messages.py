@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 import json
-from enum import Enum
 
 
-class BEMessages(Enum):
+class BEMessages(object):
     ALL_MAIN_BROADCAST = 'ALL_MAIN_BROADCAST'
     PING_BROADCAST = 'PING_BROADCAST'
 
 
-class FEMessages(Enum):
+class FEMessages(object):
     FE_PING = 'FE_PING'
     FE_JOIN_ROOM = 'FE_JOIN_ROOM'
 
