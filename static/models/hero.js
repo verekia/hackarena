@@ -44,6 +44,16 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
 
     // Init collision detection stuff
     game.add.existing(this);
+    var style = {
+        font: "12px Arial",
+        align: "center"
+    };
+    if(this.team === 'red') {
+        style.fill = '#FF0000';
+    } else {
+        style.fill = '#0000FF';
+    }
+    this.nameText = game.add.text(this.x - 8, this.y + 8, this.characterName, style);
     game.physics.enable(this, Phaser.Physics.ARCADE);
 
     this.body.collideWorldBounds = true;
@@ -127,6 +137,9 @@ Hero.prototype.updateTo = function() {
 Hero.prototype.receiveMessage = function(message) {
     this.x = message['x'] * 16;
     this.y = message['y'] * 16;
+
+    this.nameText.x = this.x - 8;
+    this.nameText.y = this.y + 8;
 
     this.lastPos.x = this.x;
     this.lastPos.y = this.y;
