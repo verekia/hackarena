@@ -14,6 +14,7 @@ class WebSocketHandler(SockJSConnection):
 
     clients = defaultdict(dict)
     teams = {}
+    players = {}
 
     def on_open(self, info):
         self.session_string = Utilities.get_session_string(str(self.session))
@@ -24,7 +25,12 @@ class WebSocketHandler(SockJSConnection):
         WelcomeBroadcast(message='Welcome to HackArena! (to all)').broadcast_to_all(self)
 
     def on_close(self):
-        pass
+        player = self.players[self.session_string]
+        del self.clients[self.room][self.session_string]
+        self.teams[self.room][player.team].remove_player(player)
+        del self.players[self.session_string]
+
+        self.broadcast_game_state()
 
     def on_message(self, message):
         try:
@@ -49,11 +55,9 @@ class WebSocketHandler(SockJSConnection):
                 team=data['content']['team'],
             )
             self.teams[new_room][player.team].add_player(player)
+            self.players[self.session_string] = player
 
-            AllMainBroadcast(
-                teams=self.teams[self.room],
-                spells=[],
-            ).broadcast_to_all(self)
+            self.broadcast_game_state()
 
         print 'Rooms: ' + str(self.clients)
 
@@ -63,3 +67,9 @@ class WebSocketHandler(SockJSConnection):
 
         del self.clients[old_room][self.session_string]
         self.clients[room][self.session_string] = self
+
+    def broadcast_game_state(self):
+        AllMainBroadcast(
+            teams=self.teams[self.room],
+            spells=[],
+        ).broadcast_to_all(self)

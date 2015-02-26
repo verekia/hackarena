@@ -11,3 +11,6 @@ class Team(BaseGameObject):
 
     def add_player(self, player):
         self.players.append(player)
+
+    def remove_player(self, player):
+        self.players.remove(player)
