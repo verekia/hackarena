@@ -88,6 +88,8 @@ Hero.prototype.updateTo = function() {
         } else if (this.moveDirectionKeys.down.isDown) {
             moveMessage.content.direction = 'DOWN'
             this.animations.play('DOWN', 5, true);
+        } else {
+            this.animations.stop();
         }
 
         if (moveMessage.content.direction !== '') {
