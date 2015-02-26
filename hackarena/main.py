@@ -98,8 +98,6 @@ class WebSocketHandler(SockJSConnection):
             self.broadcast_game_state()
             del self.spells[:]
 
-        print 'Rooms: ' + str(self.clients)
-
     def spell_request(self, spell_type, position_x, position_y, direction):
         # TODO: add check for cooldowns etc.
         if spell_type in self.player.available_spells:
@@ -143,7 +141,6 @@ class WebSocketHandler(SockJSConnection):
         return True, new_position_x, new_position_y
 
     def has_obstacle_there(self, char_pos_x, char_pos_y, direction):
-        print 63 * char_pos_y + char_pos_x
         if (
             direction == 'LEFT' and MAP_OBSTACLES[63 * char_pos_y + char_pos_x - 1] != 0 or
             direction == 'RIGHT' and MAP_OBSTACLES[63 * char_pos_y + char_pos_x + 1] != 0 or
