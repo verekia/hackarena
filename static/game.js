@@ -14,6 +14,8 @@ var currentSpeed;
 function preload() {
     game.load.image('hero', 'static/sprites/hero.png');
     game.load.spritesheet('earth', 'static/sprites/map.png', 10, 10, 10);
+
+    game.load.atlasJSONHash('ranger', 'static/sprites/ranger/ranger.png', 'static/sprites/ranger/ranger.json');
 }
 
 
@@ -48,6 +50,13 @@ function create() {
     game.camera.focusOnXY(0, 0);
 
     cursors = game.input.keyboard.createCursorKeys();
+
+
+
+
+    var ranger = game.add.sprite(16, 18, 'ranger');
+    ranger.animations.add('r');
+    ranger.animations.play('r', 5, true);
 }
 
 function update() {
