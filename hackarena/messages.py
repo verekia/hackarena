@@ -5,6 +5,7 @@ import json
 class BEMessages(object):
     ALL_MAIN_BROADCAST = 'ALL_MAIN_BROADCAST'
     PING_BROADCAST = 'PING_BROADCAST'
+    WELCOME_BROADCAST = 'BE_WELCOME_BROADCAST'
 
 
 class FEMessages(object):
@@ -45,3 +46,8 @@ class AllMainBroadcast(Broadcast):
 class PingBroadcast(Broadcast):
 
     message_type = BEMessages.PING_BROADCAST
+
+
+class WelcomeBroadcast(Broadcast):
+
+    message_type = BEMessages.WELCOME_BROADCAST

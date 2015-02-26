@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from hackarena.messages import PingBroadcast
+from hackarena.messages import WelcomeBroadcast
 from sockjs.tornado import SockJSConnection
 
 
@@ -9,7 +9,7 @@ class WebSocketHandler(SockJSConnection):
     }
 
     def on_open(self, info):
-        PingBroadcast(foo='bar').broadcast_to_all(self)
+        WelcomeBroadcast(message='Welcome to HackArena!').send(self)
 
     def on_close(self):
         pass
