@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+MAP_TILES_WIDTH = 63 # 1008px
+MAP_TILES_HEIGHT = 38 # 608px
 
 class Classes(object):
     MAGE = 'mage'
@@ -17,5 +19,3 @@ class Spell(object):
     HEALER_HEAL = 'HEALER_HEAL'
     HEALER_DIRECT_DAMAGE = 'HEALER_DIRECT_DAMAGE'
 
-map_width = 800
-map_height = 600

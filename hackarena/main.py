@@ -7,8 +7,8 @@ from hackarena.messages import AllMainBroadcast
 from hackarena.messages import FEMessages
 from hackarena.messages import WelcomeBroadcast
 from hackarena.utilities import Utilities
-from hackarena.constants import map_width
-from hackarena.constants import map_height
+from hackarena.constants import MAP_TILES_WIDTH
+from hackarena.constants import MAP_TILES_HEIGHT
 from sockjs.tornado import SockJSConnection
 import json
 
@@ -119,9 +119,9 @@ class WebSocketHandler(SockJSConnection):
     def move_request(self, char_pos_x, char_pos_y, direction):
         if (
             char_pos_x <= 0 and direction == 'LEFT' or
-            char_pos_x >= map_width - 1 - 16 and direction == 'RIGHT' or
+            char_pos_x >= MAP_TILES_WIDTH - 1 and direction == 'RIGHT' or
             char_pos_y <= 0 and direction == 'UP' or
-            char_pos_y >= map_height - 1 - 18 and direction == 'DOWN'
+            char_pos_y >= MAP_TILES_HEIGHT - 1 and direction == 'DOWN'
         ):
             return False, char_pos_x, char_pos_y
 
