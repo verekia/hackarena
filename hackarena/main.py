@@ -123,6 +123,8 @@ class WebSocketHandler(SockJSConnection):
                         if player.team == 'blue':
                             self.teams[self.room]['red'].kills += 1
                         player.last_death = time.time()
+                    elif player.hp > player.MAX_HP:
+                        player.hp = player.MAX_HP
 
     def calculate_intersection(self, player, spell):
         # Stop hitting yourself!
