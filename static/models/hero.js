@@ -80,6 +80,8 @@ Hero.prototype.update = function() {
         if (moveMessage.content.direction !== '') {
             socket.send(JSON.stringify(moveMessage));
         }
+        
+        this.moveDelay = this.maxMoveDelay;
     } else {
         this.moveDelay--;
     }
