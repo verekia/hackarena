@@ -118,7 +118,7 @@ function updateTeam(team, teamData, teamName) {
     }
     for (var i = 0; i < activeUsers.length; i++) {
         if(!processedUsers[activeUsers[i]]){
-            team[activeUsers[i]].kill();
+            team[activeUsers[i]].destroy();
             delete team[activeUsers[i]];
         }
     }
@@ -126,10 +126,12 @@ function updateTeam(team, teamData, teamName) {
 }
 
 function updateSpells() {
+    var spellsTmp = []
     for (var i = 0; i < spells.length; i++) {
         var spellData = spells[i];
-        var spell = new Spell(game, spellData['start_position'], spellData['end_position'], 'red');
+        spellsTmp.push(new Spell(game, spellData['start_position'], spellData['end_position'], 'red'));
     }
+    spellsTmp.length = 0;
 }
 
 function render() {
