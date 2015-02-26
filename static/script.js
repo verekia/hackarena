@@ -54,7 +54,7 @@ var Hackarena = {};
 
     sock.onopen = function() {
         var enterRoomMessage = JSON.stringify({
-            type: 'ROOM',
+            type: 'FE_JOIN_ROOM',
             content: gameParams.room
         });
         sock.send(enterRoomMessage);
@@ -76,7 +76,7 @@ var Hackarena = {};
     function dispatchMessage(message) {
         var message = JSON.parse(message);
 
-        if (message.type === 'BE_BLABLA') {
+        if (message.type === 'BE_ALL_MAIN_BROADCAST') {
             // Render new state on the front-end using message.content.blabla
         }
     };
@@ -86,12 +86,12 @@ var Hackarena = {};
      *  UI Events to send to the server (prefixed with FE_)
      */
 
-    $('.js-blabla').click(function() {
-        var blablaMessage = JSON.stringify({
-            type: 'FE_BLABLA',
-            content: ''
+    $('.js-ping').click(function() {
+        var pingMessage = JSON.stringify({
+            type: 'FE_PING',
+            content: 'Ping from client.'
         });
-        sock.send(blablaMessage);
+        sock.send(pingMessage);
     });
 
     main();

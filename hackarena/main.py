@@ -14,4 +14,4 @@ class WebSocketHandler(SockJSConnection):
         pass
 
     def on_message(self, message):
-        pass
+        print message
