@@ -61,7 +61,7 @@ function create() {
 
     map = game.add.tilemap('desertMap');
 
-    map.addTilesetImage('desertTiles', 'tiles');
+    map.addTilesetImage('map', 'tiles');
     map.fixedToCamera = true;
 
     layer = map.createLayer('Base');
