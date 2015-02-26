@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo python backend/server.py
+sudo python server.py
