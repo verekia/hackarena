@@ -9,6 +9,7 @@ var redTeam = {};
 var blueTeamData = [];
 var redTeamData = [];
 var spells = [];
+var spellsData = [];
 var gameParams = parseUrlParams();
 
 
@@ -93,16 +94,23 @@ function update() {
     // map.tilePosition.x = -game.camera.x;
     // map.tilePosition.y = -game.camera.y;
 
-    if(blueTeamData.length > 0){
+    if (blueTeamData.length > 0) {
         blueTeam = updateTeam(blueTeam, blueTeamData, 'blue');
     }
-    if(redTeamData.length > 0){
+    if (redTeamData.length > 0) {
         redTeam = updateTeam(redTeam, redTeamData, 'red');
+    }
+    for (var i = 0; i < spells.length; i++) {
+        spells[i].update();
+        if (spells[i].frame <= 0) {
+            spells[i].destroy();
+            spells.splice(i, 1);
+            i--;
+        }
     }
     updateSpells();
     blueTeamData = [];
     redTeamData = [];
-    spells = [];
 }
 
 function updateTeam(team, teamData, teamName) {
@@ -117,7 +125,7 @@ function updateTeam(team, teamData, teamName) {
         processedUsers[player['username']] = true;
     }
     for (var i = 0; i < activeUsers.length; i++) {
-        if(!processedUsers[activeUsers[i]]){
+        if (!processedUsers[activeUsers[i]]) {
             team[activeUsers[i]].destroy();
             delete team[activeUsers[i]];
         }
@@ -126,13 +134,12 @@ function updateTeam(team, teamData, teamName) {
 }
 
 function updateSpells() {
-    var spellsTmp = []
-    for (var i = 0; i < spells.length; i++) {
-        var spellData = spells[i];
-        spellsTmp.push(new Spell(game, spellData['start_position'], spellData['end_position'], spellData['spell_type']));
+    for (var i = 0; i < spellsData.length; i++) {
+        var spellData = spellsData[i];
+        spells.push(new Spell(game, spellData['start_position'], spellData['end_position'], spellData['spell_type']));
         hero.bringToTop();
     }
-    spellsTmp.length = 0;
+    spellsData.length = 0;
 }
 
 function render() {
@@ -153,8 +160,7 @@ function setSocketListeners() {
         if (data['type'] == 'BE_ALL_MAIN_BROADCAST') {
             blueTeamData = data['content']['teams']['blue']['players'];
             redTeamData = data['content']['teams']['red']['players'];
-
-            spells = data['content']['spells'];
+            spellsData = data['content']['spells'];
         }
     };
 
