@@ -79,6 +79,10 @@ var Hackarena = {};
         if (message.type === 'BE_ALL_MAIN_BROADCAST') {
             // Render new state on the front-end using message.content.blabla
         }
+
+        if (message.type === 'BE_WELCOME_BROADCAST') {
+            console.log(message.content.message);
+        }
     };
 
 
