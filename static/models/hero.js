@@ -40,19 +40,42 @@ Hero = function(game, characterName, characterClass, isLocalPlayer, messageCallb
 };
 
 Hero.prototype.handleKeyDown = function(event) {
-    if (event.keyCode === Phaser.Keyboard.UP) {
-        messageCallback({
-            status: 'yes'
-        })
-    } else if (event.keyCode === Phaser.Keyboard.DOWN) {
-        //move down
-    } else if (event.keyCode === Phaser.Keyboard.LEFT) {
-        //move left
-    } else if (event.keyCode === Phaser.Keyboard.RIGHT) {
-        //move right
-    } else if (event.keyCode === Phaser.Keyboard.Z) {
-        //action 1
-    } else if (event.keyCode === Phaser.Keyboard.X) {
-        //action 2
+    var moveMessage = {
+        type: 'FE_HERO_MOVE',
+        content: {
+            name: this.characterName,
+            speed: this.speed,
+            direction: ''
+        }
+    };
+
+    var actionMessage = {
+        type: 'FE_HERO_ACTION',
+        content: {
+            name: this.characterName,
+            action: -1
+        }
     }
+
+    if (event.keyCode === Phaser.Keyboard.UP) {
+        message = moveMessage;
+        message.content.direction = 'UP';
+    } else if (event.keyCode === Phaser.Keyboard.DOWN) {
+        message = moveMessage;
+        message.content.direction = 'DOWN';
+    } else if (event.keyCode === Phaser.Keyboard.LEFT) {
+        message = moveMessage;
+        message.content.direction = 'LEFT';
+    } else if (event.keyCode === Phaser.Keyboard.RIGHT) {
+        message = moveMessage;
+        message.content.direction = 'RIGHT';
+    } else if (event.keyCode === Phaser.Keyboard.Z) {
+        message = actionMessage;
+        message.content.action = 1;
+    } else if (event.keyCode === Phaser.Keyboard.X) {
+        message = actionMessage;
+        message.content.action = 2;
+    }
+
+    messageCallback(message);
 }
