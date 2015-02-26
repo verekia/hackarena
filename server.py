@@ -131,6 +131,7 @@ def make_app():
     return Application(
         sock_router.urls +
         [
+            (r'/assets/(.*)', StaticFileHandler, {'path': 'assets'}),
             (r'/static/(.*)', StaticFileHandler, {'path': 'static'}),
             url(r'/(.*)', IndexHandler),
         ]
