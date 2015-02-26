@@ -11,6 +11,7 @@ from hackarena.constants import MAP_TILES_WIDTH
 from hackarena.constants import MAP_TILES_HEIGHT
 from hackarena.constants import MAP_OBSTACLES
 from sockjs.tornado import SockJSConnection
+import hackarena.constants
 import json
 import time
 
@@ -78,8 +79,8 @@ class WebSocketHandler(SockJSConnection):
 
             if new_room not in self.teams:
                 self.teams[new_room] = {
-                    'red': Team(),
-                    'blue': Team(),
+                    'red': Team('red'),
+                    'blue': Team('blue'),
                 }
 
             self.teams[new_room][self.player.team].add_player(self.player)
@@ -110,10 +111,17 @@ class WebSocketHandler(SockJSConnection):
         for team in self.teams[self.room].values():
             for player in team.players:
                 if self.calculate_intersection(player, spell):
-                    # TODO: different spell damages
-                    player.hp -= 5
+                    damage = 5
+                    if spell.spell_type == hackarena.constants.Spell.HEALER_HEAL:
+                        damage = -5
+
+                    player.hp -= damage
                     if player.hp <= 0:
                         player.reset()
+                        if player.team == 'red':
+                            self.teams[self.room]['blue'].kills += 1
+                        if player.team == 'blue':
+                            self.teams[self.room]['red'].kills += 1
                         player.last_death = time.time()
 
     def calculate_intersection(self, player, spell):

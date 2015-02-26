@@ -1,6 +1,6 @@
 Healer = function(game, characterName, team, isLocalPlayer, initX, initY) {
     this.characterClass = 'HEALER';
-    this.maxHealth = 100;
+    this.maxHealth = 130;
     this.maxMoveDelay = 8;
 
     this.actions = {

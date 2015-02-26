@@ -121,7 +121,7 @@ function updateTeam(team, teamData, teamName) {
         if (!team[player['username']]) {
             team[player['username']] = createHero(player['character_class'], player['username'], teamName, false)
         }
-        team[player['username']].receiveMessage(player['position']);
+        team[player['username']].receiveMessage(player);
         processedUsers[player['username']] = true;
     }
     for (var i = 0; i < activeUsers.length; i++) {
@@ -131,6 +131,11 @@ function updateTeam(team, teamData, teamName) {
         }
     }
     return team;
+}
+
+function updateKills(blueKills, redKills) {
+    $('.js-kills-blue').html(blueKills);
+    $('.js-kills-red').html(redKills);
 }
 
 function updateSpells() {
@@ -161,6 +166,10 @@ function setSocketListeners() {
             blueTeamData = data['content']['teams']['blue']['players'];
             redTeamData = data['content']['teams']['red']['players'];
             spellsData = data['content']['spells'];
+            updateKills(
+                data['content']['teams']['blue']['kills'],
+                data['content']['teams']['red']['kills']
+            )
         }
     };
 
