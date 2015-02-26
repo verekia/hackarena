@@ -4,10 +4,11 @@ from hackarena.game_objects import BaseGameObject
 
 class Spell(BaseGameObject):
 
-    def __init__(self, spell_type, start_position, end_position):
+    def __init__(self, spell_type, start_position, end_position, direction):
         self.spell_type = spell_type
         self.start_position = start_position
         self.end_position = end_position
+        self.direction = direction
 
     @classmethod
     def create_spell(cls, spell_type, position_x, position_y, direction):
@@ -28,4 +29,5 @@ class Spell(BaseGameObject):
                 'y': position_y,
             },
             end_position=end_position,
+            direction=direction,
         )

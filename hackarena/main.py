@@ -12,6 +12,7 @@ from hackarena.constants import MAP_TILES_HEIGHT
 from hackarena.constants import MAP_OBSTACLES
 from sockjs.tornado import SockJSConnection
 import json
+import time
 
 
 DEFAULT_ROOM = 'lobby'
@@ -101,7 +102,37 @@ class WebSocketHandler(SockJSConnection):
     def spell_request(self, spell_type, position_x, position_y, direction):
         # TODO: add check for cooldowns etc.
         if spell_type in self.player.available_spells:
-            self.spells.append(Spell.create_spell(spell_type, position_x, position_y, direction))
+            spell = Spell.create_spell(spell_type, position_x, position_y, direction)
+            self.spells.append(spell)
+            self.calculate_damage(spell)
+
+    def calculate_damage(self, spell):
+        for team in self.teams[self.room].values():
+            for player in team.players:
+                if self.calculate_intersection(player, spell):
+                    # TODO: different spell damages
+                    player.hp -= 5
+                    if player.hp <= 0:
+                        player.reset()
+                        player.last_death = time.time()
+
+    def calculate_intersection(self, player, spell):
+        # Stop hitting yourself!
+        if player == self.player:
+            return False
+
+        player_x = player.position['x']
+        player_y = player.position['y']
+        spell_start_x = spell.start_position['x']
+        spell_start_y = spell.start_position['y']
+        spell_end_x = spell.end_position['x']
+        spell_end_y = spell.end_position['y']
+        return bool(
+            (spell.direction == 'DOWN' and spell_start_y < player_y * 16 < spell_end_y and player_x * 16 == spell_start_x)
+            or (spell.direction == 'UP' and spell_start_y > player_y * 16 > spell_end_y and player_x * 16 == spell_start_x)
+            or (spell.direction == 'RIGHT' and spell_start_x < player_x * 16 < spell_end_x and player_y * 16 == spell_start_y)
+            or (spell.direction == 'LEFT' and spell_start_x > player_x * 16 > spell_end_x and player_y * 16 == spell_start_y)
+        )
 
     def change_room(self, room):
         old_room = self.room
