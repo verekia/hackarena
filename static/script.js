@@ -55,7 +55,7 @@ var Hackarena = {};
     sock.onopen = function() {
         var enterRoomMessage = JSON.stringify({
             type: 'FE_JOIN_ROOM',
-            content: gameParams.room
+            content: gameParams
         });
         sock.send(enterRoomMessage);
     };
@@ -78,6 +78,7 @@ var Hackarena = {};
 
         if (message.type === 'BE_ALL_MAIN_BROADCAST') {
             // Render new state on the front-end using message.content.blabla
+            console.log(message);
         }
 
         if (message.type === 'BE_WELCOME_BROADCAST') {
