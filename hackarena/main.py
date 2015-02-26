@@ -117,6 +117,10 @@ class WebSocketHandler(SockJSConnection):
                         player.last_death = time.time()
 
     def calculate_intersection(self, player, spell):
+        # Stop hitting yourself!
+        if player == self.player:
+            return False
+
         player_x = player.position['x']
         player_y = player.position['y']
         spell_start_x = spell.start_position['x']
