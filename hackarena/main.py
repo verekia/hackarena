@@ -77,8 +77,8 @@ class WebSocketHandler(SockJSConnection):
 
             if new_room not in self.teams:
                 self.teams[new_room] = {
-                    'red': Team(),
-                    'blue': Team(),
+                    'red': Team('red'),
+                    'blue': Team('blue'),
                 }
 
             self.teams[new_room][self.player.team].add_player(self.player)

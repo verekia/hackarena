@@ -8,7 +8,8 @@ from hackarena.game_objects import BaseGameObject
 AVAILABLE_SPELLS = {
     Classes.TANK: [Spell.TANK_ATTACK, Spell.TANK_AOE],
     Classes.MAGE: [Spell.MAGE_DIRECT_DAMAGE, Spell.MAGE_AOE],
-    Classes.HEALER: [Spell.HEALER_DIRECT_DAMAGE, Spell.HEALER_HEAL]
+    Classes.HEALER: [Spell.HEALER_DIRECT_DAMAGE, Spell.HEALER_HEAL],
+    Classes.HQ: [],
 }
 
 
