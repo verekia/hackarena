@@ -129,7 +129,8 @@ function updateSpells() {
     var spellsTmp = []
     for (var i = 0; i < spells.length; i++) {
         var spellData = spells[i];
-        spellsTmp.push(new Spell(game, spellData['start_position'], spellData['end_position'], 'red'));
+        spellsTmp.push(new Spell(game, spellData['start_position'], spellData['end_position'], spellData['spell_type']));
+        hero.bringToTop();
     }
     spellsTmp.length = 0;
 }
