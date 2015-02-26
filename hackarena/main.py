@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 from collections import defaultdict
+from hackarena.player import Player
+from hackarena.team import Team
+from hackarena.messages import AllMainBroadcast
 from hackarena.messages import FEMessages
 from hackarena.messages import WelcomeBroadcast
 from hackarena.utilities import Utilities
@@ -10,6 +13,7 @@ import json
 class WebSocketHandler(SockJSConnection):
 
     clients = defaultdict(dict)
+    teams = {}
 
     def on_open(self, info):
         self.session_string = Utilities.get_session_string(str(self.session))
@@ -30,7 +34,26 @@ class WebSocketHandler(SockJSConnection):
             return
 
         if data['type'] == FEMessages.FE_JOIN_ROOM:
-            self.change_room(data['content'])
+            new_room = data['content']['room']
+            self.change_room(new_room)
+
+            if new_room not in self.teams:
+                self.teams[new_room] = {
+                    'red': Team(),
+                    'blue': Team(),
+                }
+
+            player = Player(
+                username=data['content']['username'],
+                character_class=data['content']['characterClass'],
+                team=data['content']['team'],
+            )
+            self.teams[new_room][player.team].add_player(player)
+
+            AllMainBroadcast(
+                teams=self.teams[self.room],
+                spells=[],
+            ).broadcast_to_all(self)
 
         print 'Rooms: ' + str(self.clients)
 

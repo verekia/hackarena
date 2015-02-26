@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 
 
+class Classes(object):
+    MAGE = 'mage'
+    TANK = 'warrior'
+    HEALER = 'healer'
+
+
 class Spell(object):
     MAGE_DIRECT_DAMAGE = 'MAGE_DIRECT_DAMAGE'
     MAGE_AOE = 'MAGE_AOE'

@@ -3,7 +3,7 @@ import json
 
 
 class BEMessages(object):
-    ALL_MAIN_BROADCAST = 'ALL_MAIN_BROADCAST'
+    ALL_MAIN_BROADCAST = 'BE_ALL_MAIN_BROADCAST'
     PING_BROADCAST = 'PING_BROADCAST'
     WELCOME_BROADCAST = 'BE_WELCOME_BROADCAST'
 
@@ -15,18 +15,16 @@ class FEMessages(object):
 
 class Broadcast(object):
 
-    data = {}
-
     def __init__(self, *args, **kwargs):
-        self.data.update(kwargs)
+        self.data = kwargs
 
     def _get_message_repr(self):
         data = {
             'type': self.message_type,
-            'content': self.data,  # TODO: grab message data from class vars
+            'content': self.data,
         }
 
-        return json.dumps(data, ensure_ascii=False)
+        return json.dumps(data, ensure_ascii=False, default=lambda x: x.__dict__)
 
     def send(self, handler):
         handler.send(self._get_message_repr())
