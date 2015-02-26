@@ -37,9 +37,9 @@ class WebSocketHandler(SockJSConnection):
         else:
             return self.chosenName if hasattr(self, 'chosenName') else self.temporaryName
 
-
     def broadcast_to_all(self, message):
         self.broadcast([value for key, value in self.clients[self.room].items()], message)
+
 
 
     def on_message(self, message):
