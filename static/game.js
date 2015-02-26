@@ -122,7 +122,7 @@ function updateTeam(team, teamData, teamName) {
         if (!team[player['username']]) {
             team[player['username']] = createHero(player['character_class'], player['username'], teamName, false)
         }
-        team[player['username']].receiveMessage(player['position']);
+        team[player['username']].receiveMessage(player);
         processedUsers[player['username']] = true;
     }
     for (var i = 0; i < activeUsers.length; i++) {

@@ -1,6 +1,6 @@
 Mage = function(game, characterName, team, isLocalPlayer, initX, initY) {
     this.characterClass = 'MAGE';
-    this.maxHealth = 75;
+    this.maxHealth = 130;
     this.maxMoveDelay = 8;
 
     this.actions = {
