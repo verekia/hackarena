@@ -18,12 +18,11 @@ class AllMainBroadCast(object):
     def __init__(self):
         pass
 
-    def broadcast(self):
+    def broadcast(self, handler):
         data = {
             'type': self.message_type,
-            'content': '',  # TODO: grab message data from class vars
+            'content': 'TEST',  # TODO: grab message data from class vars
         }
 
-        # TODO: actually broadcast message
         json_content = json.dumps(data, ensure_ascii=False)
-        print json_content
+        handler.send(json_content)
