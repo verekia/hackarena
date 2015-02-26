@@ -1,63 +1,23 @@
-Hero = function(game, initX, initY) {
-    Phaser.Sprite.call(this, game, initX, initY, 'hero');
-    game.add.existing(this);
-    game.physics.enable(this, Phaser.Physics.ARCADE);
-    this.body.drag.set(0.0);
-    this.body.maxVelocity.setTo(40, 40);
-    this.body.collideWorldBounds = true;
+Hero = function(game, characterName, isLocal, initX, initY, textureName) {
+    //Phaser.Sprite.call(this, game, initX, initY, 'hero');
+    Phaser.Sprite.call(this, game, initX, initY, textureName);
 
-    this.bringToTop();
-};
-
-Hero.prototype = Object.create(Phaser.Sprite.prototype);
-Hero.prototype.constructor = Hero;
-
-Hero.prototype.update = function() {
-}
-
-Hero.prototype.oldUpdate = function() {
-    if (this.moveDelay === 0) {
-        this.vel.x = 0;
-        this.vel.y = 0;
-
-        if (this.cursorKeys.left.isDown) {
-            this.vel.x = -this.speed;
-        } else if (this.cursorKeys.right.isDown) {
-            this.vel.x = this.speed;
-        } else if (this.cursorKeys.up.isDown) {
-            this.vel.y = -this.speed;
-        } else if (this.cursorKeys.down.isDown) {
-            this.vel.y = this.speed;
-        }
-
-        this.pos.x += this.vel.x;
-        this.pos.y += this.vel.y;
-
-        this.sprite.x = this.pos.x;
-        this.sprite.y = this.pos.y;
-
-        // Check if there's been a change
-        if (this.pos.x !== this.lastPos.x || this.pos.y !== this.lastPos.y) {
-            /*this.messageCallback({
-                type: 'FE_HERO_POSITION',
-                content: {
-                    name: this.characterName,
-                    x: this.pos.x,
-                    y: this.pos.y
-                }
-            })*/
-
-            this.moveDelay = this.maxMoveDelay;
-        }
-    } else {
-        this.moveDelay--;
-    }
-}
-
-Hero.prototype.oldConstructor = function(){
     this.game = game;
-    this.characterName = name;
+    this.characterName = characterName;
     this.isLocal = isLocal;
+
+    // If local player, listen for keys.
+    if (this.isLocal) {
+        //game.input.keyboard.onDownCallback(this.handleKeyDown.bind(this));
+        this.moveDirectionKeys = {
+            up: this.game.input.keyboard.addKey(Phaser.Keyboard.W),
+            left: this.game.input.keyboard.addKey(Phaser.Keyboard.A),
+            down: this.game.input.keyboard.addKey(Phaser.Keyboard.S),
+            right: this.game.input.keyboard.addKey(Phaser.Keyboard.D)
+        };
+        this.actionDirectionKeys = this.game.input.keyboard.createCursorKeys();
+        this.actionSwitchKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    }
 
     this.lastPos = {
         x: -1,
@@ -77,65 +37,130 @@ Hero.prototype.oldConstructor = function(){
     this.health = this.maxHealth;
     this.actionCooldown = 0;
     this.moveDelay = 0;
+    this.currentAction = 1;
 
-    // Create hero sprite
-    this.sprite = game.add.sprite(this.pos.x, this.pos.y, 'hero');
-    this.sprite.anchor.set(0, 0);
+    this.animations.add('UP', [9, 10, 11]);
+    this.animations.add('DOWN', [0,1,2]);
+    this.animations.add('LEFT', [3,4,5]);
+    this.animations.add('RIGHT', [6, 7, 8]);
+    this.animations.play('DOWN', 5, true);
 
     // Init collision detection stuff
-    this.sprite.name = this.name;
-    game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
-    this.sprite.body.immovable = false;
-    this.sprite.body.collideWorldBounds = true;
-    this.sprite.body.bounce.setTo(1, 1);
+    game.add.existing(this);
+    game.physics.enable(this, Phaser.Physics.ARCADE);
 
-    // If local player, listen for keys.
-    if (this.isLocal) {
-        //game.input.keyboard.onDownCallback(this.handleKeyDown.bind(this));
-        this.cursorKeys = this.game.input.keyboard.createCursorKeys();
-        this.actionKeys = {
-            1: this.game.input.keyboard.addKey(Phaser.Keyboard.Z),
-            2: this.game.input.keyboard.addKey(Phaser.Keyboard.X)
+    this.body.collideWorldBounds = true;
+
+    this.bringToTop();
+};
+
+Hero.prototype = Object.create(Phaser.Sprite.prototype);
+Hero.prototype.constructor = Hero;
+
+Hero.prototype.update = function() {
+    if (this.moveDelay === 0) {
+        var moveMessage = {
+            type: 'FE_HERO_MOVE',
+            content: {
+                name: this.characterName,
+                speed: 8,
+                direction: ''
+            }
+        };
+
+        if (this.moveDirectionKeys.left.isDown) {
+            moveMessage.content.direction = 'LEFT'
+            this.animations.play('LEFT', 5, true);
+        } else if (this.moveDirectionKeys.right.isDown) {
+            moveMessage.content.direction = 'RIGHT'
+            this.animations.play('RIGHT', 5, true);
+        } else if (this.moveDirectionKeys.up.isDown) {
+            moveMessage.content.direction = 'UP'
+            this.animations.play('UP', 5, true);
+        } else if (this.moveDirectionKeys.down.isDown) {
+            moveMessage.content.direction = 'DOWN'
+            this.animations.play('DOWN', 5, true);
+        }
+
+        if (moveMessage.content.direction !== '') {
+            //TODO this.messageCallback(moveMessage);
+        }
+    } else {
+        this.moveDelay--;
+    }
+
+    if (this.actionSwitchKey.isDown) {
+        if (this.currentAction === 1) {
+            this.currentAction = 2;
+        } else {
+            this.currentAction = 1;
+        }
+    }
+
+    if (this.actionCooldown === 0) {
+        var actionMessage = {
+            type: 'FE_HERO_ACTION',
+            content: {
+                name: this.characterName,
+                action: this.currentAction,
+                direction: ''
+            }
+        }
+
+        if (this.actionDirectionKeys.left.isDown) {
+            actionMessage.content.direction = 'LEFT'
+        } else if (this.actionDirectionKeys.right.isDown) {
+            actionMessage.content.direction = 'RIGHT'
+        } else if (this.actionDirectionKeys.up.isDown) {
+            actionMessage.content.direction = 'UP'
+        } else if (this.actionDirectionKeys.down.isDown) {
+            actionMessage.content.direction = 'DOWN'
+        }
+
+        if (actionMessage.content.direction !== '') {
+            //TODO this.messageCallback(moveMessage);
         }
     }
 }
-Hero.prototype.handleKeyDown = function(event) {
-    var moveMessage = {
-        type: 'FE_HERO_MOVE',
-        content: {
-            name: this.characterName,
-            speed: this.speed,
-            direction: ''
+
+Hero.prototype.update_smooth = function() {
+    if (this.moveDelay === 0) {
+        this.vel.x = 0;
+        this.vel.y = 0;
+
+        if (this.moveDirectionKeys.left.isDown) {
+            this.vel.x = -8;
+        } else if (this.moveDirectionKeys.right.isDown) {
+            this.vel.x = 8;
+        } else if (this.moveDirectionKeys.up.isDown) {
+            this.vel.y = -8;
+        } else if (this.moveDirectionKeys.down.isDown) {
+            this.vel.y = 8;
         }
-    };
 
-    var actionMessage = {
-        type: 'FE_HERO_ACTION',
-        content: {
-            name: this.characterName,
-            action: -1
+        this.pos.x += this.vel.x;
+        this.pos.y += this.vel.y;
+
+        this.x = this.pos.x;
+        this.y = this.pos.y;
+
+        // Check if there's been a change
+        if (this.pos.x !== this.lastPos.x || this.pos.y !== this.lastPos.y) {
+            /*this.messageCallback({
+                type: 'FE_HERO_POSITION',
+                content: {
+                    name: this.characterName,
+                    x: this.pos.x,
+                    y: this.pos.y
+                }
+            })*/
+
+            this.moveDelay = this.maxMoveDelay;
+
+            this.lastPos.x = this.pos.x;
+            this.lastPos.y = this.pos.y;
         }
+    } else {
+        this.moveDelay--;
     }
-
-    if (event.keyCode === Phaser.Keyboard.UP) {
-        message = moveMessage;
-        message.content.direction = 'UP';
-    } else if (event.keyCode === Phaser.Keyboard.DOWN) {
-        message = moveMessage;
-        message.content.direction = 'DOWN';
-    } else if (event.keyCode === Phaser.Keyboard.LEFT) {
-        message = moveMessage;
-        message.content.direction = 'LEFT';
-    } else if (event.keyCode === Phaser.Keyboard.RIGHT) {
-        message = moveMessage;
-        message.content.direction = 'RIGHT';
-    } else if (event.keyCode === Phaser.Keyboard.Z) {
-        message = actionMessage;
-        message.content.action = 1;
-    } else if (event.keyCode === Phaser.Keyboard.X) {
-        message = actionMessage;
-        message.content.action = 2;
-    }
-
-    messageCallback(message);
 }
