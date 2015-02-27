@@ -12,6 +12,7 @@ from hackarena.constants import MAP_TILES_HEIGHT
 from hackarena.constants import MAP_OBSTACLES
 from sockjs.tornado import SockJSConnection
 import hackarena.constants
+import itertools
 import json
 import time
 
@@ -112,13 +113,14 @@ class WebSocketHandler(SockJSConnection):
                 self.player.spell_cast_times[spell_type] = time.time()
 
     def calculate_damage(self, spell):
+        if spell.spell_type == hackarena.constants.Spell.HEALER_HEAL:
+            damage = -9
+        else:
+            damage = 13
+
         for team in self.teams[self.room].values():
             for player in team.players:
                 if self.calculate_intersection(player, spell):
-                    damage = 13
-                    if spell.spell_type == hackarena.constants.Spell.HEALER_HEAL:
-                        damage = -9
-
                     player.hp -= damage
                     if player.hp <= 0:
                         player.reset()
@@ -129,6 +131,14 @@ class WebSocketHandler(SockJSConnection):
                         player.last_death = time.time()
                     elif player.hp > player.MAX_HP:
                         player.hp = player.MAX_HP
+
+        # TODO: check for dead building
+        # TODO: support different spell damages
+        damage = 13
+        if self.calculate_intersection_with_tower(spell):
+            enemy_team = 'red' if self.player.team else 'blue'
+            self.teams[self.room][enemy_team].building_hp -= damage
+            print 'tower hit!', self.teams[self.room][player.team].building_hp
 
     def calculate_intersection(self, player, spell):
         # Stop hitting yourself!
@@ -147,6 +157,39 @@ class WebSocketHandler(SockJSConnection):
             or (spell.direction == 'RIGHT' and spell_start_x < player_x * 16 < spell_end_x and player_y * 16 == spell_start_y)
             or (spell.direction == 'LEFT' and spell_start_x > player_x * 16 > spell_end_x and player_y * 16 == spell_start_y)
         )
+
+    def calculate_intersection_with_tower(self, spell):
+        # No friendly-fire on towers
+        enemy_team = 'red' if self.player.team else 'blue'
+        t = self.teams[self.room][enemy_team]
+
+        spell_pixels = self.calculate_spell_hit_area(spell)
+
+        tower_pixels_x = xrange(t.building_position['x'], t.building_position['x'] + t.building_size['width'] + 16, 16)
+        tower_pixels_y = xrange(t.building_position['y'], t.building_position['y'] + t.building_size['height'] + 16, 16)
+        for pixel in itertools.product(tower_pixels_x, tower_pixels_y):
+            if pixel in spell_pixels:
+                return True
+
+        return False
+
+    def calculate_spell_hit_area(self, spell):
+        spell_start_x = spell.start_position['x']
+        spell_start_y = spell.start_position['y']
+        spell_end_x = spell.end_position['x']
+        spell_end_y = spell.end_position['y']
+
+        # TODO: work out pixels other than a line
+        if spell_start_x == spell_end_x:
+            y0 = min(spell_start_y, spell_end_y)
+            y1 = max(spell_start_y, spell_end_y)
+            hit_pixels = [(spell_start_x, y) for y in xrange(y0 + 16, y1, 16)]
+        else:
+            x0 = min(spell_start_x, spell_end_x)
+            x1 = max(spell_start_x, spell_end_x)
+            hit_pixels = [(x, spell_start_y) for x in xrange(x0 + 16, x1, 16)]
+
+        return hit_pixels
 
     def change_room(self, room):
         old_room = self.room
