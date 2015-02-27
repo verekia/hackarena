@@ -101,11 +101,15 @@ class WebSocketHandler(SockJSConnection):
             del self.spells[:]
 
     def spell_request(self, spell_type, position_x, position_y, direction):
-        # TODO: add check for cooldowns etc.
         if spell_type in self.player.available_spells:
             spell = Spell.create_spell(spell_type, position_x, position_y, direction)
-            self.spells.append(spell)
-            self.calculate_damage(spell)
+
+            time_since_last_cast = (time.time() - self.player.spell_cast_times[spell_type]) * 1000
+
+            if time_since_last_cast >= spell.cooldown:
+                self.spells.append(spell)
+                self.calculate_damage(spell)
+                self.player.spell_cast_times[spell_type] = time.time()
 
     def calculate_damage(self, spell):
         for team in self.teams[self.room].values():

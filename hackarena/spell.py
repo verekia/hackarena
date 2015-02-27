@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
 from hackarena.game_objects import BaseGameObject
+import hackarena.constants as constants
+
+SPELL_COOLDOWNS = {
+    constants.Spell.MAGE_DIRECT_DAMAGE: 1000,
+    constants.Spell.TANK_ATTACK: 1000,
+    constants.Spell.HEALER_DIRECT_DAMAGE: 1000,
+    constants.Spell.MAGE_AOE: 5000,
+    constants.Spell.TANK_AOE: 5000,
+    constants.Spell.HEALER_HEAL: 1000,
+}
 
 
 class Spell(BaseGameObject):
@@ -9,6 +19,7 @@ class Spell(BaseGameObject):
         self.start_position = start_position
         self.end_position = end_position
         self.direction = direction
+        self.cooldown = SPELL_COOLDOWNS[spell_type]
 
     @classmethod
     def create_spell(cls, spell_type, position_x, position_y, direction):
