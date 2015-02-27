@@ -12,7 +12,6 @@ var spellsData = [];
 var redTower;
 var blueTower;
 var gameParams;
-var processingSpells = false;
 
 
 function parseUrlParams() {
