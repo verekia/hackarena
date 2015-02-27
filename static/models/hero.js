@@ -258,6 +258,7 @@ Hero.prototype.receiveMessage = function(message) {
         var bloodRight = new Blood(game, this.x + 8, this.y - 8);
         var bloodTop = new Blood(game, this.x - 8, this.y - 24);
         var bloodBottom = new Blood(game, this.x - 8, this.y + 8);
+        this.game.add.sound('fatality').play();
         this.lastDeath = message['last_death'];
     }
 

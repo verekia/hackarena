@@ -22,21 +22,29 @@ Spell = function(game, spellData) {
         this.direction = 'horizontal'
     }
 
+    var sound = 'simple_spell';
     if (this.spellType == 'TANK_AOE') {
         this.drawTankAOE();
+        sound = 'spell';
     } else if (this.spellType == 'MAGE_DIRECT_DAMAGE') {
         this.drawFireball();
+        sound = 'railgun';
     } else if (this.spellType == 'MAGE_AOE') {
         this.drawFireAOE();
+        sound = 'spell';
     } else if (this.spellType == 'HEALER_HEAL') {
         this.drawHeal();
+        sound = 'heal';
     } else if (this.spellType == 'HEALER_DIRECT_DAMAGE') {
         this.drawHealerDamage();
     } else if (this.spellType == 'TANK_ATTACK') {
         this.drawTankAttack();
+        sound = 'punch';
     } else {
         this.drawLine();
     }
+    this.sound = this.game.add.sound(sound);
+    this.sound.play();
 
     this.frame = 15;
     this.frameMax = 15;
