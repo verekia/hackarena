@@ -11,6 +11,7 @@ from hackarena.constants import MAP_TILES_WIDTH
 from hackarena.constants import MAP_TILES_HEIGHT
 from hackarena.constants import MAP_TILE_SIZE
 from hackarena.constants import MAP_OBSTACLES
+from hackarena.constants import Spell as SpellConstants
 from sockjs.tornado import SockJSConnection
 import hackarena.constants
 import itertools
@@ -173,15 +174,22 @@ class WebSocketHandler(SockJSConnection):
         spell_end_x = spell.end_position['x']
         spell_end_y = spell.end_position['y']
 
-        # TODO: work out pixels other than a line
-        if spell_start_x == spell_end_x:
-            y0 = min(spell_start_y, spell_end_y)
-            y1 = max(spell_start_y, spell_end_y)
-            hit_pixels = [(spell_start_x, y) for y in xrange(y0 + MAP_TILE_SIZE, y1 + MAP_TILE_SIZE, MAP_TILE_SIZE)]
+        if spell.aoe:
+            # TODO: argh, no time to calculate pixels that shouldn't be included
+            # just go with a massive square for now :(
+            aoe_range = SpellConstants.SPELL_RANGES[spell.spell_type]
+            spell_hit_pixels_x = xrange(spell_start_x - aoe_range, spell_start_x + aoe_range + MAP_TILE_SIZE, MAP_TILE_SIZE)
+            spell_hit_pixels_y = xrange(spell_start_y - aoe_range, spell_start_y + aoe_range + MAP_TILE_SIZE, MAP_TILE_SIZE)
+            hit_pixels = [p for p in itertools.product(spell_hit_pixels_x, spell_hit_pixels_y)]
         else:
-            x0 = min(spell_start_x, spell_end_x)
-            x1 = max(spell_start_x, spell_end_x)
-            hit_pixels = [(x, spell_start_y) for x in xrange(x0 + MAP_TILE_SIZE, x1 + MAP_TILE_SIZE, MAP_TILE_SIZE)]
+            if spell_start_x == spell_end_x:
+                y0 = min(spell_start_y, spell_end_y)
+                y1 = max(spell_start_y, spell_end_y)
+                hit_pixels = [(spell_start_x, y) for y in xrange(y0 + MAP_TILE_SIZE, y1 + MAP_TILE_SIZE, MAP_TILE_SIZE)]
+            else:
+                x0 = min(spell_start_x, spell_end_x)
+                x1 = max(spell_start_x, spell_end_x)
+                hit_pixels = [(x, spell_start_y) for x in xrange(x0 + MAP_TILE_SIZE, x1 + MAP_TILE_SIZE, MAP_TILE_SIZE)]
 
         return hit_pixels
 

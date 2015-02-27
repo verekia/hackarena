@@ -41,6 +41,16 @@ class Spell(object):
         MAGE_AOE: 5 * MAP_TILE_SIZE,
     }
 
+    SPELL_AOE_ENABLED = {
+        MAGE_DIRECT_DAMAGE: False,
+        TANK_ATTACK: False,
+        HEALER_DIRECT_DAMAGE: False,
+        HEALER_HEAL: False,
+
+        TANK_AOE: True,
+        MAGE_AOE: True,
+    }
+
     BIG_DMG = 35
     NORMAL_DMG = 20
     HEALING = -15  # Need - here for easy calc
