@@ -59,7 +59,7 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     this.nameText.x = this.x - this.nameText.width/2;
 
     // Health bar
-    this.healthBar = new HealthBar(game, this.x - 12, this.y - 12);
+    this.healthBar = new HealthBar(game, this.x - 12, this.y - 16, 24);
 
     game.physics.enable(this, Phaser.Physics.ARCADE);
 
@@ -107,7 +107,7 @@ Hero.prototype.updateTo = function() {
         this.moveDelay--;
     }
 
-    if (this.actionSwitchKey.isDown && this.actionSwitchKey.duration < 1000/60) {
+    if (this.actionSwitchKey.isDown && this.actionSwitchKey.duration < 0.015) {
         if (this.currentAction === 1) {
             this.currentAction = 2;
         } else {
@@ -163,7 +163,9 @@ Hero.prototype.receiveMessage = function(message) {
 
     this.health = message['hp'];
     this.maxHealth = message['MAX_HP'];
-    this.healthBar.updateHealthBar(this.x - 12, this.y - 12, this.health, this.maxHealth);
+    this.healthBar.x = this.x - 12;
+    this.healthBar.y = this.y - 12;
+    this.healthBar.updateHealthBar(this.health, this.maxHealth);
 }
 
 Hero.prototype.update_smooth = function() {

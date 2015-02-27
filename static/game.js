@@ -10,6 +10,8 @@ var blueTeamData = [];
 var redTeamData = [];
 var spells = [];
 var spellsData = [];
+var redTower;
+var blueTower;
 var gameParams = parseUrlParams();
 
 
@@ -72,6 +74,8 @@ function create() {
     layerObstacles = map.createLayer('obstacles');
     layerObstacles.resizeWorld();
 
+    blueTower = new Tower(game, 32, 32, 'blue');
+    redTower = new Tower(game, 1008 - 64, 608 - 64, 'red');
 
     //  The base of our hero
     hero = createHero(gameParams['characterClass'], gameParams['username'], gameParams['team'], true);
@@ -166,6 +170,14 @@ function setSocketListeners() {
                 data['content']['teams']['blue']['kills'],
                 data['content']['teams']['red']['kills']
             )
+            redTower.updateTower(
+                data['content']['teams']['red']['building_max_hp'],
+                data['content']['teams']['red']['building_hp']
+            );
+            blueTower.updateTower(
+                data['content']['teams']['blue']['building_max_hp'],
+                data['content']['teams']['blue']['building_hp']
+            );
         }
     };
 

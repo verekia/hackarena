@@ -4,6 +4,9 @@ Tower = function(game, initX, initY, team) {
 
     this.game = game;
     this.game.add.existing(this);
+
+    this.x = initX;
+    this.y = initY;
     
     var color;
     if (team === 'red') {
@@ -12,8 +15,16 @@ Tower = function(game, initX, initY, team) {
         color = 0x0000FF;
     }
     this.beginFill(color, 1)
-    this.drawRect(initX, initY, 32, 32);
+    this.drawRect(0, 0, 32, 32);
+
+    this.healthBar = new HealthBar(game, this.x - 8, this.y - 6, 48);
 };
 
 Tower.prototype = Object.create(Phaser.Graphics.prototype);
 Tower.prototype.constructor = Tower;
+
+Tower.prototype.updateTower = function (health, maxHealth) {
+    this.health = health;
+    this.maxHealth = maxHealth;
+    this.healthBar.updateHealthBar(this.health, this.maxHealth);
+}

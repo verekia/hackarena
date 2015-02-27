@@ -8,6 +8,7 @@ class Team(BaseGameObject):
     def __init__(self, color):
         self.color = color
         self.kills = 0
+        self.building_max_hp = 600
         self.building_hp = 600
         self.players = []
         # Front-End is not ready for it yet.
