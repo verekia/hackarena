@@ -113,6 +113,14 @@ function update() {
     blueTeamData = [];
     redTeamData = [];
     spellsData = [];
+
+    // Update all heroes to flash when hit
+    for (var key in blueTeam) {
+        blueTeam[key].updateHitFlash();
+    }
+    for (var key in redTeam) {
+        redTeam[key].updateHitFlash();
+    }
 }
 
 function updateTeam(team, teamData, teamName) {

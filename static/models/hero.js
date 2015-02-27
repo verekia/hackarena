@@ -60,6 +60,8 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     }
 
     this.health = this.maxHealth;
+    this.hitFlashFrame = 0;
+    this.maxHitFlashFrame = 15;
     this.actionCooldown = 0;
     this.moveDelay = 0;
     this.currentAction = 1;
@@ -176,6 +178,15 @@ Hero.prototype.updateTo = function() {
     //this.pressedKeys = [];
 }
 
+Hero.prototype.updateHitFlash = function() {
+    if(this.hitFlashFrame > 0) {
+        this.alpha = Math.floor(this.hitFlashFrame/2) % 2;
+        this.hitFlashFrame--;
+    } else {
+        this.alpha = 1;
+    }
+}
+
 Hero.prototype.isKeyDown = function(key) {
     var keyPressed = false;
     for (var i = 0; i < this.pressedKeys.length; i++) {
@@ -237,6 +248,10 @@ Hero.prototype.receiveMessage = function(message) {
     this.lastPos.x = newX;
     this.lastPos.y = newY;
 
+    if (this.health > message['hp']) {
+        debugger;
+        this.hitFlashFrame = this.maxHitFlashFrame;
+    }
     this.health = message['hp'];
     this.maxHealth = message['MAX_HP'];
     this.healthBar.updateHealthBar(this.health, this.maxHealth);
