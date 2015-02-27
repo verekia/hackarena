@@ -25,6 +25,7 @@ class Player(BaseGameObject):
         hp=MAX_HP,
         last_death=0,
     ):
+        # TODO: set different MAX_HP based on class
         self.MAX_HP = MAX_HP
 
         self.username = username
@@ -36,6 +37,7 @@ class Player(BaseGameObject):
         self.last_death = last_death
 
     def reset(self):
+        # TODO: set different HP based on class
         self.hp = MAX_HP
         self.position = {
             'x': 2 if self.team == 'blue' else hackarena.constants.MAP_TILES_WIDTH - 2,
