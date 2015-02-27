@@ -4,6 +4,13 @@ Tower = function(game, initX, initY, team) {
 
     this.game = game;
     this.game.add.existing(this);
+    this.teamDisplay;
+
+    if (team == 'blue') {
+        this.otherTeamDisplay = 'Red';
+    } else {
+        this.otherTeamDisplay = 'Blue';
+    }
 
     this.x = initX;
     this.y = initY;
@@ -27,4 +34,11 @@ Tower.prototype.updateTower = function (health, maxHealth) {
     this.health = health;
     this.maxHealth = maxHealth;
     this.healthBar.updateHealthBar(this.health, this.maxHealth);
+    if (health <= 0) {
+        $('.js-game-over-team').html(this.otherTeamDisplay);
+        $('.js-game-over').show();
+        setTimeout(function(){
+            window.location = '/';
+        }, 3000);
+    }
 }
