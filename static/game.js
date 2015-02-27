@@ -81,7 +81,7 @@ function create() {
     layerObstacles.resizeWorld();
 
     blueTower = new Tower(game, 32, 32, 'blue');
-    redTower = new Tower(game, 1008 - 64, 608 - 64, 'red');
+    redTower = new Tower(game, 1008 - (32 + 48), 608 - (32 + 80), 'red');
 
     //  The base of our hero
     hero = createHero(gameParams['characterClass'], gameParams['username'], gameParams['team'], true);

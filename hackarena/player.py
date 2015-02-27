@@ -1,18 +1,7 @@
 # -*- coding: utf-8 -*-
 import hackarena.constants
 from hackarena.constants import Classes
-from hackarena.constants import Spell
 from hackarena.game_objects import BaseGameObject
-
-
-AVAILABLE_SPELLS = {
-    Classes.TANK: [Spell.TANK_ATTACK, Spell.TANK_AOE],
-    Classes.MAGE: [Spell.MAGE_DIRECT_DAMAGE, Spell.MAGE_AOE],
-    Classes.HEALER: [Spell.HEALER_DIRECT_DAMAGE, Spell.HEALER_HEAL],
-    Classes.HQ: [],
-}
-
-MAX_HP = 100
 
 
 class Player(BaseGameObject):
@@ -22,23 +11,21 @@ class Player(BaseGameObject):
         username,
         character_class,
         team,
-        hp=MAX_HP,
+        hp=0,
         last_death=0,
     ):
-        # TODO: set different MAX_HP based on class
-        self.MAX_HP = MAX_HP
+        self.MAX_HP = Classes.MAX_HP[character_class]
 
         self.username = username
         self.character_class = character_class
-        self.available_spells = AVAILABLE_SPELLS[character_class]
+        self.available_spells = Classes.AVAILABLE_SPELLS[character_class]
         self.spell_cast_times = dict((spell, 0) for spell in self.available_spells)
         self.team = team
         self.reset()
         self.last_death = last_death
 
     def reset(self):
-        # TODO: set different HP based on class
-        self.hp = MAX_HP
+        self.hp = Classes.MAX_HP[self.character_class]
         self.position = {
             'x': 2 if self.team == 'blue' else hackarena.constants.MAP_TILES_WIDTH - 2,
             'y': 2 if self.team == 'blue' else hackarena.constants.MAP_TILES_HEIGHT - 2,

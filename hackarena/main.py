@@ -9,15 +9,13 @@ from hackarena.messages import WelcomeBroadcast
 from hackarena.utilities import Utilities
 from hackarena.constants import MAP_TILES_WIDTH
 from hackarena.constants import MAP_TILES_HEIGHT
+from hackarena.constants import MAP_TILE_SIZE
 from hackarena.constants import MAP_OBSTACLES
 from sockjs.tornado import SockJSConnection
 import hackarena.constants
 import itertools
 import json
 import time
-
-
-DEFAULT_ROOM = 'lobby'
 
 
 class WebSocketHandler(SockJSConnection):
@@ -40,7 +38,7 @@ class WebSocketHandler(SockJSConnection):
         try:
             return self.player.room
         except:
-            return DEFAULT_ROOM
+            return hackarena.constants.DEFAULT_ROOM
 
     @room.setter
     def room(self, room):
@@ -113,15 +111,10 @@ class WebSocketHandler(SockJSConnection):
                 self.player.spell_cast_times[spell_type] = time.time()
 
     def calculate_damage(self, spell):
-        if spell.spell_type == hackarena.constants.Spell.HEALER_HEAL:
-            damage = -9
-        else:
-            damage = 13
-
         for team in self.teams[self.room].values():
             for player in team.players:
                 if self.calculate_intersection(player, spell):
-                    player.hp -= damage
+                    player.hp -= spell.damage
                     if player.hp <= 0:
                         player.reset()
                         if player.team == 'red':
@@ -132,13 +125,11 @@ class WebSocketHandler(SockJSConnection):
                     elif player.hp > player.MAX_HP:
                         player.hp = player.MAX_HP
 
-        # TODO: check for dead building
-        # TODO: support different spell damages
-        damage = 13
-        if self.calculate_intersection_with_tower(spell):
-            enemy_team = 'red' if self.player.team else 'blue'
-            self.teams[self.room][enemy_team].building_hp -= damage
-            print 'tower hit!', self.teams[self.room][player.team].building_hp
+        if spell.spell_type != hackarena.constants.Spell.HEALER_HEAL:
+            # TODO: check for dead building
+            if self.calculate_intersection_with_tower(spell):
+                enemy_team = 'red' if self.player.team == 'blue' else 'blue'
+                self.teams[self.room][enemy_team].building_hp -= spell.damage
 
     def calculate_intersection(self, player, spell):
         # Stop hitting yourself!
@@ -152,21 +143,21 @@ class WebSocketHandler(SockJSConnection):
         spell_end_x = spell.end_position['x']
         spell_end_y = spell.end_position['y']
         return bool(
-            (spell.direction == 'DOWN' and spell_start_y < player_y * 16 < spell_end_y and player_x * 16 == spell_start_x)
-            or (spell.direction == 'UP' and spell_start_y > player_y * 16 > spell_end_y and player_x * 16 == spell_start_x)
-            or (spell.direction == 'RIGHT' and spell_start_x < player_x * 16 < spell_end_x and player_y * 16 == spell_start_y)
-            or (spell.direction == 'LEFT' and spell_start_x > player_x * 16 > spell_end_x and player_y * 16 == spell_start_y)
+            (spell.direction == 'DOWN' and spell_start_y < player_y * MAP_TILE_SIZE < spell_end_y and player_x * MAP_TILE_SIZE == spell_start_x)
+            or (spell.direction == 'UP' and spell_start_y > player_y * MAP_TILE_SIZE > spell_end_y and player_x * MAP_TILE_SIZE == spell_start_x)
+            or (spell.direction == 'RIGHT' and spell_start_x < player_x * MAP_TILE_SIZE < spell_end_x and player_y * MAP_TILE_SIZE == spell_start_y)
+            or (spell.direction == 'LEFT' and spell_start_x > player_x * MAP_TILE_SIZE > spell_end_x and player_y * MAP_TILE_SIZE == spell_start_y)
         )
 
     def calculate_intersection_with_tower(self, spell):
         # No friendly-fire on towers
-        enemy_team = 'red' if self.player.team else 'blue'
+        enemy_team = 'red' if self.player.team == 'blue' else 'blue'
         t = self.teams[self.room][enemy_team]
 
         spell_pixels = self.calculate_spell_hit_area(spell)
 
-        tower_pixels_x = xrange(t.building_position['x'], t.building_position['x'] + t.building_size['width'] + 16, 16)
-        tower_pixels_y = xrange(t.building_position['y'], t.building_position['y'] + t.building_size['height'] + 16, 16)
+        tower_pixels_x = xrange(t.building_position['x'], t.building_position['x'] + t.building_size['width'] + MAP_TILE_SIZE, MAP_TILE_SIZE)
+        tower_pixels_y = xrange(t.building_position['y'], t.building_position['y'] + t.building_size['height'] + MAP_TILE_SIZE, MAP_TILE_SIZE)
         for pixel in itertools.product(tower_pixels_x, tower_pixels_y):
             if pixel in spell_pixels:
                 return True
@@ -183,11 +174,11 @@ class WebSocketHandler(SockJSConnection):
         if spell_start_x == spell_end_x:
             y0 = min(spell_start_y, spell_end_y)
             y1 = max(spell_start_y, spell_end_y)
-            hit_pixels = [(spell_start_x, y) for y in xrange(y0 + 16, y1, 16)]
+            hit_pixels = [(spell_start_x, y) for y in xrange(y0 + MAP_TILE_SIZE, y1, MAP_TILE_SIZE)]
         else:
             x0 = min(spell_start_x, spell_end_x)
             x1 = max(spell_start_x, spell_end_x)
-            hit_pixels = [(x, spell_start_y) for x in xrange(x0 + 16, x1, 16)]
+            hit_pixels = [(x, spell_start_y) for x in xrange(x0 + MAP_TILE_SIZE, x1, MAP_TILE_SIZE)]
 
         return hit_pixels
 
