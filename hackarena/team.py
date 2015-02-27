@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
+import hackarena.constants
 from hackarena.game_objects import BaseGameObject
-#from hackarena.player import Player
 
 
 class Team(BaseGameObject):
@@ -10,13 +10,19 @@ class Team(BaseGameObject):
         self.kills = 0
         self.building_max_hp = 600
         self.building_hp = 600
+        self.building_position = {
+            'x': 32 if color == 'blue' else hackarena.constants.MAP_TILES_WIDTH * 16 - 64,
+            'y': 32 if color == 'blue' else hackarena.constants.MAP_TILES_HEIGHT * 16 - 64,
+        }
+        self.building_size = {
+            'width': 32,
+            'height': 32,
+        }
+        # self.building_size = {
+        #     'width': 48,
+        #     'height': 80,
+        # }
         self.players = []
-        # Front-End is not ready for it yet.
-        # Player(
-        #     username='HQ',
-        #     character_class='hq',
-        #     team=color,
-        # )]
 
     def add_player(self, player):
         self.players.append(player)
