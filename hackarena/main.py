@@ -119,7 +119,7 @@ class WebSocketHandler(SockJSConnection):
                     spell.damage < 0 and player.team != self.player.team
                     or spell.damage > 0 and player.team == self.player.team
                 ):
-                    return
+                    continue
 
                 if self.calculate_intersection(player, spell):
                     player.hp -= spell.damage
