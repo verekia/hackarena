@@ -8,6 +8,12 @@ Spell = function(game, startPosition, endPosition, type) {
     this.spellType = type;
     this.game.add.existing(this);
 
+    // Quick fix, hero anchor moved to top-left
+    this.startPosition['x'] += 8;
+    this.startPosition['y'] += 8;
+    this.endPosition['x'] += 8;
+    this.endPosition['y'] += 8;
+
     if (this.startPosition['x'] === this.endPosition['x']) {
         this.direction = 'vertical';
     } else {
