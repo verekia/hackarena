@@ -32,13 +32,13 @@ class Spell(object):
     }
 
     SPELL_RANGES = {
-        MAGE_DIRECT_DAMAGE: 8 * 16,
-        TANK_ATTACK: 2 * 16,
-        HEALER_DIRECT_DAMAGE: 6 * 16,
-        HEALER_HEAL: 6 * 16,
+        MAGE_DIRECT_DAMAGE: 8 * MAP_TILE_SIZE,
+        TANK_ATTACK: 2 * MAP_TILE_SIZE,
+        HEALER_DIRECT_DAMAGE: 6 * MAP_TILE_SIZE,
+        HEALER_HEAL: 6 * MAP_TILE_SIZE,
 
-        TANK_AOE: 3 * 16,
-        MAGE_AOE: 5 * 16,
+        TANK_AOE: 3 * MAP_TILE_SIZE,
+        MAGE_AOE: 5 * MAP_TILE_SIZE,
     }
 
     BIG_DMG = 35
