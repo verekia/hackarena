@@ -13,3 +13,15 @@ Warrior = function(game, characterName, team, isLocalPlayer, initX, initY) {
 
 Warrior.prototype = Object.create(Hero.prototype);
 Warrior.constructor = Warrior;
+
+//OVERRIDE THIS ONE
+Warrior.prototype.setCoolDown = function(attackType){
+    if(attackType == 'TANK_ATTACK'){
+        this.nameStyle.fill = '#ff00ff';
+        this.nameText.setStyle(this.nameStyle);
+        setTimeout(function(){
+            this.nameStyle.fill = this.nameStyleFillDefault;
+            this.nameText.setStyle(this.nameStyle);
+        }.bind(this), 1000)
+    }
+}

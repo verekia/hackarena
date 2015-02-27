@@ -6,6 +6,7 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     this.characterName = characterName;
     this.team = team;
     this.isLocal = isLocal;
+    this.selectedSpellContainer = $('.js-selected-spell');
 
     // If local player, listen for keys.
     if (this.isLocal) {
@@ -36,8 +37,8 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     this.currentAction = 1;
 
     this.animations.add('UP', [9, 10, 11]);
-    this.animations.add('DOWN', [0,1,2]);
-    this.animations.add('LEFT', [3,4,5]);
+    this.animations.add('DOWN', [0, 1, 2]);
+    this.animations.add('LEFT', [3, 4, 5]);
     this.animations.add('RIGHT', [6, 7, 8]);
     this.animations.play('DOWN', 5, true);
     this.anchor.set(0.5, 0.5);
@@ -45,18 +46,20 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     // Init collision detection stuff
     game.add.existing(this);
 
-    // Name text
-    var style = {
-        font: "12px Arial",
-        align: "center"
-    };
-    if(this.team === 'red') {
-        style.fill = '#FF0000';
+    if (this.team === 'red') {
+        this.nameStyleFillDefault = '#FF0000';
     } else {
-        style.fill = '#0000FF';
+        this.nameStyleFillDefault = '#0000FF';
     }
-    this.nameText = game.add.text(this.x - 8, this.y + 8, this.characterName, style);
-    this.nameText.x = this.x - this.nameText.width/2;
+    this.nameStyle = {
+        font: "12px Arial",
+        align: "center",
+        fill: this.nameStyleFillDefault
+    };
+
+    // Name text
+    this.nameText = game.add.text(this.x - 8, this.y + 8, this.characterName, this.nameStyle);
+    this.nameText.x = this.x - this.nameText.width / 2;
 
     // Health bar
     this.healthBar = new HealthBar(game, this.x - 12, this.y - 16, 24);
@@ -101,7 +104,7 @@ Hero.prototype.updateTo = function() {
         if (moveMessage.content.direction !== '') {
             socket.send(JSON.stringify(moveMessage));
         }
-        
+
         this.moveDelay = this.maxMoveDelay;
     } else {
         this.moveDelay--;
@@ -115,47 +118,50 @@ Hero.prototype.updateTo = function() {
         }
     }
 
-    $('.js-selected-spell').html(this.actions[this.currentAction].display_name);
+    this.selectedSpellContainer.html(this.actions[this.currentAction].display_name);
 
-    if (this.actionCooldown === 0) {
-        var actionMessage = {
-            type: 'FE_HERO_SPELL',
-            content: {
-                position_x: this.x,
-                position_y: this.y,
-                spell_type: this.actions[this.currentAction].id,
-                direction: ''
-            }
+    var actionMessage = {
+        type: 'FE_HERO_SPELL',
+        content: {
+            position_x: this.x,
+            position_y: this.y,
+            spell_type: this.actions[this.currentAction].id,
+            direction: ''
         }
+    }
 
-        if (this.actionDirectionKeys.left.isDown) {
-            actionMessage.content.direction = 'LEFT'
-        } else if (this.actionDirectionKeys.right.isDown) {
-            actionMessage.content.direction = 'RIGHT'
-        } else if (this.actionDirectionKeys.up.isDown) {
-            actionMessage.content.direction = 'UP'
-        } else if (this.actionDirectionKeys.down.isDown) {
-            actionMessage.content.direction = 'DOWN'
-        }
+    if (this.actionDirectionKeys.left.isDown) {
+        actionMessage.content.direction = 'LEFT'
+    } else if (this.actionDirectionKeys.right.isDown) {
+        actionMessage.content.direction = 'RIGHT'
+    } else if (this.actionDirectionKeys.up.isDown) {
+        actionMessage.content.direction = 'UP'
+    } else if (this.actionDirectionKeys.down.isDown) {
+        actionMessage.content.direction = 'DOWN'
+    }
 
-        if (actionMessage.content.direction !== '') {
-            //TODO this.messageCallback(moveMessage);
-            socket.send(JSON.stringify(actionMessage));
-        }
+    if (actionMessage.content.direction !== '') {
+        this.setCoolDown(this.actions[this.currentAction].id);
+        //TODO this.messageCallback(moveMessage);
+        socket.send(JSON.stringify(actionMessage));
     }
 }
 
-Hero.prototype.destroy = function() {
+//OVERRIDE THIS ONE
+Hero.prototype.setCoolDown = function(){
+}
+
+Hero.prototype.destroyHero = function() {
     this.nameText.destroy();
     this.healthBar.destroy();
-    this.kill();
+    this.destroy();
 }
 
 Hero.prototype.receiveMessage = function(message) {
     this.x = message['position']['x'] * 16;
     this.y = message['position']['y'] * 16;
 
-    this.nameText.x = this.x - this.nameText.width/2;
+    this.nameText.x = this.x - this.nameText.width / 2;
     this.nameText.y = this.y + 8;
 
     this.lastPos.x = this.x;
@@ -189,13 +195,13 @@ Hero.prototype.update_smooth = function() {
         // Check if there's been a change
         if (this.x !== this.lastPos.x || this.y !== this.lastPos.y) {
             /*this.messageCallback({
-                type: 'FE_HERO_POSITION',
-                content: {
-                    name: this.characterName,
-                    x: this.pos.x,
-                    y: this.pos.y
-                }
-            })*/
+             type: 'FE_HERO_POSITION',
+             content: {
+             name: this.characterName,
+             x: this.pos.x,
+             y: this.pos.y
+             }
+             })*/
 
             this.moveDelay = this.maxMoveDelay;
 
