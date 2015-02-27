@@ -51,12 +51,15 @@ function preload() {
     game.load.tilemap('desertMap', '/static/desert.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', '/static/map.png');
 
-    game.load.image('tower_red', '/static/sprite/tower_red.png');
+    game.load.image('tower_red', '/static/sprites/tower_red.png');
     game.load.image('tower_blue', '/static/sprites/tower_blue.png');
 
     game.load.atlasJSONHash('ranger', '/static/sprites/ranger/ranger.png', '/static/sprites/ranger/ranger.json');
     game.load.atlasJSONHash('healer', '/static/sprites/healer/healer.png', '/static/sprites/healer/healer.json');
     game.load.atlasJSONHash('ninja', '/static/sprites/ninja/ninja.png', '/static/sprites/ninja/ninja.json');
+
+    game.load.atlasJSONHash('blood', '/static/sprites/blood/blood.png', '/static/sprites/blood/blood.json');
+
 }
 
 function create() {
@@ -78,7 +81,7 @@ function create() {
     layerObstacles.resizeWorld();
 
     blueTower = new Tower(game, 32, 32, 'blue');
-    redTower = new Tower(game, 1008 - 64, 608 - 64, 'red');
+    redTower = new Tower(game, 1008 - (32 + 48), 608 - (32 + 80), 'red');
 
     //  The base of our hero
     hero = createHero(gameParams['characterClass'], gameParams['username'], gameParams['team'], true);
@@ -93,6 +96,13 @@ function create() {
     game.camera.focusOnXY(0, 0);
 
     setSocketListeners();
+
+
+
+    // BLOOD
+    // var blood = game.add.sprite(60, 60, 'blood');
+    // blood.animations.add('blood');
+    // blood.animations.play('blood', 10, true);
 }
 
 function update() {
