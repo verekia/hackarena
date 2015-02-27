@@ -32,14 +32,13 @@ class Spell(object):
     }
 
     SPELL_RANGES = {
-        MAGE_DIRECT_DAMAGE: 10 * 16,
-        TANK_ATTACK: 4 * 16,
+        MAGE_DIRECT_DAMAGE: 8 * 16,
+        TANK_ATTACK: 2 * 16,
         HEALER_DIRECT_DAMAGE: 6 * 16,
         HEALER_HEAL: 6 * 16,
 
-        # TODO: make these ranges meaningful
-        TANK_AOE: 4 * 16,
-        MAGE_AOE: 10 * 16,
+        TANK_AOE: 3 * 16,
+        MAGE_AOE: 5 * 16,
     }
 
     BIG_DMG = 35
@@ -63,8 +62,8 @@ class Classes(object):
 
     BASE_HP = 100
     MAX_HP = {
-        TANK: BASE_HP * 1,
-        MAGE: BASE_HP * 1,
+        TANK: BASE_HP * 1.5,
+        MAGE: BASE_HP * 0.9,
         HEALER: BASE_HP * 1,
     }
 

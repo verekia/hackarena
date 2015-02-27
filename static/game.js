@@ -57,6 +57,9 @@ function preload() {
     game.load.atlasJSONHash('ranger', '/static/sprites/ranger/ranger.png', '/static/sprites/ranger/ranger.json');
     game.load.atlasJSONHash('healer', '/static/sprites/healer/healer.png', '/static/sprites/healer/healer.json');
     game.load.atlasJSONHash('ninja', '/static/sprites/ninja/ninja.png', '/static/sprites/ninja/ninja.json');
+
+    game.load.atlasJSONHash('blood', '/static/sprites/blood/blood.png', '/static/sprites/blood/blood.json');
+
 }
 
 function create() {
@@ -93,6 +96,13 @@ function create() {
     game.camera.focusOnXY(0, 0);
 
     setSocketListeners();
+
+
+
+    // BLOOD
+    // var blood = game.add.sprite(60, 60, 'blood');
+    // blood.animations.add('blood');
+    // blood.animations.play('blood', 10, true);
 }
 
 function update() {
@@ -113,6 +123,14 @@ function update() {
     blueTeamData = [];
     redTeamData = [];
     spellsData = [];
+
+    // Update all heroes to flash when hit
+    for (var key in blueTeam) {
+        blueTeam[key].updateHitFlash();
+    }
+    for (var key in redTeam) {
+        redTeam[key].updateHitFlash();
+    }
 }
 
 function updateTeam(team, teamData, teamName) {
