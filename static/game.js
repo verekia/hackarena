@@ -171,12 +171,12 @@ function setSocketListeners() {
                 data['content']['teams']['red']['kills']
             )
             redTower.updateTower(
-                data['content']['teams']['red']['building_max_hp'],
-                data['content']['teams']['red']['building_hp']
+                data['content']['teams']['red']['building_hp'],
+                data['content']['teams']['red']['building_max_hp']
             );
             blueTower.updateTower(
-                data['content']['teams']['blue']['building_max_hp'],
-                data['content']['teams']['blue']['building_hp']
+                data['content']['teams']['blue']['building_hp'],
+                data['content']['teams']['blue']['building_max_hp']
             );
         }
     };
