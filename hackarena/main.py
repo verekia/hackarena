@@ -115,9 +115,9 @@ class WebSocketHandler(SockJSConnection):
         for team in self.teams[self.room].values():
             for player in team.players:
                 if self.calculate_intersection(player, spell):
-                    damage = 5
+                    damage = 13
                     if spell.spell_type == hackarena.constants.Spell.HEALER_HEAL:
-                        damage = -5
+                        damage = -9
 
                     player.hp -= damage
                     if player.hp <= 0:
