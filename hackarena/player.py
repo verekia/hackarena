@@ -30,6 +30,7 @@ class Player(BaseGameObject):
         self.username = username
         self.character_class = character_class
         self.available_spells = AVAILABLE_SPELLS[character_class]
+        self.spell_cast_times = dict((spell, 0) for spell in self.available_spells)
         self.team = team
         self.reset()
         self.last_death = last_death
