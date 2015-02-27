@@ -33,7 +33,7 @@ class Spell(object):
 
     SPELL_RANGES = {
         MAGE_DIRECT_DAMAGE: 8 * 16,
-        TANK_ATTACK: 2 * 16,
+        TANK_ATTACK: 3 * 16,
         HEALER_DIRECT_DAMAGE: 6 * 16,
         HEALER_HEAL: 6 * 16,
 
