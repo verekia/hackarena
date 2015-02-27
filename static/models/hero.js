@@ -26,6 +26,26 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
         } else {
             this.actionSwitchKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         }
+
+        // Track all keys that were pressed between frames to prevent key presses being lost.
+        // Make a list of ALL KEYS and gives them each a callback when pressed for any duration
+        // which adds them to this.pressedKeys, a list of all keys pressed between frames.
+        this.pressedKeys = [];
+        this.allKeys = [];
+        for (var key in this.moveDirectionKeys) {
+            this.allKeys.push(this.moveDirectionKeys[key]);
+        }
+        for (var key in this.actionDirectionKeys) {
+            this.allKeys.push(this.actionDirectionKeys[key]);
+        }
+
+        var addPressedKey = function(event) {
+            this.pressedKeys.push(event);
+        }.bind(this);
+
+        for(var i = 0; i < this.allKeys.length; i++) {
+            this.allKeys[i].onDown.add(addPressedKey)
+        }
     }
 
     this.lastPos = {
@@ -92,16 +112,16 @@ Hero.prototype.updateTo = function() {
             }
         };
 
-        if (this.moveDirectionKeys.left.isDown) {
+        if (this.isKeyDown(this.moveDirectionKeys.left)) {
             moveMessage.content.direction = 'LEFT'
             this.animations.play('LEFT', 5, true);
-        } else if (this.moveDirectionKeys.right.isDown) {
+        } else if (this.isKeyDown(this.moveDirectionKeys.right)) {
             moveMessage.content.direction = 'RIGHT'
             this.animations.play('RIGHT', 5, true);
-        } else if (this.moveDirectionKeys.up.isDown) {
+        } else if (this.isKeyDown(this.moveDirectionKeys.up)) {
             moveMessage.content.direction = 'UP'
             this.animations.play('UP', 5, true);
-        } else if (this.moveDirectionKeys.down.isDown) {
+        } else if (this.isKeyDown(this.moveDirectionKeys.down)) {
             moveMessage.content.direction = 'DOWN'
             this.animations.play('DOWN', 5, true);
         } else {
@@ -117,7 +137,7 @@ Hero.prototype.updateTo = function() {
         this.moveDelay--;
     }
 
-    if (this.actionSwitchKey.isDown && this.actionSwitchKey.duration < 0.015) {
+    if (this.isKeyDown(this.actionSwitchKey) && this.actionSwitchKey.duration < 0.015) {
         if (this.currentAction === 1) {
             this.currentAction = 2;
         } else {
@@ -137,21 +157,38 @@ Hero.prototype.updateTo = function() {
         }
     }
 
-    if (this.actionDirectionKeys.left.isDown) {
+    if (this.isKeyDown(this.actionDirectionKeys.left)) {
         actionMessage.content.direction = 'LEFT'
-    } else if (this.actionDirectionKeys.right.isDown) {
+    } else if (this.isKeyDown(this.actionDirectionKeys.right)) {
         actionMessage.content.direction = 'RIGHT'
-    } else if (this.actionDirectionKeys.up.isDown) {
+    } else if (this.isKeyDown(this.actionDirectionKeys.up)) {
         actionMessage.content.direction = 'UP'
-    } else if (this.actionDirectionKeys.down.isDown) {
+    } else if (this.isKeyDown(this.actionDirectionKeys.down)) {
         actionMessage.content.direction = 'DOWN'
     }
 
     if (actionMessage.content.direction !== '') {
         this.setCoolDown(this.actions[this.currentAction].id);
-        //TODO this.messageCallback(moveMessage);
         socket.send(JSON.stringify(actionMessage));
     }
+
+    //this.pressedKeys = [];
+}
+
+Hero.prototype.isKeyDown = function(key) {
+    var keyPressed = false;
+    for (var i = 0; i < this.pressedKeys.length; i++) {
+        var pressedKey = this.pressedKeys[i];
+        if(key.keyCode === pressedKey.keyCode) {
+            keyPressed = true;
+            // Tried to to this.pressedKeys = [] at the end of updateTo but it caused
+            // this.pressedKeys to be emptied at the wrong time. This is an ugly hack
+            // but at least it works...
+            this.pressedKeys.splice(i,1);
+            break;
+        }
+    }
+    return key.isDown || keyPressed;
 }
 
 //OVERRIDE THIS ONE

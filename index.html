@@ -19,7 +19,28 @@
         </div>
         <div id="canvas" class="canvas-container">
         </div>
-
+        <div class="popup js-popup">
+            <h1>Hackarena</h1>
+            <form class="js-form">
+                <label for="popup-room">Room name</label><input type="text" id="popup-room" placeholder="darwinbattle"></input><br>
+                <label for="popup-user">Username</label><input type="text" id="popup-user" placeholder="jeremy"></input><br>
+                <label for="popup-team">Team</label>
+                <select id="popup-team">
+                  <option value="blue">Blue</option>
+                  <option value="red">Red</option>
+                </select>
+                <label for="popup-class">Class</label>
+                <select id="popup-class">
+                  <option value="warrior">Warrior</option>
+                  <option value="mage">Mage</option>
+                  <option value="healer">Healer</option>
+                </select>
+                <br>
+                <div class="center-content">
+                    <input type="submit" value="Enter the arena">
+                </div>
+            </form>
+        </div>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.1.min.js"><\/script>')</script>
         <script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
