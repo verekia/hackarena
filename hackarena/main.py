@@ -113,6 +113,14 @@ class WebSocketHandler(SockJSConnection):
     def calculate_damage(self, spell):
         for team in self.teams[self.room].values():
             for player in team.players:
+                # If we're trying to heal and it's an enemy,
+                # or trying to damage and it's a friend, don't do anything
+                if (
+                    spell.damage < 0 and player.team != self.player.team
+                    or spell.damage > 0 and player.team == self.player.team
+                ):
+                    return
+
                 if self.calculate_intersection(player, spell):
                     player.hp -= spell.damage
                     if player.hp <= 0:
