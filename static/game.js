@@ -157,7 +157,7 @@ function updateSpells() {
     var tmpSpells = [];
     for (var i = 0; i < spellsData.length; i++) {
         var spellData = spellsData[i];
-        tmpSpells.push(new Spell(game, spellData['start_position'], spellData['end_position'], spellData['spell_type']));
+        tmpSpells.push(new Spell(game, spellData));
         hero.bringToTop();
         spellsData.splice(i, 1);
         i--;

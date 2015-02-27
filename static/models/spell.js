@@ -1,12 +1,14 @@
-Spell = function(game, startPosition, endPosition, type) {
+Spell = function(game, spellData) {
     //Phaser.Sprite.call(this, game, initX, initY, 'hero');
     Phaser.Graphics.call(this, game, 0, 0);
 
     this.game = game;
-    this.startPosition = startPosition;
-    this.endPosition = endPosition;
-    this.spellType = type;
+    this.startPosition = spellData['start_position'];
+    this.endPosition = spellData['end_position'];
+    this.spellType = spellData['spell_type'];
+    this.range = spellData['range'];
     this.game.add.existing(this);
+
 
     // Quick fix, hero anchor moved to top-left
     this.startPosition['x'] += 8;
@@ -64,7 +66,7 @@ Spell.prototype.drawFireball = function() {
 Spell.prototype.drawFireAOE = function() {
     this.lineStyle(5, 16729088, 0.8);
     this.beginFill(16769024, 0.5);
-    this.drawCircle(this.startPosition['x'], this.startPosition['y'], 80);
+    this.drawCircle(this.startPosition['x'], this.startPosition['y'], this.range * 2);
 }
 
 Spell.prototype.drawHeal = function() {
@@ -91,12 +93,12 @@ Spell.prototype.drawTankAttack = function() {
 Spell.prototype.drawTankAOE = function() {
     this.lineStyle(5, 11184810, 0.8);
     this.beginFill(13421772, 0.5);
-    this.drawCircle(this.startPosition['x'], this.startPosition['y'], 80);
+    this.drawCircle(this.startPosition['x'], this.startPosition['y'], this.range * 2);
 }
 
 
 Spell.prototype.update = function() {
-    if (this.spellType == 'TANK_AOE') {
+    if (this.spellType == 'TANK_AOE' || this.spellType == 'MAGE_AOE') {
 
     } else {
         if (this.direction === 'vertical') {
@@ -106,8 +108,6 @@ Spell.prototype.update = function() {
         }
         if (this.spellType == 'MAGE_DIRECT_DAMAGE') {
             this.drawFireball();
-        } else if (this.spellType == 'MAGE_AOE') {
-            this.drawFireAOE();
         } else if (this.spellType == 'HEALER_HEAL') {
             this.drawHeal();
         } else if (this.spellType == 'HEALER_DIRECT_DAMAGE') {
