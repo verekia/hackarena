@@ -27,6 +27,6 @@ class Player(BaseGameObject):
     def reset(self):
         self.hp = Classes.MAX_HP[self.character_class]
         self.position = {
-            'x': 2 if self.team == 'blue' else hackarena.constants.MAP_TILES_WIDTH - 2,
-            'y': 2 if self.team == 'blue' else hackarena.constants.MAP_TILES_HEIGHT - 2,
+            'x': 7 if self.team == 'blue' else hackarena.constants.MAP_TILES_WIDTH - 8,
+            'y': 8 if self.team == 'blue' else hackarena.constants.MAP_TILES_HEIGHT - 9,
         }
