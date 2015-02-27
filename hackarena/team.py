@@ -15,13 +15,9 @@ class Team(BaseGameObject):
             'y': 32 if color == 'blue' else hackarena.constants.MAP_TILES_HEIGHT * 16 - 64,
         }
         self.building_size = {
-            'width': 32,
-            'height': 32,
+            'width': 48,
+            'height': 80,
         }
-        # self.building_size = {
-        #     'width': 48,
-        #     'height': 80,
-        # }
         self.players = []
 
     def add_player(self, player):
