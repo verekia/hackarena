@@ -12,6 +12,7 @@ class Spell(BaseGameObject):
         self.direction = direction
         self.cooldown = SpellConstants.SPELL_COOLDOWNS[spell_type]
         self.damage = SpellConstants.SPELL_DMG[spell_type]
+        self.range = SpellConstants.SPELL_RANGES[spell_type]
 
     @classmethod
     def create_spell(cls, spell_type, position_x, position_y, direction):
