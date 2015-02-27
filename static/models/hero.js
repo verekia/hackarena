@@ -1,6 +1,7 @@
 Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
-    //Phaser.Sprite.call(this, game, initX, initY, 'hero');
     Phaser.Sprite.call(this, game, initX, initY, textureName);
+
+    this.receivedServerData = false;
 
     this.game = game;
     this.characterName = characterName;
@@ -150,8 +151,8 @@ Hero.prototype.updateTo = function() {
     var actionMessage = {
         type: 'FE_HERO_SPELL',
         content: {
-            position_x: this.x,
-            position_y: this.y,
+            position_x: Math.floor(this.x),
+            position_y: Math.floor(this.y),
             spell_type: this.actions[this.currentAction].id,
             direction: ''
         }
@@ -202,19 +203,42 @@ Hero.prototype.destroyHero = function() {
 }
 
 Hero.prototype.receiveMessage = function(message) {
-    this.x = message['position']['x'] * 16;
-    this.y = message['position']['y'] * 16;
+    var newX = message['position']['x'] * 16;
+    var newY = message['position']['y'] * 16;
+    if(!this.receivedServerData) {
+        this.x = newX;
+        this.y = newY;
 
-    this.nameText.x = this.x - this.nameText.width / 2;
-    this.nameText.y = this.y + 8;
+        this.nameText.x = newX - this.nameText.width / 2;
+        this.nameText.y = newY + 8;
 
-    this.lastPos.x = this.x;
-    this.lastPos.y = this.y;
+        this.healthBar.x = newX - 12;
+        this.healthBar.y = newY - 12;
+
+        this.receivedServerData = true;
+    } else {
+        var tweenDelay = 1000/60 * this.maxMoveDelay;
+        var tween = game.add.tween(this).to({
+            x : newX,
+            y : newY
+        }, tweenDelay).start();
+
+        var nameTextTween = game.add.tween(this.nameText).to({
+            x : newX - this.nameText.width / 2,
+            y : newY + 8
+        }, tweenDelay).start();
+
+        var healthBarTween = game.add.tween(this.healthBar).to({
+            x : newX - 12,
+            y : newY - 12
+        }, tweenDelay).start();
+    }
+
+    this.lastPos.x = newX;
+    this.lastPos.y = newY;
 
     this.health = message['hp'];
     this.maxHealth = message['MAX_HP'];
-    this.healthBar.x = this.x - 12;
-    this.healthBar.y = this.y - 12;
     this.healthBar.updateHealthBar(this.health, this.maxHealth);
 }
 
