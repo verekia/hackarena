@@ -136,7 +136,7 @@ class WebSocketHandler(SockJSConnection):
         # TODO: support different spell damages
         damage = 13
         if self.calculate_intersection_with_tower(spell):
-            enemy_team = 'red' if self.player.team else 'blue'
+            enemy_team = 'red' if self.player.team == 'blue' else 'blue'
             self.teams[self.room][enemy_team].building_hp -= damage
 
     def calculate_intersection(self, player, spell):
@@ -159,7 +159,7 @@ class WebSocketHandler(SockJSConnection):
 
     def calculate_intersection_with_tower(self, spell):
         # No friendly-fire on towers
-        enemy_team = 'red' if self.player.team else 'blue'
+        enemy_team = 'red' if self.player.team == 'blue' else 'blue'
         t = self.teams[self.room][enemy_team]
 
         spell_pixels = self.calculate_spell_hit_area(spell)
