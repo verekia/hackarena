@@ -53,7 +53,7 @@ class Spell(object):
 
     BIG_DMG = 35
     NORMAL_DMG = 20
-    HEALING = -15  # Need - here for easy calc
+    HEALING = -25  # Need - here for easy calc
 
     SPELL_DMG = {
         MAGE_DIRECT_DAMAGE: NORMAL_DMG,
