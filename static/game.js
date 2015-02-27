@@ -125,7 +125,7 @@ function updateTeam(team, teamData, teamName) {
     }
     for (var i = 0; i < activeUsers.length; i++) {
         if (!processedUsers[activeUsers[i]]) {
-            team[activeUsers[i]].destroy();
+            team[activeUsers[i]].destroyHero();
             delete team[activeUsers[i]];
         }
     }
