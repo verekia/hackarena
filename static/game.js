@@ -12,7 +12,6 @@ var spellsData = [];
 var redTower;
 var blueTower;
 var gameParams;
-var processingSpells = false;
 
 
 function parseUrlParams() {
@@ -119,7 +118,6 @@ function update() {
     }
     blueTeamData = [];
     redTeamData = [];
-    spellsData = [];
 
     // Update all heroes to flash when hit
     for (var key in blueTeam) {
@@ -156,20 +154,20 @@ function updateKills(blueKills, redKills) {
 }
 
 function updateSpells() {
-    processingSpells = true;
     var tmpSpells = [];
     for (var i = 0; i < spellsData.length; i++) {
         var spellData = spellsData[i];
         tmpSpells.push(new Spell(game, spellData['start_position'], spellData['end_position'], spellData['spell_type']));
         hero.bringToTop();
+        spellsData.splice(i, 1);
+        i--;
     }
     setTimeout(function(){
         for (var i = 0; i < tmpSpells.length; i++) {
             tmpSpells[i].destroy();
         }
         tmpSpells = null;
-        processingSpells = false;
-    }, 100);
+    }, 120);
 }
 
 function render() {
@@ -190,13 +188,11 @@ function setSocketListeners() {
         if (data['type'] == 'BE_ALL_MAIN_BROADCAST') {
             blueTeamData = data['content']['teams']['blue']['players'];
             redTeamData = data['content']['teams']['red']['players'];
-            if (!processingSpells){
-                spellsData = data['content']['spells'];
-            }
+            spellsData.push.apply(spellsData, data['content']['spells']);
             updateKills(
                 data['content']['teams']['blue']['kills'],
                 data['content']['teams']['red']['kills']
-            )
+            );
             if(!redTower) {
                 redTower = new Tower(
                     game,
