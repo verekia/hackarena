@@ -6,11 +6,31 @@ body {
     background: #3A1400;
 }
 
-.canvas-container {
-    width: 1008px;
-    height: 608px;
-    margin: auto;
+* {
+	font-family: 'Charlemagne Std', 'Lucida Grande', arial !important;
 }
+
+.canvas-container {
+    height: 608px;
+    text-align: center;
+}
+
+canvas {
+	display: inline-block !important;
+	border: 20px outset rgb(204, 34, 34);
+	border-radius: 14px;
+	box-shadow: rgba(0, 0, 0, 0.498039) 5px 5px 20px
+}
+
+.logo {
+	text-align: center;
+	margin-top: 0;
+	font-size: 48px;
+	color: #cf0b0b;
+	text-shadow: 1px 1px 1px #000;
+}
+
+
 
 .kills {
 	text-align: center;
@@ -70,11 +90,6 @@ body {
 	-webkit-box-shadow: 4px 4px 3px black;
 	-moz-box-shadow: 4px 4px 3px black;
 	box-shadow: 4px 4px 3px black;
-}
-
-.popup h1 {
-	text-align: center;
-	margin-top: 0;
 }
 
 .popup input[type=text] {
