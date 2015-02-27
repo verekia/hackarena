@@ -59,6 +59,13 @@ function preload() {
 
     game.load.atlasJSONHash('blood', '/static/sprites/blood/blood.png', '/static/sprites/blood/blood.json');
 
+    game.load.audio('railgun', '/static/sounds/railgun.mp3');
+    game.load.audio('heal', '/static/sounds/heal.mp3');
+    game.load.audio('spell', '/static/sounds/spell.wav');
+    game.load.audio('simple_spell', '/static/sounds/simple_spell.wav');
+    game.load.audio('punch', '/static/sounds/punch.wav');
+    game.load.audio('fatality', '/static/sounds/fatality.mp3');
+
 }
 
 function create() {
