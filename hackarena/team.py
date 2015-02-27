@@ -11,7 +11,7 @@ class Team(BaseGameObject):
         self.building_max_hp = 600
         self.building_hp = 600
         self.building_position = {
-            'x': 32 if color == 'blue' else hackarena.constants.MAP_TILES_WIDTH * 16 - 96,
+            'x': 40 if color == 'blue' else hackarena.constants.MAP_TILES_WIDTH * 16 - 88,
             'y': 32 if color == 'blue' else hackarena.constants.MAP_TILES_HEIGHT * 16 - 96,
         }
         self.building_size = {
