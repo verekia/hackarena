@@ -12,7 +12,7 @@ var spells = [];
 var spellsData = [];
 var redTower;
 var blueTower;
-var gameParams = parseUrlParams();
+var gameParams;
 
 
 function parseUrlParams() {
@@ -35,7 +35,7 @@ function parseUrlParams() {
 
     if (errorMessage) {
         alert(errorMessage + example);
-        throw errorMessage + example;
+        return null;
     }
 
     return {
@@ -50,6 +50,9 @@ function preload() {
     // Sets up map stuff
     game.load.tilemap('desertMap', '/static/desert.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', '/static/map.png');
+
+    game.load.image('tower_red', '/static/sprite/tower_red.png');
+    game.load.image('tower_blue', '/static/sprites/tower_blue.png');
 
     game.load.atlasJSONHash('ranger', '/static/sprites/ranger/ranger.png', '/static/sprites/ranger/ranger.json');
     game.load.atlasJSONHash('healer', '/static/sprites/healer/healer.png', '/static/sprites/healer/healer.json');
@@ -125,7 +128,7 @@ function updateTeam(team, teamData, teamName) {
     }
     for (var i = 0; i < activeUsers.length; i++) {
         if (!processedUsers[activeUsers[i]]) {
-            team[activeUsers[i]].destroy();
+            team[activeUsers[i]].destroyHero();
             delete team[activeUsers[i]];
         }
     }
@@ -203,10 +206,28 @@ function createHero(characterClass, username, team, isLocalPlayer) {
     return pom;
 }
 
-var game = new Phaser.Game(1008, 608, Phaser.AUTO, 'canvas', {
-    preload: preload,
-    create: create,
-    update: update,
-    render: render
+$('.js-form').submit(function(event){
+    event.preventDefault();
+    window.location = $('#popup-room').val() + '/' + $('#popup-user').val()
+        + '/' + $('#popup-team').val() + '/' + $('#popup-class').val();
 });
+
+if (location.pathname == '/') {
+    $('.js-popup').show();
+}
+else 
+{
+    gameParams = parseUrlParams();
+    if (!gameParams)
+        window.location = '/';
+    $('.ui').show();
+    var game = new Phaser.Game(1008, 608, Phaser.AUTO, 'canvas', {
+        preload: preload,
+        create: create,
+        update: update,
+        render: render
+    });
+}
+
+
 

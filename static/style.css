@@ -3,7 +3,6 @@ body {
 }
 
 .canvas-container {
-    background: #ccc;
     width: 1008px;
     height: 608px;
     margin: auto;
@@ -37,6 +36,7 @@ body {
 .ui {
 	text-align: center;
 	margin-bottom: 10px;
+	display: none;
 }
 
 .ui-wrapper {
@@ -46,4 +46,58 @@ body {
 	padding: 10px;
 	min-width: 160px;
 	box-shadow: inset 3px 3px 3px rgba(0, 0, 0, 0.5), 2px 2px #511F00;
+}
+
+.popup {
+	display: none;
+	-webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
+	width: 500px;
+	position: relative;
+	z-index: 2;
+	top: -500px;
+	background: white;
+	padding: 50px;
+	margin: auto;
+	font-family: sans-serif;
+	color: #444;
+	line-height: 40px;
+	-webkit-box-shadow: 4px 4px 3px black;
+	-moz-box-shadow: 4px 4px 3px black;
+	box-shadow: 4px 4px 3px black;
+}
+
+.popup h1 {
+	text-align: center;
+	margin-top: 0;
+}
+
+.popup input[type=text] {
+	padding: 4px;
+	font-size: 16px;
+	margin-left: 10px;
+}
+
+.popup select {
+	margin: 0 16px;
+	font-size: 16px;
+}
+
+.popup #popup-user {
+	margin-left: 23px;
+}
+
+.center-content {
+	text-align: center;
+}
+
+.popup input[type=submit] {
+	display: inline-block;
+	background: wheat;
+	border: 1px solid black;
+	font-size: 18px;
+	padding: 10px 16px;
+	border-radius: 3px;
+	margin-top: 30px;
 }
