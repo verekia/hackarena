@@ -104,7 +104,7 @@ class WebSocketHandler(SockJSConnection):
 
     def spell_request(self, spell_type, position_x, position_y, direction):
         if spell_type in self.player.available_spells:
-            spell = Spell.create_spell(spell_type, position_x, position_y, direction)
+            spell = Spell.create_spell(spell_type, position_x * MAP_TILE_SIZE, position_y * MAP_TILE_SIZE, direction)
 
             time_since_last_cast = (time.time() - self.player.spell_cast_times[spell_type]) * 1000
 
