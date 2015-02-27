@@ -17,8 +17,15 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
             down: this.game.input.keyboard.addKey(Phaser.Keyboard.S),
             right: this.game.input.keyboard.addKey(Phaser.Keyboard.D)
         };
+
         this.actionDirectionKeys = this.game.input.keyboard.createCursorKeys();
-        this.actionSwitchKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+        if(this.characterName === 'jbateson') {
+            // Joe needs the Q key to change spells because he's a special snowflake.
+            this.actionSwitchKey = this.game.input.keyboard.addKey(Phaser.Keyboard.Q);
+        } else {
+            this.actionSwitchKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        }
     }
 
     this.lastPos = {
