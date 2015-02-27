@@ -7,6 +7,7 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     this.characterName = characterName;
     this.team = team;
     this.isLocal = isLocal;
+    this.isAttacking = false;
     this.selectedSpellContainer = $('.js-selected-spell');
 
     // If local player, listen for keys.
@@ -60,16 +61,19 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     }
 
     this.health = this.maxHealth;
+    this.hitFlashFrame = 0;
+    this.maxHitFlashFrame = 15;
     this.actionCooldown = 0;
     this.moveDelay = 0;
     this.currentAction = 1;
+    this.lastDeath = -1;
 
     this.animations.add('UP', [9, 10, 11]);
     this.animations.add('DOWN', [0, 1, 2]);
     this.animations.add('LEFT', [3, 4, 5]);
     this.animations.add('RIGHT', [6, 7, 8]);
     this.animations.play('DOWN', 5, true);
-    this.anchor.set(0.5, 0.5);
+    this.anchor.set(0, 0);
 
     // Init collision detection stuff
     game.add.existing(this);
@@ -86,11 +90,11 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     };
 
     // Name text
-    this.nameText = game.add.text(this.x - 8, this.y + 8, this.characterName, this.nameStyle);
+    this.nameText = game.add.text(this.x, this.y + 16, this.characterName, this.nameStyle);
     this.nameText.x = this.x - this.nameText.width / 2;
 
     // Health bar
-    this.healthBar = new HealthBar(game, this.x - 12, this.y - 16, 24);
+    this.healthBar = new HealthBar(game, this.x - 4, this.y - 8, 24);
 
     game.physics.enable(this, Phaser.Physics.ARCADE);
 
@@ -144,6 +148,7 @@ Hero.prototype.updateTo = function() {
         } else {
             this.currentAction = 1;
         }
+        this.isAttacking = false;
     }
 
     this.selectedSpellContainer.html(this.actions[this.currentAction].display_name);
@@ -151,8 +156,8 @@ Hero.prototype.updateTo = function() {
     var actionMessage = {
         type: 'FE_HERO_SPELL',
         content: {
-            position_x: Math.floor(this.x),
-            position_y: Math.floor(this.y),
+            position_x: Math.round(this.x/16),
+            position_y: Math.round(this.y/16),
             spell_type: this.actions[this.currentAction].id,
             direction: ''
         }
@@ -168,12 +173,21 @@ Hero.prototype.updateTo = function() {
         actionMessage.content.direction = 'DOWN'
     }
 
-    if (actionMessage.content.direction !== '') {
+    if (!this.isAttacking && actionMessage.content.direction !== '') {
         this.setCoolDown(this.actions[this.currentAction].id);
         socket.send(JSON.stringify(actionMessage));
     }
 
     //this.pressedKeys = [];
+}
+
+Hero.prototype.updateHitFlash = function() {
+    if(this.hitFlashFrame > 0) {
+        this.alpha = Math.floor(this.hitFlashFrame/2) % 2;
+        this.hitFlashFrame--;
+    } else {
+        this.alpha = 1;
+    }
 }
 
 Hero.prototype.isKeyDown = function(key) {
@@ -209,11 +223,11 @@ Hero.prototype.receiveMessage = function(message) {
         this.x = newX;
         this.y = newY;
 
-        this.nameText.x = newX - this.nameText.width / 2;
-        this.nameText.y = newY + 8;
+        this.nameText.x = newX - this.nameText.width / 2 + 8;
+        this.nameText.y = newY + 16;
 
-        this.healthBar.x = newX - 12;
-        this.healthBar.y = newY - 12;
+        this.healthBar.x = newX - 4;
+        this.healthBar.y = newY - 4;
 
         this.receivedServerData = true;
     } else {
@@ -224,59 +238,36 @@ Hero.prototype.receiveMessage = function(message) {
         }, tweenDelay).start();
 
         var nameTextTween = game.add.tween(this.nameText).to({
-            x : newX - this.nameText.width / 2,
-            y : newY + 8
+            x : newX - this.nameText.width / 2 + 8,
+            y : newY + 16
         }, tweenDelay).start();
 
         var healthBarTween = game.add.tween(this.healthBar).to({
-            x : newX - 12,
-            y : newY - 12
+            x : newX - 4,
+            y : newY - 4
         }, tweenDelay).start();
+    }
+
+    // Check if the player just died.
+    if(this.lastDeath < 0) {
+        this.lastDeath = message['last_death'];
+    } else if(message['last_death'] > this.lastDeath) {
+        // Player is dead. Great sadness.
+        var bloodCenter = new Blood(game, this.x - 8, this.y - 8);
+        var bloodLeft = new Blood(game, this.x - 24, this.y - 8);
+        var bloodRight = new Blood(game, this.x + 8, this.y - 8);
+        var bloodTop = new Blood(game, this.x - 8, this.y - 24);
+        var bloodBottom = new Blood(game, this.x - 8, this.y + 8);
+        this.lastDeath = message['last_death'];
     }
 
     this.lastPos.x = newX;
     this.lastPos.y = newY;
 
+    if (this.health > message['hp']) {
+        this.hitFlashFrame = this.maxHitFlashFrame;
+    }
     this.health = message['hp'];
     this.maxHealth = message['MAX_HP'];
     this.healthBar.updateHealthBar(this.health, this.maxHealth);
-}
-
-Hero.prototype.update_smooth = function() {
-    if (this.moveDelay === 0) {
-        this.vel.x = 0;
-        this.vel.y = 0;
-
-        if (this.moveDirectionKeys.left.isDown) {
-            this.vel.x = -8;
-        } else if (this.moveDirectionKeys.right.isDown) {
-            this.vel.x = 8;
-        } else if (this.moveDirectionKeys.up.isDown) {
-            this.vel.y = -8;
-        } else if (this.moveDirectionKeys.down.isDown) {
-            this.vel.y = 8;
-        }
-
-        this.x += this.vel.x;
-        this.y += this.vel.y;
-
-        // Check if there's been a change
-        if (this.x !== this.lastPos.x || this.y !== this.lastPos.y) {
-            /*this.messageCallback({
-             type: 'FE_HERO_POSITION',
-             content: {
-             name: this.characterName,
-             x: this.pos.x,
-             y: this.pos.y
-             }
-             })*/
-
-            this.moveDelay = this.maxMoveDelay;
-
-            this.lastPos.x = this.x;
-            this.lastPos.y = this.y;
-        }
-    } else {
-        this.moveDelay--;
-    }
 }

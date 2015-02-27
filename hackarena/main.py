@@ -98,10 +98,13 @@ class WebSocketHandler(SockJSConnection):
             self.spell_request(content['spell_type'], content['position_x'], content['position_y'], content['direction'])
             self.broadcast_game_state()
             del self.spells[:]
+            if self.teams[self.room]['red'].building_hp <= 0 or self.teams[self.room]['blue'].building_hp <= 0:
+                del self.teams[self.room]
+                self.broadcast_game_state()
 
     def spell_request(self, spell_type, position_x, position_y, direction):
         if spell_type in self.player.available_spells:
-            spell = Spell.create_spell(spell_type, position_x, position_y, direction)
+            spell = Spell.create_spell(spell_type, position_x * MAP_TILE_SIZE, position_y * MAP_TILE_SIZE, direction)
 
             time_since_last_cast = (time.time() - self.player.spell_cast_times[spell_type]) * 1000
 
@@ -113,6 +116,14 @@ class WebSocketHandler(SockJSConnection):
     def calculate_damage(self, spell):
         for team in self.teams[self.room].values():
             for player in team.players:
+                # If we're trying to heal and it's an enemy,
+                # or trying to damage and it's a friend, don't do anything
+                if (
+                    spell.damage < 0 and player.team != self.player.team
+                    or spell.damage > 0 and player.team == self.player.team
+                ):
+                    continue
+
                 if self.calculate_intersection(player, spell):
                     player.hp -= spell.damage
                     if player.hp <= 0:
@@ -136,18 +147,9 @@ class WebSocketHandler(SockJSConnection):
         if player == self.player:
             return False
 
-        player_x = player.position['x']
-        player_y = player.position['y']
-        spell_start_x = spell.start_position['x']
-        spell_start_y = spell.start_position['y']
-        spell_end_x = spell.end_position['x']
-        spell_end_y = spell.end_position['y']
-        return bool(
-            (spell.direction == 'DOWN' and spell_start_y < player_y * MAP_TILE_SIZE < spell_end_y and player_x * MAP_TILE_SIZE == spell_start_x)
-            or (spell.direction == 'UP' and spell_start_y > player_y * MAP_TILE_SIZE > spell_end_y and player_x * MAP_TILE_SIZE == spell_start_x)
-            or (spell.direction == 'RIGHT' and spell_start_x < player_x * MAP_TILE_SIZE < spell_end_x and player_y * MAP_TILE_SIZE == spell_start_y)
-            or (spell.direction == 'LEFT' and spell_start_x > player_x * MAP_TILE_SIZE > spell_end_x and player_y * MAP_TILE_SIZE == spell_start_y)
-        )
+        spell_pixels = self.calculate_spell_hit_area(spell)
+
+        return (player.position['x'] * MAP_TILE_SIZE, player.position['y'] * MAP_TILE_SIZE) in spell_pixels
 
     def calculate_intersection_with_tower(self, spell):
         # No friendly-fire on towers
@@ -156,6 +158,7 @@ class WebSocketHandler(SockJSConnection):
 
         spell_pixels = self.calculate_spell_hit_area(spell)
 
+        # TODO: convert to general-purpose intersection method (using width=1 as default)
         tower_pixels_x = xrange(t.building_position['x'], t.building_position['x'] + t.building_size['width'] + MAP_TILE_SIZE, MAP_TILE_SIZE)
         tower_pixels_y = xrange(t.building_position['y'], t.building_position['y'] + t.building_size['height'] + MAP_TILE_SIZE, MAP_TILE_SIZE)
         for pixel in itertools.product(tower_pixels_x, tower_pixels_y):
@@ -174,11 +177,11 @@ class WebSocketHandler(SockJSConnection):
         if spell_start_x == spell_end_x:
             y0 = min(spell_start_y, spell_end_y)
             y1 = max(spell_start_y, spell_end_y)
-            hit_pixels = [(spell_start_x, y) for y in xrange(y0 + MAP_TILE_SIZE, y1, MAP_TILE_SIZE)]
+            hit_pixels = [(spell_start_x, y) for y in xrange(y0 + MAP_TILE_SIZE, y1 + MAP_TILE_SIZE, MAP_TILE_SIZE)]
         else:
             x0 = min(spell_start_x, spell_end_x)
             x1 = max(spell_start_x, spell_end_x)
-            hit_pixels = [(x, spell_start_y) for x in xrange(x0 + MAP_TILE_SIZE, x1, MAP_TILE_SIZE)]
+            hit_pixels = [(x, spell_start_y) for x in xrange(x0 + MAP_TILE_SIZE, x1 + MAP_TILE_SIZE, MAP_TILE_SIZE)]
 
         return hit_pixels
 
