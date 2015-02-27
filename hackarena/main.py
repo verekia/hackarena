@@ -98,6 +98,9 @@ class WebSocketHandler(SockJSConnection):
             self.spell_request(content['spell_type'], content['position_x'], content['position_y'], content['direction'])
             self.broadcast_game_state()
             del self.spells[:]
+            if self.teams[self.room]['red'].building_hp <= 0 or self.teams[self.room]['blue'].building_hp <= 0:
+                del self.teams[self.room]
+                self.broadcast_game_state()
 
     def spell_request(self, spell_type, position_x, position_y, direction):
         if spell_type in self.player.available_spells:
