@@ -80,9 +80,6 @@ function create() {
     layerObstacles = map.createLayer('obstacles');
     layerObstacles.resizeWorld();
 
-    blueTower = new Tower(game, 32, 32, 'blue');
-    redTower = new Tower(game, 1008 - (32 + 48), 608 - (32 + 80), 'red');
-
     //  The base of our hero
     hero = createHero(gameParams['characterClass'], gameParams['username'], gameParams['team'], true);
     if (hero.team === 'blue') {
@@ -200,6 +197,22 @@ function setSocketListeners() {
                 data['content']['teams']['blue']['kills'],
                 data['content']['teams']['red']['kills']
             )
+            if(!redTower) {
+                redTower = new Tower(
+                    game,
+                    data['content']['teams']['red']['building_position']['x'],
+                    data['content']['teams']['red']['building_position']['y'],
+                    'red'
+                );
+            }
+            if(!blueTower) {
+                blueTower = new Tower(
+                    game,
+                    data['content']['teams']['blue']['building_position']['x'],
+                    data['content']['teams']['blue']['building_position']['y'],
+                    'blue'
+                );
+            }
             redTower.updateTower(
                 data['content']['teams']['red']['building_hp'],
                 data['content']['teams']['red']['building_max_hp']
