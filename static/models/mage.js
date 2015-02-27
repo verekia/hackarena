@@ -13,3 +13,23 @@ Mage = function(game, characterName, team, isLocalPlayer, initX, initY) {
 
 Mage.prototype = Object.create(Hero.prototype);
 Mage.constructor = Mage;
+
+//OVERRIDE THIS ONE
+Mage.prototype.setCoolDown = function(attackType){
+    if(attackType == 'MAGE_DIRECT_DAMAGE'){
+        this.nameStyle.fill = '#666666';
+        this.nameText.setStyle(this.nameStyle);
+        setTimeout(function(){
+            this.nameStyle.fill = this.nameStyleFillDefault;
+            this.nameText.setStyle(this.nameStyle);
+        }.bind(this), 1000)
+    }
+    if(attackType == 'MAGE_AOE'){
+        this.nameStyle.fill = '#666666';
+        this.nameText.setStyle(this.nameStyle);
+        setTimeout(function(){
+            this.nameStyle.fill = this.nameStyleFillDefault;
+            this.nameText.setStyle(this.nameStyle);
+        }.bind(this), 5000)
+    }
+}

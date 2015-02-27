@@ -13,3 +13,23 @@ Healer = function(game, characterName, team, isLocalPlayer, initX, initY) {
 
 Healer.prototype = Object.create(Hero.prototype);
 Healer.constructor = Healer;
+
+//OVERRIDE THIS ONE
+Healer.prototype.setCoolDown = function(attackType){
+    if(attackType == 'HEALER_HEAL'){
+        this.nameStyle.fill = '#666666';
+        this.nameText.setStyle(this.nameStyle);
+        setTimeout(function(){
+            this.nameStyle.fill = this.nameStyleFillDefault;
+            this.nameText.setStyle(this.nameStyle);
+        }.bind(this), 1000)
+    }
+    if(attackType == 'HEALER_DIRECT_DAMAGE'){
+        this.nameStyle.fill = '#666666';
+        this.nameText.setStyle(this.nameStyle);
+        setTimeout(function(){
+            this.nameStyle.fill = this.nameStyleFillDefault;
+            this.nameText.setStyle(this.nameStyle);
+        }.bind(this), 1000)
+    }
+}
