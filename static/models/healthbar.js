@@ -21,6 +21,9 @@ HealthBar.prototype.updateHealthBar = function(x, y, health, maxHealth) {
 
 HealthBar.prototype.drawLine = function(ratio) {
     this.clear();
+    this.lineStyle(4, 0x000000, 1);
+    this.moveTo(0, 0);
+    this.lineTo(24, 0);
     this.lineStyle(4, 0x00BB00, 1);
     this.moveTo(0, 0);
     this.lineTo(24 * ratio, 0);
