@@ -15,7 +15,17 @@ Spell = function(game, startPosition, endPosition, type) {
     }
 
     if (this.spellType == 'TANK_AOE') {
-        this.drawSpellCircle();
+        this.drawTankAOE();
+    } else if (this.spellType == 'MAGE_DIRECT_DAMAGE') {
+        this.drawFireball();
+    } else if (this.spellType == 'MAGE_AOE') {
+        this.drawFireAOE();
+    } else if (this.spellType == 'HEALER_HEAL') {
+        this.drawHeal();
+    } else if (this.spellType == 'HEALER_DIRECT_DAMAGE') {
+        this.drawHealerDamage();
+    } else if (this.spellType == 'TANK_ATTACK') {
+        this.drawTankAttack();
     } else {
         this.drawLine();
     }
@@ -33,9 +43,49 @@ Spell.prototype.constructor = Spell;
 
 Spell.prototype.drawLine = function() {
     this.clear();
-    this.lineStyle(4, Math.floor(Math.random() * 16777215), 1);
+    this.lineStyle(5, Math.floor(Math.random() * 16777215), 1);
     this.moveTo(this.startPosition['x'], this.startPosition['y']);
     this.lineTo(this.endPosition['x'], this.endPosition['y']);
+}
+
+Spell.prototype.drawFireball = function() {
+    this.clear();
+    this.lineStyle(5, 16729088, 1);
+    this.moveTo(this.startPosition['x'], this.startPosition['y']);
+    this.lineTo(this.endPosition['x'], this.endPosition['y']);
+}
+
+Spell.prototype.drawFireAOE = function() {
+    this.lineStyle(5, 16729088, 0.8);
+    this.beginFill(16769024, 0.5);
+    this.drawCircle(this.startPosition['x'], this.startPosition['y'], 80);
+}
+
+Spell.prototype.drawHeal = function() {
+    this.clear();
+    this.lineStyle(5, 57876, 1);
+    this.moveTo(this.startPosition['x'], this.startPosition['y']);
+    this.lineTo(this.endPosition['x'], this.endPosition['y']);
+}
+
+Spell.prototype.drawHealerDamage = function() {
+    this.clear();
+    this.lineStyle(5, 16364288, 1);
+    this.moveTo(this.startPosition['x'], this.startPosition['y']);
+    this.lineTo(this.endPosition['x'], this.endPosition['y']);
+}
+
+Spell.prototype.drawTankAttack = function() {
+    this.clear();
+    this.lineStyle(5, 11184810, 1);
+    this.moveTo(this.startPosition['x'], this.startPosition['y']);
+    this.lineTo(this.endPosition['x'], this.endPosition['y']);
+}
+
+Spell.prototype.drawTankAOE = function() {
+    this.lineStyle(5, 11184810, 0.8);
+    this.beginFill(13421772, 0.5);
+    this.drawCircle(this.startPosition['x'], this.startPosition['y'], 80);
 }
 
 Spell.prototype.drawSpellCircle = function() {
@@ -53,7 +103,19 @@ Spell.prototype.update = function() {
         } else {
             this.startPosition.x = this.startPosition.x + (this.endPosition.x - this.startPosition.x) * ((this.frameMax - this.frame) / this.frameMax);
         }
-        this.drawLine();
+        if (this.spellType == 'MAGE_DIRECT_DAMAGE') {
+            this.drawFireball();
+        } else if (this.spellType == 'MAGE_AOE') {
+            this.drawFireAOE();
+        } else if (this.spellType == 'HEALER_HEAL') {
+            this.drawHeal();
+        } else if (this.spellType == 'HEALER_DIRECT_DAMAGE') {
+            this.drawHealerDamage();
+        } else if (this.spellType == 'TANK_ATTACK') {
+            this.drawTankAttack();
+        } else {
+            this.drawLine();
+        }
     }
     this.frame--;
 };
