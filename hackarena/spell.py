@@ -22,6 +22,12 @@ SPELL_RANGES = {
     constants.Spell.MAGE_AOE: 10 * 16,
 }
 
+SPELL_DMG = {
+    constants.Spell.BIG_DMG: 35,
+    constants.Spell.NORMAL_DMG: 20,
+    constants.Spell.HEALING: 15,
+}
+
 
 class Spell(BaseGameObject):
 

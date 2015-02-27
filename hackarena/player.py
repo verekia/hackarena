@@ -12,7 +12,7 @@ AVAILABLE_SPELLS = {
     Classes.HQ: [],
 }
 
-MAX_HP = 130
+MAX_HP = 100
 
 
 class Player(BaseGameObject):
