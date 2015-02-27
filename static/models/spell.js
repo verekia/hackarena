@@ -64,7 +64,7 @@ Spell.prototype.drawFireball = function() {
 Spell.prototype.drawFireAOE = function() {
     this.lineStyle(5, 16729088, 0.8);
     this.beginFill(16769024, 0.5);
-    this.drawCircle(this.startPosition['x'], this.startPosition['y'], 80);
+    this.drawCircle(this.startPosition['x'], this.startPosition['y'], 70);
 }
 
 Spell.prototype.drawHeal = function() {
@@ -91,7 +91,7 @@ Spell.prototype.drawTankAttack = function() {
 Spell.prototype.drawTankAOE = function() {
     this.lineStyle(5, 11184810, 0.8);
     this.beginFill(13421772, 0.5);
-    this.drawCircle(this.startPosition['x'], this.startPosition['y'], 80);
+    this.drawCircle(this.startPosition['x'], this.startPosition['y'], 70);
 }
 
 

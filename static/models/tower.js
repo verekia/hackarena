@@ -28,7 +28,9 @@ Tower.prototype.updateTower = function (health, maxHealth) {
     this.healthBar.updateHealthBar(this.health, this.maxHealth);
     if (health <= 0) {
         $('.js-game-over-team').html(this.otherTeamDisplay);
-        $('.js-game-over').show();
+        $('.js-game-over').show(function(){
+            this.healthBar.updateHealthBar(0, this.maxHealth);
+        }.bind(this));
         setTimeout(function(){
             window.location = '/';
         }, 3000);
