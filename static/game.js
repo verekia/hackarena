@@ -8,11 +8,11 @@ var blueTeam = {};
 var redTeam = {};
 var blueTeamData = [];
 var redTeamData = [];
-var spells = [];
 var spellsData = [];
 var redTower;
 var blueTower;
 var gameParams;
+var processingSpells = false;
 
 
 function parseUrlParams() {
@@ -79,9 +79,6 @@ function create() {
 
     layerObstacles = map.createLayer('obstacles');
     layerObstacles.resizeWorld();
-
-    blueTower = new Tower(game, 32, 32, 'blue');
-    redTower = new Tower(game, 1008 - (32 + 48), 608 - (32 + 80), 'red');
 
     //  The base of our hero
     hero = createHero(gameParams['characterClass'], gameParams['username'], gameParams['team'], true);
@@ -159,13 +156,20 @@ function updateKills(blueKills, redKills) {
 }
 
 function updateSpells() {
+    processingSpells = true;
     var tmpSpells = [];
     for (var i = 0; i < spellsData.length; i++) {
         var spellData = spellsData[i];
         tmpSpells.push(new Spell(game, spellData['start_position'], spellData['end_position'], spellData['spell_type']));
         hero.bringToTop();
     }
-    tmpSpells = null;
+    setTimeout(function(){
+        for (var i = 0; i < tmpSpells.length; i++) {
+            tmpSpells[i].destroy();
+        }
+        tmpSpells = null;
+        processingSpells = false;
+    }, 100);
 }
 
 function render() {
@@ -186,11 +190,29 @@ function setSocketListeners() {
         if (data['type'] == 'BE_ALL_MAIN_BROADCAST') {
             blueTeamData = data['content']['teams']['blue']['players'];
             redTeamData = data['content']['teams']['red']['players'];
+            //if (!processingSpells){
             spellsData = data['content']['spells'];
+            //}
             updateKills(
                 data['content']['teams']['blue']['kills'],
                 data['content']['teams']['red']['kills']
-            )
+            );
+            if(!redTower) {
+                redTower = new Tower(
+                    game,
+                    data['content']['teams']['red']['building_position']['x'],
+                    data['content']['teams']['red']['building_position']['y'],
+                    'red'
+                );
+            }
+            if(!blueTower) {
+                blueTower = new Tower(
+                    game,
+                    data['content']['teams']['blue']['building_position']['x'],
+                    data['content']['teams']['blue']['building_position']['y'],
+                    'blue'
+                );
+            }
             redTower.updateTower(
                 data['content']['teams']['red']['building_hp'],
                 data['content']['teams']['red']['building_max_hp']

@@ -7,6 +7,7 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     this.characterName = characterName;
     this.team = team;
     this.isLocal = isLocal;
+    this.isAttacking = false;
     this.selectedSpellContainer = $('.js-selected-spell');
 
     // If local player, listen for keys.
@@ -65,6 +66,7 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     this.actionCooldown = 0;
     this.moveDelay = 0;
     this.currentAction = 1;
+    this.lastDeath = -1;
 
     this.animations.add('UP', [9, 10, 11]);
     this.animations.add('DOWN', [0, 1, 2]);
@@ -146,6 +148,7 @@ Hero.prototype.updateTo = function() {
         } else {
             this.currentAction = 1;
         }
+        this.isAttacking = false;
     }
 
     this.selectedSpellContainer.html(this.actions[this.currentAction].display_name);
@@ -170,7 +173,7 @@ Hero.prototype.updateTo = function() {
         actionMessage.content.direction = 'DOWN'
     }
 
-    if (actionMessage.content.direction !== '') {
+    if (!this.isAttacking && actionMessage.content.direction !== '') {
         this.setCoolDown(this.actions[this.currentAction].id);
         socket.send(JSON.stringify(actionMessage));
     }
@@ -245,11 +248,23 @@ Hero.prototype.receiveMessage = function(message) {
         }, tweenDelay).start();
     }
 
+    // Check if the player just died.
+    if(this.lastDeath < 0) {
+        this.lastDeath = message['last_death'];
+    } else if(message['last_death'] > this.lastDeath) {
+        // Player is dead. Great sadness.
+        var bloodCenter = new Blood(game, this.x - 8, this.y - 8);
+        var bloodLeft = new Blood(game, this.x - 24, this.y - 8);
+        var bloodRight = new Blood(game, this.x + 8, this.y - 8);
+        var bloodTop = new Blood(game, this.x - 8, this.y - 24);
+        var bloodBottom = new Blood(game, this.x - 8, this.y + 8);
+        this.lastDeath = message['last_death'];
+    }
+
     this.lastPos.x = newX;
     this.lastPos.y = newY;
 
     if (this.health > message['hp']) {
-        debugger;
         this.hitFlashFrame = this.maxHitFlashFrame;
     }
     this.health = message['hp'];

@@ -35,7 +35,7 @@ Spell = function(game, startPosition, endPosition, type) {
 
     this.maxWidth = this.width;
     this.maxHeight = this.height;
-    setTimeout(this.destroy.bind(this), 100);
+    //setTimeout(this.destroy.bind(this), 100);
 };
 
 Spell.prototype = Object.create(Phaser.Graphics.prototype);
@@ -88,11 +88,6 @@ Spell.prototype.drawTankAOE = function() {
     this.drawCircle(this.startPosition['x'], this.startPosition['y'], 80);
 }
 
-Spell.prototype.drawSpellCircle = function() {
-    this.lineStyle(5, Math.floor(Math.random() * 16777215), 0.8);
-    this.beginFill(0xFFFF0B, 0.5);
-    this.drawCircle(this.startPosition['x'], this.startPosition['y'], 80);
-}
 
 Spell.prototype.update = function() {
     if (this.spellType == 'TANK_AOE') {
@@ -119,7 +114,3 @@ Spell.prototype.update = function() {
     }
     this.frame--;
 };
-
-//Spell.prototype.destroy = function() {
-//    this.clear();
-//};
