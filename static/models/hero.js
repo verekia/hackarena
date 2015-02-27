@@ -151,8 +151,8 @@ Hero.prototype.updateTo = function() {
     var actionMessage = {
         type: 'FE_HERO_SPELL',
         content: {
-            position_x: this.x,
-            position_y: this.y,
+            position_x: Math.floor(this.x),
+            position_y: Math.floor(this.y),
             spell_type: this.actions[this.currentAction].id,
             direction: ''
         }
