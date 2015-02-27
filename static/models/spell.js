@@ -8,6 +8,12 @@ Spell = function(game, startPosition, endPosition, type) {
     this.spellType = type;
     this.game.add.existing(this);
 
+    // Quick fix, hero anchor moved to top-left
+    this.startPosition['x'] += 8;
+    this.startPosition['y'] += 8;
+    this.endPosition['x'] += 8;
+    this.endPosition['y'] += 8;
+
     if (this.startPosition['x'] === this.endPosition['x']) {
         this.direction = 'vertical';
     } else {
@@ -58,7 +64,7 @@ Spell.prototype.drawFireball = function() {
 Spell.prototype.drawFireAOE = function() {
     this.lineStyle(5, 16729088, 0.8);
     this.beginFill(16769024, 0.5);
-    this.drawCircle(this.startPosition['x'], this.startPosition['y'], 80);
+    this.drawCircle(this.startPosition['x'], this.startPosition['y'], 70);
 }
 
 Spell.prototype.drawHeal = function() {
@@ -85,7 +91,7 @@ Spell.prototype.drawTankAttack = function() {
 Spell.prototype.drawTankAOE = function() {
     this.lineStyle(5, 11184810, 0.8);
     this.beginFill(13421772, 0.5);
-    this.drawCircle(this.startPosition['x'], this.startPosition['y'], 80);
+    this.drawCircle(this.startPosition['x'], this.startPosition['y'], 70);
 }
 
 

@@ -27,7 +27,3 @@ HealthBar.prototype.drawLine = function(ratio) {
     this.moveTo(0, 0);
     this.lineTo(this.w * ratio, 0);
 }
-
-HealthBar.prototype.destroy = function() {
-    this.clear();
-};

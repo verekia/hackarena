@@ -73,7 +73,7 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     this.animations.add('LEFT', [3, 4, 5]);
     this.animations.add('RIGHT', [6, 7, 8]);
     this.animations.play('DOWN', 5, true);
-    this.anchor.set(0.5, 0.5);
+    this.anchor.set(0, 0);
 
     // Init collision detection stuff
     game.add.existing(this);
@@ -90,11 +90,11 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     };
 
     // Name text
-    this.nameText = game.add.text(this.x - 8, this.y + 8, this.characterName, this.nameStyle);
+    this.nameText = game.add.text(this.x, this.y + 16, this.characterName, this.nameStyle);
     this.nameText.x = this.x - this.nameText.width / 2;
 
     // Health bar
-    this.healthBar = new HealthBar(game, this.x - 12, this.y - 16, 24);
+    this.healthBar = new HealthBar(game, this.x - 4, this.y - 8, 24);
 
     game.physics.enable(this, Phaser.Physics.ARCADE);
 
@@ -223,11 +223,11 @@ Hero.prototype.receiveMessage = function(message) {
         this.x = newX;
         this.y = newY;
 
-        this.nameText.x = newX - this.nameText.width / 2;
-        this.nameText.y = newY + 8;
+        this.nameText.x = newX - this.nameText.width / 2 + 8;
+        this.nameText.y = newY + 16;
 
-        this.healthBar.x = newX - 12;
-        this.healthBar.y = newY - 12;
+        this.healthBar.x = newX - 4;
+        this.healthBar.y = newY - 4;
 
         this.receivedServerData = true;
     } else {
@@ -238,13 +238,13 @@ Hero.prototype.receiveMessage = function(message) {
         }, tweenDelay).start();
 
         var nameTextTween = game.add.tween(this.nameText).to({
-            x : newX - this.nameText.width / 2,
-            y : newY + 8
+            x : newX - this.nameText.width / 2 + 8,
+            y : newY + 16
         }, tweenDelay).start();
 
         var healthBarTween = game.add.tween(this.healthBar).to({
-            x : newX - 12,
-            y : newY - 12
+            x : newX - 4,
+            y : newY - 4
         }, tweenDelay).start();
     }
 
@@ -270,43 +270,4 @@ Hero.prototype.receiveMessage = function(message) {
     this.health = message['hp'];
     this.maxHealth = message['MAX_HP'];
     this.healthBar.updateHealthBar(this.health, this.maxHealth);
-}
-
-Hero.prototype.update_smooth = function() {
-    if (this.moveDelay === 0) {
-        this.vel.x = 0;
-        this.vel.y = 0;
-
-        if (this.moveDirectionKeys.left.isDown) {
-            this.vel.x = -8;
-        } else if (this.moveDirectionKeys.right.isDown) {
-            this.vel.x = 8;
-        } else if (this.moveDirectionKeys.up.isDown) {
-            this.vel.y = -8;
-        } else if (this.moveDirectionKeys.down.isDown) {
-            this.vel.y = 8;
-        }
-
-        this.x += this.vel.x;
-        this.y += this.vel.y;
-
-        // Check if there's been a change
-        if (this.x !== this.lastPos.x || this.y !== this.lastPos.y) {
-            /*this.messageCallback({
-             type: 'FE_HERO_POSITION',
-             content: {
-             name: this.characterName,
-             x: this.pos.x,
-             y: this.pos.y
-             }
-             })*/
-
-            this.moveDelay = this.maxMoveDelay;
-
-            this.lastPos.x = this.x;
-            this.lastPos.y = this.y;
-        }
-    } else {
-        this.moveDelay--;
-    }
 }
