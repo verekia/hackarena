@@ -12,7 +12,7 @@ var spells = [];
 var spellsData = [];
 var redTower;
 var blueTower;
-var gameParams = parseUrlParams();
+var gameParams;
 
 
 function parseUrlParams() {
@@ -35,7 +35,7 @@ function parseUrlParams() {
 
     if (errorMessage) {
         alert(errorMessage + example);
-        throw errorMessage + example;
+        return null;
     }
 
     return {
@@ -203,10 +203,28 @@ function createHero(characterClass, username, team, isLocalPlayer) {
     return pom;
 }
 
-var game = new Phaser.Game(1008, 608, Phaser.AUTO, 'canvas', {
-    preload: preload,
-    create: create,
-    update: update,
-    render: render
+$('.js-form').submit(function(event){
+    event.preventDefault();
+    window.location = $('#popup-room').val() + '/' + $('#popup-user').val()
+        + '/' + $('#popup-team').val() + '/' + $('#popup-class').val();
 });
+
+if (location.pathname == '/') {
+    $('.js-popup').show();
+}
+else 
+{
+    gameParams = parseUrlParams();
+    if (!gameParams)
+        window.location = '/';
+    $('.ui').show();
+    var game = new Phaser.Game(1008, 608, Phaser.AUTO, 'canvas', {
+        preload: preload,
+        create: create,
+        update: update,
+        render: render
+    });
+}
+
+
 
