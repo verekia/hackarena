@@ -7,6 +7,7 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     this.characterName = characterName;
     this.team = team;
     this.isLocal = isLocal;
+    this.isAttacking = false;
     this.selectedSpellContainer = $('.js-selected-spell');
 
     // If local player, listen for keys.
@@ -171,7 +172,7 @@ Hero.prototype.updateTo = function() {
         actionMessage.content.direction = 'DOWN'
     }
 
-    if (actionMessage.content.direction !== '') {
+    if (!this.isAttacking && actionMessage.content.direction !== '') {
         this.setCoolDown(this.actions[this.currentAction].id);
         socket.send(JSON.stringify(actionMessage));
     }
