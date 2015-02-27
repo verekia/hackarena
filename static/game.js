@@ -8,11 +8,11 @@ var blueTeam = {};
 var redTeam = {};
 var blueTeamData = [];
 var redTeamData = [];
-var spells = [];
 var spellsData = [];
 var redTower;
 var blueTower;
 var gameParams;
+var processingSpells = false;
 
 
 function parseUrlParams() {
@@ -159,13 +159,20 @@ function updateKills(blueKills, redKills) {
 }
 
 function updateSpells() {
+    processingSpells = true;
     var tmpSpells = [];
     for (var i = 0; i < spellsData.length; i++) {
         var spellData = spellsData[i];
         tmpSpells.push(new Spell(game, spellData['start_position'], spellData['end_position'], spellData['spell_type']));
         hero.bringToTop();
     }
-    tmpSpells = null;
+    setTimeout(function(){
+        for (var i = 0; i < tmpSpells.length; i++) {
+            tmpSpells[i].destroy();
+        }
+        tmpSpells = null;
+        processingSpells = false;
+    }, 100);
 }
 
 function render() {
@@ -186,7 +193,9 @@ function setSocketListeners() {
         if (data['type'] == 'BE_ALL_MAIN_BROADCAST') {
             blueTeamData = data['content']['teams']['blue']['players'];
             redTeamData = data['content']['teams']['red']['players'];
-            spellsData = data['content']['spells'];
+            if (!processingSpells){
+                spellsData = data['content']['spells'];
+            }
             updateKills(
                 data['content']['teams']['blue']['kills'],
                 data['content']['teams']['red']['kills']

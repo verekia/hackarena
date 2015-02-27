@@ -16,12 +16,14 @@ Warrior.constructor = Warrior;
 
 //OVERRIDE THIS ONE
 Warrior.prototype.setCoolDown = function(attackType){
+    this.isAttacking = true;
     if(attackType == 'TANK_ATTACK'){
         this.nameStyle.fill = '#666666';
         this.nameText.setStyle(this.nameStyle);
         setTimeout(function(){
             this.nameStyle.fill = this.nameStyleFillDefault;
             this.nameText.setStyle(this.nameStyle);
+            this.isAttacking = false;
         }.bind(this), 1000)
     }
     if(attackType == 'TANK_AOE'){
@@ -30,6 +32,7 @@ Warrior.prototype.setCoolDown = function(attackType){
         setTimeout(function(){
             this.nameStyle.fill = this.nameStyleFillDefault;
             this.nameText.setStyle(this.nameStyle);
+            this.isAttacking = false;
         }.bind(this), 5000)
     }
 }

@@ -16,12 +16,14 @@ Healer.constructor = Healer;
 
 //OVERRIDE THIS ONE
 Healer.prototype.setCoolDown = function(attackType){
+    this.isAttacking = true;
     if(attackType == 'HEALER_HEAL'){
         this.nameStyle.fill = '#666666';
         this.nameText.setStyle(this.nameStyle);
         setTimeout(function(){
             this.nameStyle.fill = this.nameStyleFillDefault;
             this.nameText.setStyle(this.nameStyle);
+            this.isAttacking = false;
         }.bind(this), 1000)
     }
     if(attackType == 'HEALER_DIRECT_DAMAGE'){
@@ -30,6 +32,7 @@ Healer.prototype.setCoolDown = function(attackType){
         setTimeout(function(){
             this.nameStyle.fill = this.nameStyleFillDefault;
             this.nameText.setStyle(this.nameStyle);
+            this.isAttacking = false;
         }.bind(this), 1000)
     }
 }
