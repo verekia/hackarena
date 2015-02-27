@@ -148,6 +148,7 @@ Hero.prototype.updateTo = function() {
         } else {
             this.currentAction = 1;
         }
+        this.isAttacking = false;
     }
 
     this.selectedSpellContainer.html(this.actions[this.currentAction].display_name);
