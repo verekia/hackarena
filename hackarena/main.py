@@ -138,7 +138,6 @@ class WebSocketHandler(SockJSConnection):
         if self.calculate_intersection_with_tower(spell):
             enemy_team = 'red' if self.player.team else 'blue'
             self.teams[self.room][enemy_team].building_hp -= damage
-            print 'tower hit!', self.teams[self.room][player.team].building_hp
 
     def calculate_intersection(self, player, spell):
         # Stop hitting yourself!
