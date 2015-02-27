@@ -115,13 +115,15 @@ Hero.prototype.updateTo = function() {
         }
     }
 
+    $('.js-selected-spell').html(this.actions[this.currentAction].display_name);
+
     if (this.actionCooldown === 0) {
         var actionMessage = {
             type: 'FE_HERO_SPELL',
             content: {
                 position_x: this.x,
                 position_y: this.y,
-                spell_type: this.actions[this.currentAction],
+                spell_type: this.actions[this.currentAction].id,
                 direction: ''
             }
         }

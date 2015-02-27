@@ -13,8 +13,7 @@ body {
 	text-align: center;
 	color: white;
 	font-family: sans-serif;
-	font-size: 40px;
-	margin-top: 30px;
+	font-size: 30px;
 	text-shadow: 1px 1px black;
 }
 
@@ -24,4 +23,27 @@ body {
 
 .kills-red {
 	color: #FF3737;
+}
+
+.selected-spell {
+	text-align: center;
+	color: white;
+	font-family: sans-serif;
+	font-size: 20px;
+	margin-top: 10px;
+	text-shadow: 1px 1px black;
+}
+
+.ui {
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+.ui-wrapper {
+	display: inline-block;
+	background: #280E00;
+	border-radius: 30px;
+	padding: 10px;
+	min-width: 160px;
+	box-shadow: inset 3px 3px 3px rgba(0, 0, 0, 0.5), 2px 2px #511F00;
 }

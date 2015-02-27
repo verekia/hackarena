@@ -4,8 +4,8 @@ Healer = function(game, characterName, team, isLocalPlayer, initX, initY) {
     this.maxMoveDelay = 8;
 
     this.actions = {
-        1: 'HEALER_HEAL',
-        2: 'HEALER_DIRECT_DAMAGE'
+        1: {id: 'HEALER_HEAL', display_name:'Heal'},
+        2: {id: 'HEALER_DIRECT_DAMAGE', display_name:'Laser'}
     }
 
     Hero.call(this, game, characterName, team, isLocalPlayer, initX, initY, 'healer');
