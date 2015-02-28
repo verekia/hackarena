@@ -4,6 +4,7 @@ var map;
 var layer;
 var layerObstacles;
 var socket;
+var lobbySocket;
 var blueTeam = {};
 var redTeam = {};
 var blueTeamData = [];
@@ -249,6 +250,19 @@ function createHero(characterClass, username, team, isLocalPlayer) {
     return pom;
 }
 
+function updateRoomList(rooms) {
+    $('#room-list').empty();
+    for(var i = 0; i < rooms.length; i++) {
+        var room = rooms[i];
+        if(room.name !== 'lobby') {
+            var roomString = room.name + ' - ' + room.players;
+            $('#room-list').append(
+                $('<li>').text(roomString)
+            );
+        }   
+    }
+}
+
 $('.js-form').submit(function(event){
     event.preventDefault();
     window.location = $('#popup-room').val() + '/' + $('#popup-user').val()
@@ -257,6 +271,22 @@ $('.js-form').submit(function(event){
 
 if (location.pathname == '/') {
     $('.js-popup').show();
+
+    var websocketURL = 'http://' + window.location.host + '/websocket';
+    lobbySocket = new SockJS(websocketURL);
+
+    lobbySocket.onopen = function() {
+        this.send(JSON.stringify({
+            type: 'FE_ROOM_LIST'
+        }));
+    };
+
+    lobbySocket.onmessage = function(evt) {
+        var data = JSON.parse(evt.data);
+        if (data['type'] == 'BE_ROOM_LIST') {
+            updateRoomList(data['content']['rooms'])
+        }
+    }
 }
 else 
 {

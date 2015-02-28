@@ -6,10 +6,12 @@ class BEMessages(object):
     ALL_MAIN_BROADCAST = 'BE_ALL_MAIN_BROADCAST'
     PING_BROADCAST = 'PING_BROADCAST'
     WELCOME_BROADCAST = 'BE_WELCOME_BROADCAST'
+    ROOM_LIST = 'BE_ROOM_LIST'
 
 
 class FEMessages(object):
     FE_PING = 'FE_PING'
+    FE_ROOM_LIST = 'FE_ROOM_LIST'
     FE_JOIN_ROOM = 'FE_JOIN_ROOM'
     FE_HERO_MOVE = 'FE_HERO_MOVE'
     FE_HERO_SPELL = 'FE_HERO_SPELL'
@@ -51,3 +53,8 @@ class PingBroadcast(Broadcast):
 class WelcomeBroadcast(Broadcast):
 
     message_type = BEMessages.WELCOME_BROADCAST
+
+
+class RoomListBroadcast(Broadcast):
+
+    message_type = BEMessages.ROOM_LIST

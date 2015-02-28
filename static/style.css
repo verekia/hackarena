@@ -92,18 +92,18 @@ canvas {
 	box-shadow: 4px 4px 3px black;
 }
 
-.popup input[type=text] {
+.join-form input[type=text] {
 	padding: 4px;
 	font-size: 16px;
 	margin-left: 10px;
 }
 
-.popup select {
+.join-form select {
 	margin: 0 16px;
 	font-size: 16px;
 }
 
-.popup #popup-user {
+.join-form #popup-user {
 	margin-left: 23px;
 }
 
@@ -111,7 +111,7 @@ canvas {
 	text-align: center;
 }
 
-.popup input[type=submit] {
+.join-form input[type=submit] {
 	display: inline-block;
 	background: wheat;
 	border: 1px solid black;
@@ -119,6 +119,10 @@ canvas {
 	padding: 10px 16px;
 	border-radius: 3px;
 	margin-top: 30px;
+}
+
+.room-list ul {
+	list-style-type: none;
 }
 
 .game-over {

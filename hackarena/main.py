@@ -6,6 +6,7 @@ from hackarena.team import Team
 from hackarena.messages import AllMainBroadcast
 from hackarena.messages import FEMessages
 from hackarena.messages import WelcomeBroadcast
+from hackarena.messages import RoomListBroadcast
 from hackarena.utilities import Utilities
 from hackarena.constants import MAP_TILES_WIDTH
 from hackarena.constants import MAP_TILES_HEIGHT
@@ -66,6 +67,17 @@ class WebSocketHandler(SockJSConnection):
         except:
             print 'Received unsupported message type'
             return
+
+        if data['type'] == FEMessages.FE_ROOM_LIST:
+            rooms = []
+            for room in self.clients:
+                rooms.append({
+                    'name': room,
+                    'players': len(self.clients[room].keys())
+                })
+            RoomListBroadcast(
+                rooms=rooms
+            ).send(self)
 
         if data['type'] == FEMessages.FE_JOIN_ROOM:
             new_room = data['content']['room']
