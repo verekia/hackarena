@@ -110,7 +110,6 @@ class WebSocketHandler(SockJSConnection):
                 message=data['content']['message']
             ).broadcast_to_all(self)
 
-
     def spell_request(self, spell_type, position_x, position_y, direction):
         if spell_type in self.player.available_spells:
             spell = Spell.create_spell(spell_type, position_x * MAP_TILE_SIZE, position_y * MAP_TILE_SIZE, direction)
