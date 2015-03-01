@@ -109,7 +109,6 @@ class WebSocketHandler(SockJSConnection):
                 username=data['content']['username'],
                 message=data['content']['message']
             ).broadcast_to_all(self)
-            print data['content']['message']
 
 
     def spell_request(self, spell_type, position_x, position_y, direction):
