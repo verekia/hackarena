@@ -6,10 +6,12 @@ class BEMessages(object):
     ALL_MAIN_BROADCAST = 'BE_ALL_MAIN_BROADCAST'
     PING_BROADCAST = 'PING_BROADCAST'
     WELCOME_BROADCAST = 'BE_WELCOME_BROADCAST'
+    SEND_CHAT = 'BE_SEND_CHAT'
 
 
 class FEMessages(object):
     FE_PING = 'FE_PING'
+    FE_SEND_CHAT = 'FE_SEND_CHAT'
     FE_JOIN_ROOM = 'FE_JOIN_ROOM'
     FE_HERO_MOVE = 'FE_HERO_MOVE'
     FE_HERO_SPELL = 'FE_HERO_SPELL'
@@ -51,3 +53,8 @@ class PingBroadcast(Broadcast):
 class WelcomeBroadcast(Broadcast):
 
     message_type = BEMessages.WELCOME_BROADCAST
+
+
+class SendChatBroadcast(Broadcast):
+
+    message_type = BEMessages.SEND_CHAT
