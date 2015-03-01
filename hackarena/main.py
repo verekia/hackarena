@@ -6,6 +6,7 @@ from hackarena.team import Team
 from hackarena.messages import AllMainBroadcast
 from hackarena.messages import FEMessages
 from hackarena.messages import WelcomeBroadcast
+from hackarena.messages import SendChatBroadcast
 from hackarena.utilities import Utilities
 from hackarena.constants import MAP_TILES_WIDTH
 from hackarena.constants import MAP_TILES_HEIGHT
@@ -102,6 +103,12 @@ class WebSocketHandler(SockJSConnection):
             if self.teams[self.room]['red'].building_hp <= 0 or self.teams[self.room]['blue'].building_hp <= 0:
                 del self.teams[self.room]
                 self.broadcast_game_state()
+
+        if data['type'] == FEMessages.FE_SEND_CHAT:
+            SendChatBroadcast(
+                username=data['content']['username'],
+                message=data['content']['message']
+            ).broadcast_to_all(self)
 
     def spell_request(self, spell_type, position_x, position_y, direction):
         if spell_type in self.player.available_spells:

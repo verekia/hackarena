@@ -12,34 +12,13 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
 
     // If local player, listen for keys.
     if (this.isLocal) {
-        //game.input.keyboard.onDownCallback(this.handleKeyDown.bind(this));
-        this.moveDirectionKeys = {
-            up: this.game.input.keyboard.addKey(Phaser.Keyboard.W),
-            left: this.game.input.keyboard.addKey(Phaser.Keyboard.A),
-            down: this.game.input.keyboard.addKey(Phaser.Keyboard.S),
-            right: this.game.input.keyboard.addKey(Phaser.Keyboard.D)
-        };
-
-        this.actionDirectionKeys = this.game.input.keyboard.createCursorKeys();
-
-        if(this.characterName === 'jbateson') {
-            // Joe needs the Q key to change spells because he's a special snowflake.
-            this.actionSwitchKey = this.game.input.keyboard.addKey(Phaser.Keyboard.Q);
-        } else {
-            this.actionSwitchKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        }
+        this.enableKeys();
 
         // Track all keys that were pressed between frames to prevent key presses being lost.
         // Make a list of ALL KEYS and gives them each a callback when pressed for any duration
         // which adds them to this.pressedKeys, a list of all keys pressed between frames.
         this.pressedKeys = [];
-        this.allKeys = [];
-        for (var key in this.moveDirectionKeys) {
-            this.allKeys.push(this.moveDirectionKeys[key]);
-        }
-        for (var key in this.actionDirectionKeys) {
-            this.allKeys.push(this.actionDirectionKeys[key]);
-        }
+        this.allKeys = this.getAllKeys();
 
         var addPressedKey = function(event) {
             this.pressedKeys.push(event);
@@ -105,6 +84,43 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
 
 Hero.prototype = Object.create(Phaser.Sprite.prototype);
 Hero.prototype.constructor = Hero;
+
+Hero.prototype.enableKeys = function() {
+    this.moveDirectionKeys = {
+        up: this.game.input.keyboard.addKey(Phaser.Keyboard.W),
+        left: this.game.input.keyboard.addKey(Phaser.Keyboard.A),
+        down: this.game.input.keyboard.addKey(Phaser.Keyboard.S),
+        right: this.game.input.keyboard.addKey(Phaser.Keyboard.D)
+    };
+
+    this.actionDirectionKeys = this.game.input.keyboard.createCursorKeys();
+
+    if(this.characterName === 'jbateson') {
+        // Joe needs the Q key to change spells because he's a special snowflake.
+        this.actionSwitchKey = this.game.input.keyboard.addKey(Phaser.Keyboard.Q);
+    } else {
+        this.actionSwitchKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    }
+}
+
+Hero.prototype.disableKeys = function() {
+    var allKeys = this.getAllKeys();
+    for(var i = 0; i < allKeys.length; i++) {
+        this.game.input.keyboard.removeKey(allKeys[i].keyCode);
+    }
+}
+
+Hero.prototype.getAllKeys = function() {
+    var allKeys = [];
+    for (var key in this.moveDirectionKeys) {
+        allKeys.push(this.moveDirectionKeys[key]);
+    }
+    for (var key in this.actionDirectionKeys) {
+        allKeys.push(this.actionDirectionKeys[key]);
+    }
+    allKeys.push(this.actionSwitchKey);
+    return allKeys;
+}
 
 Hero.prototype.updateTo = function() {
     if (this.moveDelay === 0) {
