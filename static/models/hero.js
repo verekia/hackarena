@@ -86,12 +86,24 @@ Hero.prototype = Object.create(Phaser.Sprite.prototype);
 Hero.prototype.constructor = Hero;
 
 Hero.prototype.enableKeys = function() {
-    this.moveDirectionKeys = {
-        up: this.game.input.keyboard.addKey(Phaser.Keyboard.W),
-        left: this.game.input.keyboard.addKey(Phaser.Keyboard.A),
-        down: this.game.input.keyboard.addKey(Phaser.Keyboard.S),
-        right: this.game.input.keyboard.addKey(Phaser.Keyboard.D)
-    };
+
+    // Use AZERTY layout if character name starts with 'az'
+    // so gross, but don't want to spend much time on that hah.
+    if(this.characterName.substring(0, 2) === 'az') {
+        this.moveDirectionKeys = {
+            up: this.game.input.keyboard.addKey(Phaser.Keyboard.Z),
+            left: this.game.input.keyboard.addKey(Phaser.Keyboard.Q),
+            down: this.game.input.keyboard.addKey(Phaser.Keyboard.S),
+            right: this.game.input.keyboard.addKey(Phaser.Keyboard.D)
+        };
+    } else {
+        this.moveDirectionKeys = {
+            up: this.game.input.keyboard.addKey(Phaser.Keyboard.W),
+            left: this.game.input.keyboard.addKey(Phaser.Keyboard.A),
+            down: this.game.input.keyboard.addKey(Phaser.Keyboard.S),
+            right: this.game.input.keyboard.addKey(Phaser.Keyboard.D)
+        };
+    }
 
     this.actionDirectionKeys = this.game.input.keyboard.createCursorKeys();
 
