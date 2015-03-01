@@ -12,6 +12,8 @@ var spellsData = [];
 var redTower;
 var blueTower;
 var gameParams;
+var chatKey;
+var chatting = false;
 
 
 function parseUrlParams() {
@@ -100,7 +102,24 @@ function create() {
 
     setSocketListeners();
 
+    chatKey = game.input.keyboard.addKey(Phaser.Keyboard.BACKWARD_SLASH);
+    chatKey.onDown.add(function(event) {
+        toggleChat();
+    }.bind(this));
 
+    $('#chat-input').focus(function() {
+        hero.disableKeys();
+    });
+
+    $('#chat-input').blur(function() {
+        hero.enableKeys();
+    });
+
+    $('#chat-input').keypress(function(e) {
+        if(e.which == 13) {
+            sendChatMessage();
+        }
+    });
 
     // BLOOD
     // var blood = game.add.sprite(60, 60, 'blood');
@@ -224,6 +243,13 @@ function setSocketListeners() {
                 data['content']['teams']['blue']['building_hp'],
                 data['content']['teams']['blue']['building_max_hp']
             );
+        } else if (data['type'] == 'BE_SEND_CHAT') {
+            var sender = data['content']['username'];
+            var message = data['content']['message'];
+            var li = $('<li>');
+            li.append($('<strong>').text(sender + ': '));
+            li.append(message);
+            $('.chat-messages').prepend(li);
         }
     };
 
@@ -249,6 +275,27 @@ function createHero(characterClass, username, team, isLocalPlayer) {
     return pom;
 }
 
+function sendChatMessage() {
+    var message = $('#chat-input').val();
+    socket.send(JSON.stringify({
+        type: 'FE_SEND_CHAT',
+        content: {
+            'username': hero.characterName,
+            'message': message
+        }
+    }));
+    $('#chat-input').val('')
+}
+
+function toggleChat() {
+    chatting = !chatting;
+    if(chatting) {
+        $('#chat-input').focus();
+    } else {
+        $('#chat-input').blur();
+    }
+}
+
 $('.js-form').submit(function(event){
     event.preventDefault();
     window.location = $('#popup-room').val() + '/' + $('#popup-user').val()
@@ -264,6 +311,7 @@ else
     if (!gameParams)
         window.location = '/';
     $('.ui').show();
+    $('.chat-container').show();
     var game = new Phaser.Game(1008, 608, Phaser.AUTO, 'canvas', {
         preload: preload,
         create: create,
