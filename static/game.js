@@ -248,7 +248,7 @@ function setSocketListeners() {
             var message = data['content']['message'];
             var li = $('<li>');
             li.append($('<strong>').text(sender + ': '));
-            li.append(message);
+            li.append($('<span>').text(message));
             $('.chat-messages').prepend(li);
         }
     };
