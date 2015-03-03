@@ -244,12 +244,7 @@ function setSocketListeners() {
                 data['content']['teams']['blue']['building_max_hp']
             );
         } else if (data['type'] == 'BE_SEND_CHAT') {
-            var sender = data['content']['username'];
-            var message = data['content']['message'];
-            var li = $('<li>');
-            li.append($('<strong>').text(sender + ': '));
-            li.append($('<span>').text(message));
-            $('.chat-messages').prepend(li);
+            addChatMessage(data['content']);
         }
     };
 
@@ -280,11 +275,29 @@ function sendChatMessage() {
     socket.send(JSON.stringify({
         type: 'FE_SEND_CHAT',
         content: {
-            'username': hero.characterName,
             'message': message
         }
     }));
     $('#chat-input').val('')
+}
+
+function addChatMessage(data) {
+    var sender = data['username'];
+    var message = data['message'];
+    var timestamp = data['timestamp'];
+    var color = '#000000';
+    if(data['team']) {
+        if(data['team'] === 'red') {
+            color = '#DD0000';
+        } else if (data['team'] === 'blue') {
+            color = '#0000DD';
+        }
+    }
+    var li = $('<li>');
+    li.append($('<strong>').text('[' + timestamp + '] '));
+    li.append($('<strong>').css({'color':color}).text(sender + ': '));
+    li.append($('<span>').text(message));
+    $('.chat-messages').prepend(li);
 }
 
 function toggleChat() {

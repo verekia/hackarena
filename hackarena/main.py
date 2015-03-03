@@ -106,8 +106,10 @@ class WebSocketHandler(SockJSConnection):
 
         if data['type'] == FEMessages.FE_SEND_CHAT:
             SendChatBroadcast(
-                username=data['content']['username'],
-                message=data['content']['message']
+                message=data['content']['message'],
+                username=self.player.username,
+                team=self.player.team,
+                timestamp=time.strftime('%H:%M:%S')
             ).broadcast_to_all(self)
 
     def spell_request(self, spell_type, position_x, position_y, direction):
