@@ -4,10 +4,7 @@ html {
 
 body {
     background: #3A1400;
-}
-
-* {
-	font-family: 'Charlemagne Std', 'Lucida Grande', arial !important;
+	font-family: 'Charlemagne Std', 'Lucida Grande', arial;
 }
 
 .canvas-container {
@@ -29,8 +26,6 @@ canvas {
 	color: #cf0b0b;
 	text-shadow: 1px 1px 1px #000;
 }
-
-
 
 .kills {
 	text-align: center;
@@ -80,16 +75,20 @@ canvas {
 	border-radius: 4px;
 	background-color: #FFFFFF;
 	width: 800px;
-	padding: 4px;
+	padding: 8px;
 }
 
 .chat-messages {
-	list-style-type: none;
+	font-family: monospace;
+	font-size: 16px;
+	word-wrap: break-word;
+	list-style: none;
+	padding: 0 8px;
 }
 
 .chat-input-container {
 	text-align: center;
-	padding-right: 4px;
+	padding-right: 8px;
 }
 
 #chat-input {

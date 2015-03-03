@@ -56,6 +56,13 @@ class WebSocketHandler(SockJSConnection):
     def on_close(self):
         self.teams[self.room][self.player.team].remove_player(self.player)
 
+        # Broadcast a chat message informing the players of the disconnected player
+        SendChatBroadcast(
+            message=self.player.username + ' has left.',
+            username='server',
+            timestamp=time.strftime('%H:%M:%S')
+        ).broadcast_to_all(self)
+
         self.broadcast_game_state()
 
         del self.players[self.session_string]
@@ -84,6 +91,13 @@ class WebSocketHandler(SockJSConnection):
                     'blue': Team('blue'),
                 }
 
+            # Broadcast a chat message informing the players of the new player
+            SendChatBroadcast(
+                message=self.player.username + ' has joined.',
+                username='server',
+                timestamp=time.strftime('%H:%M:%S')
+            ).broadcast_to_all(self)
+
             self.teams[new_room][self.player.team].add_player(self.player)
             self.broadcast_game_state()
 
@@ -105,9 +119,15 @@ class WebSocketHandler(SockJSConnection):
                 self.broadcast_game_state()
 
         if data['type'] == FEMessages.FE_SEND_CHAT:
+            message = data['content']['message']
+            if message > 128:
+                message = message[0:128]
+
             SendChatBroadcast(
-                username=data['content']['username'],
-                message=data['content']['message']
+                message=message,
+                username=self.player.username,
+                team=self.player.team,
+                timestamp=time.strftime('%H:%M:%S')
             ).broadcast_to_all(self)
 
     def spell_request(self, spell_type, position_x, position_y, direction):
