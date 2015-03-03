@@ -285,7 +285,7 @@ function addChatMessage(data) {
     var sender = data['username'];
     var message = data['message'];
     var timestamp = data['timestamp'];
-    var color = '#000000';
+    var color = '#555555';
     if(data['team']) {
         if(data['team'] === 'red') {
             color = '#DD0000';

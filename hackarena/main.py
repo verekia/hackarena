@@ -56,6 +56,13 @@ class WebSocketHandler(SockJSConnection):
     def on_close(self):
         self.teams[self.room][self.player.team].remove_player(self.player)
 
+        # Broadcast a chat message informing the players of the disconnected player
+        SendChatBroadcast(
+            message=self.player.username + ' has left.',
+            username='server',
+            timestamp=time.strftime('%H:%M:%S')
+        ).broadcast_to_all(self)
+
         self.broadcast_game_state()
 
         del self.players[self.session_string]
@@ -83,6 +90,13 @@ class WebSocketHandler(SockJSConnection):
                     'red': Team('red'),
                     'blue': Team('blue'),
                 }
+
+            # Broadcast a chat message informing the players of the new player
+            SendChatBroadcast(
+                message=self.player.username + ' has joined.',
+                username='server',
+                timestamp=time.strftime('%H:%M:%S')
+            ).broadcast_to_all(self)
 
             self.teams[new_room][self.player.team].add_player(self.player)
             self.broadcast_game_state()
