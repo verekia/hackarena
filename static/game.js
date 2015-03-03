@@ -133,12 +133,6 @@ function update() {
     // map.tilePosition.x = -game.camera.x;
     // map.tilePosition.y = -game.camera.y;
 
-    if (blueTeamData.length > 0) {
-        blueTeam = updateTeam(blueTeam, blueTeamData, 'blue');
-    }
-    if (redTeamData.length > 0) {
-        redTeam = updateTeam(redTeam, redTeamData, 'red');
-    }
     if (spellsData.length > 0) {
         updateSpells();
     }
@@ -214,6 +208,8 @@ function setSocketListeners() {
         if (data['type'] == 'BE_ALL_MAIN_BROADCAST') {
             blueTeamData = data['content']['teams']['blue']['players'];
             redTeamData = data['content']['teams']['red']['players'];
+            updateTeam(blueTeam, blueTeamData, 'blue');
+            updateTeam(redTeam, redTeamData, 'red');
             spellsData.push.apply(spellsData, data['content']['spells']);
             updateKills(
                 data['content']['teams']['blue']['kills'],
