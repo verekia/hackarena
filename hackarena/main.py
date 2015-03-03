@@ -119,8 +119,12 @@ class WebSocketHandler(SockJSConnection):
                 self.broadcast_game_state()
 
         if data['type'] == FEMessages.FE_SEND_CHAT:
+            message = data['content']['message']
+            if message > 128:
+                message = message[0:128]
+
             SendChatBroadcast(
-                message=data['content']['message'],
+                message=message,
                 username=self.player.username,
                 team=self.player.team,
                 timestamp=time.strftime('%H:%M:%S')
