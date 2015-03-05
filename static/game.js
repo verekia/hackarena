@@ -102,9 +102,14 @@ function create() {
 
     setSocketListeners();
 
-    chatKey = game.input.keyboard.addKey(Phaser.Keyboard.BACKWARD_SLASH);
+    chatKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
     chatKey.onDown.add(function(event) {
-        toggleChat();
+        if (!$('#chat-input').val()) {
+            toggleChat();
+        } else {
+            sendChatMessage();
+            toggleChat();
+        }
     }.bind(this));
 
     $('#chat-input').focus(function() {
@@ -113,13 +118,6 @@ function create() {
 
     $('#chat-input').blur(function() {
         hero.enableKeys();
-    });
-
-    $('#chat-input').keypress(function(e) {
-        if(e.which == 13) {
-            sendChatMessage();
-            toggleChat();
-        }
     });
 
     // BLOOD
@@ -315,7 +313,7 @@ $('.js-form').submit(function(event){
 if (location.pathname == '/') {
     $('.js-popup').show();
 }
-else 
+else
 {
     gameParams = parseUrlParams();
     if (!gameParams)
