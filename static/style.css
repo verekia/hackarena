@@ -2,9 +2,14 @@ html {
     overflow-y: scroll;
 }
 
+@font-face {
+    font-family: charlemagne;
+    src: url(/static/charlemagne.ttf);
+}
+
 body {
     background: #3A1400;
-	font-family: 'Charlemagne Std', 'Lucida Grande', arial;
+	font-family: 'Lucida Grande', arial;
 }
 
 .canvas-container {
@@ -14,8 +19,8 @@ body {
 
 canvas {
 	display: inline-block !important;
-	border: 20px outset rgb(204, 34, 34);
-	border-radius: 14px;
+	border: 6px outset rgb(204, 34, 34);
+	border-radius: 3px;
 	box-shadow: rgba(0, 0, 0, 0.498039) 5px 5px 20px
 }
 
@@ -24,7 +29,7 @@ canvas {
 	margin-top: 0;
 	font-size: 48px;
 	color: #cf0b0b;
-	text-shadow: 1px 1px 1px #000;
+	font-family: 'charlemagne' !important;
 }
 
 .kills {
@@ -56,26 +61,34 @@ canvas {
 	text-align: center;
 	margin-bottom: 10px;
 	display: none;
+	position: relative;
 }
 
 .ui-wrapper {
 	display: inline-block;
-	background: #280E00;
-	border-radius: 30px;
+	background: rgba(0, 0, 0, 0.3);
+	border-radius: 0 0 10px 10px;
+	margin-top: 6px;
 	padding: 10px;
 	min-width: 160px;
-	box-shadow: inset 3px 3px 3px rgba(0, 0, 0, 0.5), 2px 2px #511F00;
+	border: 2px solid rgb(204, 34, 34);
+	position: absolute;
+	left: 44%;
+	border-top: 0;
 }
 
 .chat-container {
 	display: none;
-	margin: 64px auto;
+	margin: 12px auto 0;
 	border-width: 1px;
 	border-color: #000000;
-	border-radius: 4px;
+	border-radius: 0 0 4px 4px;
 	background-color: #FFFFFF;
-	width: 800px;
-	padding: 8px;
+	width: 1002px;
+	padding: 20px 8px 8px 8px;
+	box-shadow: inset 0 3px 3px rgba(0, 0, 0, 0.3);
+	position: relative;
+	z-index: 5;
 }
 
 .chat-messages {
@@ -142,7 +155,8 @@ canvas {
 	font-size: 18px;
 	padding: 10px 16px;
 	border-radius: 3px;
-	margin-top: 30px;
+	margin-top: 10px;
+	font-family: 'charlemagne' !important;
 }
 
 .game-over {
