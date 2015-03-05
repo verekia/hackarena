@@ -118,6 +118,7 @@ function create() {
     $('#chat-input').keypress(function(e) {
         if(e.which == 13) {
             sendChatMessage();
+            toggleChat();
         }
     });
 
