@@ -10,7 +10,6 @@ from hackarena.messages import SendChatBroadcast
 from hackarena.utilities import Utilities
 from hackarena.constants import MAP_TILES_WIDTH
 from hackarena.constants import MAP_TILES_HEIGHT
-from hackarena.constants import MAP_TILE_SIZE
 from hackarena.constants import MAP_OBSTACLES
 from hackarena.constants import Spell as SpellConstants
 from sockjs.tornado import SockJSConnection
@@ -132,7 +131,7 @@ class WebSocketHandler(SockJSConnection):
 
     def spell_request(self, spell_type, position_x, position_y, direction):
         if spell_type in self.player.available_spells:
-            spell = Spell.create_spell(spell_type, position_x * MAP_TILE_SIZE, position_y * MAP_TILE_SIZE, direction)
+            spell = Spell.create_spell(spell_type, position_x, position_y, direction)
 
             time_since_last_cast = (time.time() - self.player.spell_cast_times[spell_type]) * 1000
 
@@ -177,7 +176,7 @@ class WebSocketHandler(SockJSConnection):
 
         spell_pixels = self.calculate_spell_hit_area(spell)
 
-        return (player.position['x'] * MAP_TILE_SIZE, player.position['y'] * MAP_TILE_SIZE) in spell_pixels
+        return (player.position['x'], player.position['y']) in spell_pixels
 
     def calculate_intersection_with_tower(self, spell):
         # No friendly-fire on towers
@@ -187,8 +186,8 @@ class WebSocketHandler(SockJSConnection):
         spell_pixels = self.calculate_spell_hit_area(spell)
 
         # TODO: convert to general-purpose intersection method (using width=1 as default)
-        tower_pixels_x = xrange(t.building_position['x'], t.building_position['x'] + t.building_size['width'] + MAP_TILE_SIZE, MAP_TILE_SIZE)
-        tower_pixels_y = xrange(t.building_position['y'], t.building_position['y'] + t.building_size['height'] + MAP_TILE_SIZE, MAP_TILE_SIZE)
+        tower_pixels_x = xrange(t.building_position['x'], t.building_position['x'] + t.building_size['width'] + 1)
+        tower_pixels_y = xrange(t.building_position['y'], t.building_position['y'] + t.building_size['height'] + 1)
         for pixel in itertools.product(tower_pixels_x, tower_pixels_y):
             if pixel in spell_pixels:
                 return True
@@ -205,18 +204,18 @@ class WebSocketHandler(SockJSConnection):
             # TODO: argh, no time to calculate pixels that shouldn't be included
             # just go with a massive square for now :(
             aoe_range = SpellConstants.SPELL_RANGES[spell.spell_type]
-            spell_hit_pixels_x = xrange(spell_start_x - aoe_range, spell_start_x + aoe_range + MAP_TILE_SIZE, MAP_TILE_SIZE)
-            spell_hit_pixels_y = xrange(spell_start_y - aoe_range, spell_start_y + aoe_range + MAP_TILE_SIZE, MAP_TILE_SIZE)
+            spell_hit_pixels_x = xrange(spell_start_x - aoe_range, spell_start_x + aoe_range + 1)
+            spell_hit_pixels_y = xrange(spell_start_y - aoe_range, spell_start_y + aoe_range + 1)
             hit_pixels = [p for p in itertools.product(spell_hit_pixels_x, spell_hit_pixels_y)]
         else:
             if spell_start_x == spell_end_x:
                 y0 = min(spell_start_y, spell_end_y)
                 y1 = max(spell_start_y, spell_end_y)
-                hit_pixels = [(spell_start_x, y) for y in xrange(y0 + MAP_TILE_SIZE, y1 + MAP_TILE_SIZE, MAP_TILE_SIZE)]
+                hit_pixels = [(spell_start_x, y) for y in xrange(y0 + 1, y1 + 1)]
             else:
                 x0 = min(spell_start_x, spell_end_x)
                 x1 = max(spell_start_x, spell_end_x)
-                hit_pixels = [(x, spell_start_y) for x in xrange(x0 + MAP_TILE_SIZE, x1 + MAP_TILE_SIZE, MAP_TILE_SIZE)]
+                hit_pixels = [(x, spell_start_y) for x in xrange(x0 + 1, x1 + 1)]
 
         return hit_pixels
 
