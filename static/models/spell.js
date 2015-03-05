@@ -11,10 +11,10 @@ Spell = function(game, spellData) {
 
 
     // Quick fix, hero anchor moved to top-left
-    this.startPosition['x'] += 8;
-    this.startPosition['y'] += 8;
-    this.endPosition['x'] += 8;
-    this.endPosition['y'] += 8;
+    this.startPosition['x'] += 0.5;
+    this.startPosition['y'] += 0.5;
+    this.endPosition['x'] += 0.5;
+    this.endPosition['y'] += 0.5;
 
     if (this.startPosition['x'] === this.endPosition['x']) {
         this.direction = 'vertical';
@@ -60,48 +60,48 @@ Spell.prototype.constructor = Spell;
 Spell.prototype.drawLine = function() {
     this.clear();
     this.lineStyle(5, Math.floor(Math.random() * 16777215), 1);
-    this.moveTo(this.startPosition['x'], this.startPosition['y']);
-    this.lineTo(this.endPosition['x'], this.endPosition['y']);
+    this.moveTo(this.startPosition['x'] * 16, this.startPosition['y'] * 16);
+    this.lineTo(this.endPosition['x'] * 16, this.endPosition['y'] * 16);
 }
 
 Spell.prototype.drawFireball = function() {
     this.clear();
     this.lineStyle(5, 16729088, 1);
-    this.moveTo(this.startPosition['x'], this.startPosition['y']);
-    this.lineTo(this.endPosition['x'], this.endPosition['y']);
+    this.moveTo(this.startPosition['x'] * 16, this.startPosition['y'] * 16);
+    this.lineTo(this.endPosition['x'] * 16, this.endPosition['y'] * 16);
 }
 
 Spell.prototype.drawFireAOE = function() {
     this.lineStyle(5, 16729088, 0.8);
     this.beginFill(16769024, 0.5);
-    this.drawCircle(this.startPosition['x'], this.startPosition['y'], this.range * 2);
+    this.drawCircle(this.startPosition['x'] * 16, this.startPosition['y'] * 16, this.range * 2 * 16);
 }
 
 Spell.prototype.drawHeal = function() {
     this.clear();
     this.lineStyle(5, 57876, 1);
-    this.moveTo(this.startPosition['x'], this.startPosition['y']);
-    this.lineTo(this.endPosition['x'], this.endPosition['y']);
+    this.moveTo(this.startPosition['x'] * 16, this.startPosition['y'] * 16);
+    this.lineTo(this.endPosition['x'] * 16, this.endPosition['y'] * 16);
 }
 
 Spell.prototype.drawHealerDamage = function() {
     this.clear();
     this.lineStyle(5, 16364288, 1);
-    this.moveTo(this.startPosition['x'], this.startPosition['y']);
-    this.lineTo(this.endPosition['x'], this.endPosition['y']);
+    this.moveTo(this.startPosition['x'] * 16, this.startPosition['y'] * 16);
+    this.lineTo(this.endPosition['x'] * 16, this.endPosition['y'] * 16);
 }
 
 Spell.prototype.drawTankAttack = function() {
     this.clear();
     this.lineStyle(5, 11184810, 1);
-    this.moveTo(this.startPosition['x'], this.startPosition['y']);
-    this.lineTo(this.endPosition['x'], this.endPosition['y']);
+    this.moveTo(this.startPosition['x'] * 16, this.startPosition['y'] * 16);
+    this.lineTo(this.endPosition['x'] * 16, this.endPosition['y'] * 16);
 }
 
 Spell.prototype.drawTankAOE = function() {
     this.lineStyle(5, 11184810, 0.8);
     this.beginFill(13421772, 0.5);
-    this.drawCircle(this.startPosition['x'], this.startPosition['y'], this.range * 2);
+    this.drawCircle(this.startPosition['x'] * 16, this.startPosition['y'] * 16, this.range * 2 * 16);
 }
 
 
