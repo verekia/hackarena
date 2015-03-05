@@ -1,9 +1,9 @@
 Tower = function(game, initX, initY, team) {
     //Phaser.Sprite.call(this, game, initX, initY, 'hero');
     if(team === 'red') {
-        Phaser.Sprite.call(this, game, initX, initY, 'tower_red');
+        Phaser.Sprite.call(this, game, initX * 16, initY * 16, 'tower_red');
     } else {
-        Phaser.Sprite.call(this, game, initX, initY, 'tower_blue');
+        Phaser.Sprite.call(this, game, initX * 16, initY * 16, 'tower_blue');
     }
 
     this.game = game;
