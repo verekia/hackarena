@@ -44,7 +44,7 @@ function parseUrlParams() {
         'username': params[1],
         'team': params[2],
         'characterClass': params[3]
-    }
+    };
 }
 
 function preload() {
@@ -89,7 +89,7 @@ function create() {
     layerObstacles.resizeWorld();
 
     //  The base of our hero
-    hero = createHero(gameParams['characterClass'], gameParams['username'], gameParams['team'], true);
+    hero = createHero(gameParams.characterClass, gameParams.username, gameParams.team, true);
     if (hero.team === 'blue') {
         blueTeam[hero.characterName] = hero;
     } else {
@@ -152,11 +152,11 @@ function updateTeam(team, teamData, teamName) {
     var processedUsers = {};
     for (var i = 0; i < teamData.length; i++) {
         var player = teamData[i];
-        if (!team[player['username']]) {
-            team[player['username']] = createHero(player['character_class'], player['username'], teamName, false)
+        if (!team[player.username]) {
+            team[player.username] = createHero(player.character_class, player.username, teamName, false);
         }
-        team[player['username']].receiveMessage(player);
-        processedUsers[player['username']] = true;
+        team[player.username].receiveMessage(player);
+        processedUsers[player.username] = true;
     }
     for (var i = 0; i < activeUsers.length; i++) {
         if (!processedUsers[activeUsers[i]]) {
@@ -204,42 +204,42 @@ function setSocketListeners() {
 
     socket.onmessage = function(evt) {
         var data = JSON.parse(evt.data);
-        if (data['type'] == 'BE_ALL_MAIN_BROADCAST') {
-            blueTeamData = data['content']['teams']['blue']['players'];
-            redTeamData = data['content']['teams']['red']['players'];
+        if (data.type == 'BE_ALL_MAIN_BROADCAST') {
+            blueTeamData = data.content.teams.blue.players;
+            redTeamData = data.content.teams.red.players;
             updateTeam(blueTeam, blueTeamData, 'blue');
             updateTeam(redTeam, redTeamData, 'red');
-            spellsData.push.apply(spellsData, data['content']['spells']);
+            spellsData.push.apply(spellsData, data.content.spells);
             updateKills(
-                data['content']['teams']['blue']['kills'],
-                data['content']['teams']['red']['kills']
+                data.content.teams.blue.kills,
+                data.content.teams.red.kills
             );
             if(!redTower) {
                 redTower = new Tower(
                     game,
-                    data['content']['teams']['red']['building_position']['x'],
-                    data['content']['teams']['red']['building_position']['y'],
+                    data.content.teams.red.building_position.x,
+                    data.content.teams.red.building_position.y,
                     'red'
                 );
             }
             if(!blueTower) {
                 blueTower = new Tower(
                     game,
-                    data['content']['teams']['blue']['building_position']['x'],
-                    data['content']['teams']['blue']['building_position']['y'],
+                    data.content.teams.blue.building_position.x,
+                    data.content.teams.blue.building_position.y,
                     'blue'
                 );
             }
             redTower.updateTower(
-                data['content']['teams']['red']['building_hp'],
-                data['content']['teams']['red']['building_max_hp']
+                data.content.teams.red.building_hp,
+                data.content.teams.red.building_max_hp
             );
             blueTower.updateTower(
-                data['content']['teams']['blue']['building_hp'],
-                data['content']['teams']['blue']['building_max_hp']
+                data.content.teams.blue.building_hp,
+                data.content.teams.blue.building_max_hp
             );
-        } else if (data['type'] == 'BE_SEND_CHAT') {
-            addChatMessage(data['content']);
+        } else if (data.type == 'BE_SEND_CHAT') {
+            addChatMessage(data.content);
         }
     };
 
@@ -273,18 +273,18 @@ function sendChatMessage() {
             'message': message
         }
     }));
-    $('#chat-input').val('')
+    $('#chat-input').val('');
 }
 
 function addChatMessage(data) {
-    var sender = data['username'];
-    var message = data['message'];
-    var timestamp = data['timestamp'];
+    var sender = data.username;
+    var message = data.message;
+    var timestamp = data.timestamp;
     var color = '#555555';
-    if(data['team']) {
-        if(data['team'] === 'red') {
+    if(data.team) {
+        if(data.team === 'red') {
             color = '#DD0000';
-        } else if (data['team'] === 'blue') {
+        } else if (data.team === 'blue') {
             color = '#0000DD';
         }
     }
@@ -306,8 +306,8 @@ function toggleChat() {
 
 $('.js-form').submit(function(event){
     event.preventDefault();
-    window.location = $('#popup-room').val() + '/' + $('#popup-user').val()
-        + '/' + $('#popup-team').val() + '/' + $('#popup-class').val();
+    window.location = $('#popup-room').val() + '/' + $('#popup-user').val() +
+        '/' + $('#popup-team').val() + '/' + $('#popup-class').val();
 });
 
 if (location.pathname == '/') {
@@ -327,6 +327,3 @@ else
         render: render
     });
 }
-
-
-
