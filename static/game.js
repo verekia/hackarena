@@ -1,4 +1,3 @@
-var land;
 var hero;
 var map;
 var layer;
@@ -29,9 +28,9 @@ function parseUrlParams() {
     } else if (params.length !== 4) {
         errorMessage = 'Not the right number of parameters.';
     } else if (params[2] !== 'red' && params[2] !== 'blue') {
-        errorMessage = "Team parameter must be 'red' or 'blue'.";
+        errorMessage = 'Team parameter must be \'red\' or \'blue\'.';
     } else if (params[3] !== 'warrior' && params[3] !== 'mage' && params[3] !== 'healer') {
-        errorMessage = "Class parameter must be 'warrior', 'mage', or 'healer'.";
+        errorMessage = 'Class parameter must be \'warrior\', \'mage\', or \'healer\'.';
     }
 
     if (errorMessage) {
@@ -100,10 +99,11 @@ function create() {
     game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
     game.camera.focusOnXY(0, 0);
 
+
     setSocketListeners();
 
     chatKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
-    chatKey.onDown.add(function(event) {
+    chatKey.onDown.add(function() {
         if (!$('#chat-input').val()) {
             toggleChat();
         } else {
@@ -139,18 +139,24 @@ function update() {
     redTeamData = [];
 
     // Update all heroes to flash when hit
-    for (var key in blueTeam) {
-        blueTeam[key].updateHitFlash();
+    var key;
+    for (key in blueTeam) {
+        if (blueTeam.hasOwnProperty(key)){
+            blueTeam[key].updateHitFlash();
+        }
     }
-    for (var key in redTeam) {
-        redTeam[key].updateHitFlash();
+    for (key in redTeam) {
+        if (redTeam.hasOwnProperty(key)){
+            redTeam[key].updateHitFlash();
+        }
     }
 }
 
 function updateTeam(team, teamData, teamName) {
     var activeUsers = Object.keys(team);
     var processedUsers = {};
-    for (var i = 0; i < teamData.length; i++) {
+    var i;
+    for (i = 0; i < teamData.length; i++) {
         var player = teamData[i];
         if (!team[player.username]) {
             team[player.username] = createHero(player.character_class, player.username, teamName, false);
@@ -158,7 +164,7 @@ function updateTeam(team, teamData, teamName) {
         team[player.username].receiveMessage(player);
         processedUsers[player.username] = true;
     }
-    for (var i = 0; i < activeUsers.length; i++) {
+    for (i = 0; i < activeUsers.length; i++) {
         if (!processedUsers[activeUsers[i]]) {
             team[activeUsers[i]].destroyHero();
             delete team[activeUsers[i]];

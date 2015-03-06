@@ -1,4 +1,4 @@
-Tower = function(game, initX, initY, team) {
+var Tower = function(game, initX, initY, team) {
     //Phaser.Sprite.call(this, game, initX, initY, 'hero');
     if(team === 'red') {
         Phaser.Sprite.call(this, game, initX * 16, initY * 16, 'tower_red');
@@ -8,9 +8,8 @@ Tower = function(game, initX, initY, team) {
 
     this.game = game;
     this.game.add.existing(this);
-    this.teamDisplay;
 
-    if (team == 'blue') {
+    if (team === 'blue') {
         this.otherTeamDisplay = 'Red';
     } else {
         this.otherTeamDisplay = 'Blue';
@@ -35,4 +34,4 @@ Tower.prototype.updateTower = function (health, maxHealth) {
             window.location = '/';
         }, 3000);
     }
-}
+};

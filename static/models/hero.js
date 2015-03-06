@@ -1,4 +1,4 @@
-Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
+var Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
     Phaser.Sprite.call(this, game, initX, initY, textureName);
 
     this.receivedServerData = false;
@@ -25,19 +25,19 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
         }.bind(this);
 
         for(var i = 0; i < this.allKeys.length; i++) {
-            this.allKeys[i].onDown.add(addPressedKey)
+            this.allKeys[i].onDown.add(addPressedKey);
         }
     }
 
     this.lastPos = {
         x: -1,
         y: -1
-    }
+    };
 
     this.vel = {
         x: 0,
         y: 0
-    }
+    };
 
     this.health = this.maxHealth;
     this.hitFlashFrame = 0;
@@ -63,8 +63,8 @@ Hero = function(game, characterName, team, isLocal, initX, initY, textureName) {
         this.nameStyleFillDefault = '#0000FF';
     }
     this.nameStyle = {
-        font: "12px Arial",
-        align: "center",
+        font: '12px Arial',
+        align: 'center',
         fill: this.nameStyleFillDefault
     };
 
