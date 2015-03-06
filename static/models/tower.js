@@ -1,6 +1,6 @@
 var Tower = function(game, initX, initY, team) {
     //Phaser.Sprite.call(this, game, initX, initY, 'hero');
-    if(team === 'red') {
+    if (team === 'red') {
         Phaser.Sprite.call(this, game, initX * 16, initY * 16, 'tower_red');
     } else {
         Phaser.Sprite.call(this, game, initX * 16, initY * 16, 'tower_blue');
@@ -25,12 +25,13 @@ Tower.prototype.updateTower = function (health, maxHealth) {
     this.health = health;
     this.maxHealth = maxHealth;
     this.healthBar.updateHealthBar(this.health, this.maxHealth);
+
     if (health <= 0) {
         $('.js-game-over-team').html(this.otherTeamDisplay);
-        $('.js-game-over').show(function(){
+        $('.js-game-over').show(function() {
             this.healthBar.updateHealthBar(0, this.maxHealth);
         }.bind(this));
-        setTimeout(function(){
+        setTimeout(function() {
             window.location = '/';
         }, 3000);
     }

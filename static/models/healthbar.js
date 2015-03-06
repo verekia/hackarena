@@ -15,7 +15,7 @@ HealthBar.prototype = Object.create(Phaser.Graphics.prototype);
 HealthBar.prototype.constructor = HealthBar;
 
 HealthBar.prototype.updateHealthBar = function(health, maxHealth) {
-    this.drawLine(health/maxHealth);
+    this.drawLine(health / maxHealth);
 };
 
 HealthBar.prototype.drawLine = function(ratio) {

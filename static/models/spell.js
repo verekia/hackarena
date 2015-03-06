@@ -9,7 +9,6 @@ var Spell = function(game, spellData) {
     this.range = spellData.range;
     this.game.add.existing(this);
 
-
     // Quick fix, hero anchor moved to top-left
     this.startPosition.x += 0.5;
     this.startPosition.y += 0.5;
@@ -23,6 +22,7 @@ var Spell = function(game, spellData) {
     }
 
     var sound = 'simple_spell';
+
     if (this.spellType === 'TANK_AOE') {
         this.drawTankAOE();
         sound = 'spell';
@@ -104,7 +104,6 @@ Spell.prototype.drawTankAOE = function() {
     this.drawCircle(this.startPosition.x * 16, this.startPosition.y * 16, this.range * 2 * 16);
 };
 
-
 Spell.prototype.update = function() {
     if (!(this.spellType === 'TANK_AOE' || this.spellType === 'MAGE_AOE')) {
         if (this.direction === 'vertical') {
@@ -112,6 +111,7 @@ Spell.prototype.update = function() {
         } else {
             this.startPosition.x = this.startPosition.x + (this.endPosition.x - this.startPosition.x) * ((this.frameMax - this.frame) / this.frameMax);
         }
+
         if (this.spellType === 'MAGE_DIRECT_DAMAGE') {
             this.drawFireball();
         } else if (this.spellType === 'HEALER_HEAL') {

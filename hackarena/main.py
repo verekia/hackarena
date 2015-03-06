@@ -101,6 +101,7 @@ class WebSocketHandler(SockJSConnection):
             self.broadcast_game_state()
 
         if data['type'] == FEMessages.FE_HERO_MOVE:
+            print 'fe hero move', str(data)
             char_pos_x = self.player.position['x']
             char_pos_y = self.player.position['y']
             move_allowed, new_pos_x, new_pos_y = self.move_request(char_pos_x, char_pos_y, data['content']['direction'])

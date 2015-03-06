@@ -1,25 +1,23 @@
-var hero;
-var map;
-var layer;
-var layerObstacles;
-var socket;
-var blueTeam = {};
-var redTeam = {};
-var blueTeamData = [];
-var redTeamData = [];
-var spellsData = [];
-var redTower;
-var blueTower;
-var gameParams;
-var chatKey;
-var chatting = false;
-
+var hero,
+    map,
+    layer,
+    layerObstacles,
+    socket,
+    blueTeam = {},
+    redTeam = {},
+    blueTeamData = [],
+    redTeamData = [],
+    spellsData = [],
+    redTower,
+    blueTower,
+    gameParams,
+    chatKey,
+    chatting = false;
 
 function parseUrlParams() {
-    var params = location.pathname.substring(1).split('/');
-
-    var errorMessage = null;
-    var example = '\nExample: /darwinbattle/jon/blue/warrior';
+    var params = location.pathname.substring(1).split('/'),
+        errorMessage = null,
+        example = '\nExample: /darwinbattle/jon/blue/warrior';
 
     if (!/^[a-zA-Z]+$/.test(params[0])) {
         errorMessage = 'The room name must be letters only.';
@@ -35,6 +33,7 @@ function parseUrlParams() {
 
     if (errorMessage) {
         alert(errorMessage + example);
+
         return null;
     }
 
@@ -42,7 +41,7 @@ function parseUrlParams() {
         'room': params[0],
         'username': params[1],
         'team': params[2],
-        'characterClass': params[3]
+        'characterClass': params[3],
     };
 }
 
@@ -66,7 +65,6 @@ function preload() {
     game.load.audio('simple_spell', '/static/sounds/simple_spell.wav');
     game.load.audio('punch', '/static/sounds/punch.wav');
     game.load.audio('fatality', '/static/sounds/fatality.mp3');
-
 }
 
 function create() {
@@ -89,6 +87,7 @@ function create() {
 
     //  The base of our hero
     hero = createHero(gameParams.characterClass, gameParams.username, gameParams.team, true);
+
     if (hero.team === 'blue') {
         blueTeam[hero.characterName] = hero;
     } else {
@@ -99,11 +98,10 @@ function create() {
     game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
     game.camera.focusOnXY(0, 0);
 
-
     setSocketListeners();
 
     chatKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
-    chatKey.onDown.add(function() {
+    chatKey.onDown.add(function () {
         if (!$('#chat-input').val()) {
             toggleChat();
         } else {
@@ -112,11 +110,11 @@ function create() {
         }
     }.bind(this));
 
-    $('#chat-input').focus(function() {
+    $('#chat-input').focus(function () {
         hero.disableKeys();
     });
 
-    $('#chat-input').blur(function() {
+    $('#chat-input').blur(function () {
         hero.enableKeys();
     });
 
@@ -140,36 +138,43 @@ function update() {
 
     // Update all heroes to flash when hit
     var key;
+
     for (key in blueTeam) {
-        if (blueTeam.hasOwnProperty(key)){
+        if (blueTeam.hasOwnProperty(key)) {
             blueTeam[key].updateHitFlash();
         }
     }
+
     for (key in redTeam) {
-        if (redTeam.hasOwnProperty(key)){
+        if (redTeam.hasOwnProperty(key)) {
             redTeam[key].updateHitFlash();
         }
     }
 }
 
 function updateTeam(team, teamData, teamName) {
-    var activeUsers = Object.keys(team);
-    var processedUsers = {};
-    var i;
+    var activeUsers = Object.keys(team),
+        processedUsers = {},
+        i,
+        player;
+
     for (i = 0; i < teamData.length; i++) {
-        var player = teamData[i];
+        player = teamData[i];
+
         if (!team[player.username]) {
             team[player.username] = createHero(player.character_class, player.username, teamName, false);
         }
         team[player.username].receiveMessage(player);
         processedUsers[player.username] = true;
     }
+
     for (i = 0; i < activeUsers.length; i++) {
         if (!processedUsers[activeUsers[i]]) {
             team[activeUsers[i]].destroyHero();
             delete team[activeUsers[i]];
         }
     }
+
     return team;
 }
 
@@ -179,15 +184,19 @@ function updateKills(blueKills, redKills) {
 }
 
 function updateSpells() {
-    var tmpSpells = [];
-    for (var i = 0; i < spellsData.length; i++) {
-        var spellData = spellsData[i];
+    var tmpSpells = [],
+        i,
+        spellData;
+
+    for (i = 0; i < spellsData.length; i++) {
+        spellData = spellsData[i];
         tmpSpells.push(new Spell(game, spellData));
         hero.bringToTop();
         spellsData.splice(i, 1);
         i--;
     }
-    setTimeout(function(){
+
+    setTimeout(function () {
         for (var i = 0; i < tmpSpells.length; i++) {
             tmpSpells[i].destroy();
         }
@@ -203,14 +212,15 @@ function setSocketListeners() {
     socket.onopen = function() {
         var enterRoomMessage = JSON.stringify({
             type: 'FE_JOIN_ROOM',
-            content: gameParams
+            content: gameParams,
         });
         this.send(enterRoomMessage);
     };
 
     socket.onmessage = function(evt) {
         var data = JSON.parse(evt.data);
-        if (data.type == 'BE_ALL_MAIN_BROADCAST') {
+
+        if (data.type === 'BE_ALL_MAIN_BROADCAST') {
             blueTeamData = data.content.teams.blue.players;
             redTeamData = data.content.teams.red.players;
             updateTeam(blueTeam, blueTeamData, 'blue');
@@ -220,7 +230,8 @@ function setSocketListeners() {
                 data.content.teams.blue.kills,
                 data.content.teams.red.kills
             );
-            if(!redTower) {
+
+            if (!redTower) {
                 redTower = new Tower(
                     game,
                     data.content.teams.red.building_position.x,
@@ -228,7 +239,8 @@ function setSocketListeners() {
                     'red'
                 );
             }
-            if(!blueTower) {
+
+            if (!blueTower) {
                 blueTower = new Tower(
                     game,
                     data.content.teams.blue.building_position.x,
@@ -244,7 +256,7 @@ function setSocketListeners() {
                 data.content.teams.blue.building_hp,
                 data.content.teams.blue.building_max_hp
             );
-        } else if (data.type == 'BE_SEND_CHAT') {
+        } else if (data.type === 'BE_SEND_CHAT') {
             addChatMessage(data.content);
         }
     };
@@ -252,11 +264,11 @@ function setSocketListeners() {
     socket.onclose = function() {
         console.log('Connection closed.');
     };
-
 }
 
 function createHero(characterClass, username, team, isLocalPlayer) {
     var pom = null;
+
     switch (characterClass) {
         case 'warrior':
             pom = new Warrior(game, username, team, isLocalPlayer, 0, 0);
@@ -268,6 +280,7 @@ function createHero(characterClass, username, team, isLocalPlayer) {
             pom = new Mage(game, username, team, isLocalPlayer, 20, 20);
             break;
     }
+
     return pom;
 }
 
@@ -276,25 +289,27 @@ function sendChatMessage() {
     socket.send(JSON.stringify({
         type: 'FE_SEND_CHAT',
         content: {
-            'message': message
-        }
+            'message': message,
+        },
     }));
     $('#chat-input').val('');
 }
 
 function addChatMessage(data) {
-    var sender = data.username;
-    var message = data.message;
-    var timestamp = data.timestamp;
-    var color = '#555555';
-    if(data.team) {
-        if(data.team === 'red') {
+    var sender = data.username,
+        message = data.message,
+        timestamp = data.timestamp,
+        color = '#555555',
+        li = $('<li>');
+
+    if (data.team) {
+        if (data.team === 'red') {
             color = '#DD0000';
         } else if (data.team === 'blue') {
             color = '#0000DD';
         }
     }
-    var li = $('<li>');
+
     li.append($('<strong>').text('[' + timestamp + '] '));
     li.append($('<strong>').css({'color':color}).text(sender + ': '));
     li.append($('<span>').text(message));
@@ -303,33 +318,34 @@ function addChatMessage(data) {
 
 function toggleChat() {
     chatting = !chatting;
-    if(chatting) {
+
+    if (chatting) {
         $('#chat-input').focus();
     } else {
         $('#chat-input').blur();
     }
 }
 
-$('.js-form').submit(function(event){
+$('.js-form').submit(function(event) {
     event.preventDefault();
     window.location = $('#popup-room').val() + '/' + $('#popup-user').val() +
         '/' + $('#popup-team').val() + '/' + $('#popup-class').val();
 });
 
-if (location.pathname == '/') {
+if (location.pathname === '/') {
     $('.js-popup').show();
-}
-else
-{
+} else {
     gameParams = parseUrlParams();
-    if (!gameParams)
+
+    if (!gameParams) {
         window.location = '/';
+    }
     $('.ui').show();
     $('.chat-container').show();
     var game = new Phaser.Game(1008, 608, Phaser.AUTO, 'canvas', {
         preload: preload,
         create: create,
         update: update,
-        render: render
+        render: render,
     });
 }
