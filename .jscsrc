@@ -1,0 +1,37 @@
+{
+    "preset": "crockford",
+    "requireSpaceAfterKeywords": [
+        "if",
+        "else",
+        "for",
+        "while",
+        "do",
+        "switch",
+        "case",
+        "return",
+        "try",
+        "catch",
+        "typeof"
+    ],
+    "requireMultipleVarDecl": true,
+    "disallowTrailingComma": null,
+    "requireTrailingComma": {
+        "ignoreSingleLine": true
+    },
+    "disallowMultipleLineBreaks": true,
+    "disallowPaddingNewlinesInBlocks": true,
+    "requirePaddingNewlinesBeforeKeywords": [
+        "do",
+        "for",
+        "if",
+        "switch",
+        "try",
+        "catch",
+        "void",
+        "while",
+        "with",
+        "return",
+        "typeof",
+        "function"
+    ]
+}

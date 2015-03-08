@@ -1,43 +1,43 @@
-Spell = function(game, spellData) {
+var Spell = function(game, spellData) {
     //Phaser.Sprite.call(this, game, initX, initY, 'hero');
     Phaser.Graphics.call(this, game, 0, 0);
 
     this.game = game;
-    this.startPosition = spellData['start_position'];
-    this.endPosition = spellData['end_position'];
-    this.spellType = spellData['spell_type'];
-    this.range = spellData['range'];
+    this.startPosition = spellData.start_position;
+    this.endPosition = spellData.end_position;
+    this.spellType = spellData.spell_type;
+    this.range = spellData.range;
     this.game.add.existing(this);
 
-
     // Quick fix, hero anchor moved to top-left
-    this.startPosition['x'] += 0.5;
-    this.startPosition['y'] += 0.5;
-    this.endPosition['x'] += 0.5;
-    this.endPosition['y'] += 0.5;
+    this.startPosition.x += 0.5;
+    this.startPosition.y += 0.5;
+    this.endPosition.x += 0.5;
+    this.endPosition.y += 0.5;
 
-    if (this.startPosition['x'] === this.endPosition['x']) {
+    if (this.startPosition.x === this.endPosition.x) {
         this.direction = 'vertical';
     } else {
-        this.direction = 'horizontal'
+        this.direction = 'horizontal';
     }
 
     var sound = 'simple_spell';
-    if (this.spellType == 'TANK_AOE') {
+
+    if (this.spellType === 'TANK_AOE') {
         this.drawTankAOE();
         sound = 'spell';
-    } else if (this.spellType == 'MAGE_DIRECT_DAMAGE') {
+    } else if (this.spellType === 'MAGE_DIRECT_DAMAGE') {
         this.drawFireball();
         sound = 'railgun';
-    } else if (this.spellType == 'MAGE_AOE') {
+    } else if (this.spellType === 'MAGE_AOE') {
         this.drawFireAOE();
         sound = 'spell';
-    } else if (this.spellType == 'HEALER_HEAL') {
+    } else if (this.spellType === 'HEALER_HEAL') {
         this.drawHeal();
         sound = 'heal';
-    } else if (this.spellType == 'HEALER_DIRECT_DAMAGE') {
+    } else if (this.spellType === 'HEALER_DIRECT_DAMAGE') {
         this.drawHealerDamage();
-    } else if (this.spellType == 'TANK_ATTACK') {
+    } else if (this.spellType === 'TANK_ATTACK') {
         this.drawTankAttack();
         sound = 'punch';
     } else {
@@ -60,67 +60,65 @@ Spell.prototype.constructor = Spell;
 Spell.prototype.drawLine = function() {
     this.clear();
     this.lineStyle(5, Math.floor(Math.random() * 16777215), 1);
-    this.moveTo(this.startPosition['x'] * 16, this.startPosition['y'] * 16);
-    this.lineTo(this.endPosition['x'] * 16, this.endPosition['y'] * 16);
-}
+    this.moveTo(this.startPosition.x * 16, this.startPosition.y * 16);
+    this.lineTo(this.endPosition.x * 16, this.endPosition.y * 16);
+};
 
 Spell.prototype.drawFireball = function() {
     this.clear();
     this.lineStyle(5, 16729088, 1);
-    this.moveTo(this.startPosition['x'] * 16, this.startPosition['y'] * 16);
-    this.lineTo(this.endPosition['x'] * 16, this.endPosition['y'] * 16);
-}
+    this.moveTo(this.startPosition.x * 16, this.startPosition.y * 16);
+    this.lineTo(this.endPosition.x * 16, this.endPosition.y * 16);
+};
 
 Spell.prototype.drawFireAOE = function() {
     this.lineStyle(5, 16729088, 0.8);
     this.beginFill(16769024, 0.5);
-    this.drawCircle(this.startPosition['x'] * 16, this.startPosition['y'] * 16, this.range * 2 * 16);
-}
+    this.drawCircle(this.startPosition.x * 16, this.startPosition.y * 16, this.range * 2 * 16);
+};
 
 Spell.prototype.drawHeal = function() {
     this.clear();
     this.lineStyle(5, 57876, 1);
-    this.moveTo(this.startPosition['x'] * 16, this.startPosition['y'] * 16);
-    this.lineTo(this.endPosition['x'] * 16, this.endPosition['y'] * 16);
-}
+    this.moveTo(this.startPosition.x * 16, this.startPosition.y * 16);
+    this.lineTo(this.endPosition.x * 16, this.endPosition.y * 16);
+};
 
 Spell.prototype.drawHealerDamage = function() {
     this.clear();
     this.lineStyle(5, 16364288, 1);
-    this.moveTo(this.startPosition['x'] * 16, this.startPosition['y'] * 16);
-    this.lineTo(this.endPosition['x'] * 16, this.endPosition['y'] * 16);
-}
+    this.moveTo(this.startPosition.x * 16, this.startPosition.y * 16);
+    this.lineTo(this.endPosition.x * 16, this.endPosition.y * 16);
+};
 
 Spell.prototype.drawTankAttack = function() {
     this.clear();
     this.lineStyle(5, 11184810, 1);
-    this.moveTo(this.startPosition['x'] * 16, this.startPosition['y'] * 16);
-    this.lineTo(this.endPosition['x'] * 16, this.endPosition['y'] * 16);
-}
+    this.moveTo(this.startPosition.x * 16, this.startPosition.y * 16);
+    this.lineTo(this.endPosition.x * 16, this.endPosition.y * 16);
+};
 
 Spell.prototype.drawTankAOE = function() {
     this.lineStyle(5, 11184810, 0.8);
     this.beginFill(13421772, 0.5);
-    this.drawCircle(this.startPosition['x'] * 16, this.startPosition['y'] * 16, this.range * 2 * 16);
-}
-
+    this.drawCircle(this.startPosition.x * 16, this.startPosition.y * 16, this.range * 2 * 16);
+};
 
 Spell.prototype.update = function() {
-    if (this.spellType == 'TANK_AOE' || this.spellType == 'MAGE_AOE') {
-
-    } else {
+    if (!(this.spellType === 'TANK_AOE' || this.spellType === 'MAGE_AOE')) {
         if (this.direction === 'vertical') {
             this.startPosition.y = this.startPosition.y + (this.endPosition.y - this.startPosition.y) * ((this.frameMax - this.frame) / this.frameMax);
         } else {
             this.startPosition.x = this.startPosition.x + (this.endPosition.x - this.startPosition.x) * ((this.frameMax - this.frame) / this.frameMax);
         }
-        if (this.spellType == 'MAGE_DIRECT_DAMAGE') {
+
+        if (this.spellType === 'MAGE_DIRECT_DAMAGE') {
             this.drawFireball();
-        } else if (this.spellType == 'HEALER_HEAL') {
+        } else if (this.spellType === 'HEALER_HEAL') {
             this.drawHeal();
-        } else if (this.spellType == 'HEALER_DIRECT_DAMAGE') {
+        } else if (this.spellType === 'HEALER_DIRECT_DAMAGE') {
             this.drawHealerDamage();
-        } else if (this.spellType == 'TANK_ATTACK') {
+        } else if (this.spellType === 'TANK_ATTACK') {
             this.drawTankAttack();
         } else {
             this.drawLine();

@@ -1,4 +1,4 @@
-Blood = function(game, initX, initY) {
+var Blood = function(game, initX, initY) {
     Phaser.Sprite.call(this, game, initX, initY, 'blood');
 
     this.game = game;
@@ -9,7 +9,7 @@ Blood = function(game, initX, initY) {
     anim.onComplete.add(function() {
         this.animations.stop();
         this.kill();
-    }.bind(this))
+    }.bind(this));
     anim.play('blood', 10, false);
 };
 
